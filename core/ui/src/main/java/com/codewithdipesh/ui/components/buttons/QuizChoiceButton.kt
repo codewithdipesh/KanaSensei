@@ -1,0 +1,83 @@
+package com.codewithdipesh.ui.components.buttons
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.codewithdipesh.ui.components.vibrator.correctHaptic
+import com.codewithdipesh.ui.components.vibrator.rememberVibrator
+import com.codewithdipesh.ui.components.vibrator.wrongHaptic
+import com.codewithdipesh.ui.theme.KanaSenseiTypography
+
+@Composable
+fun QuizChoiceButton(
+    modifier: Modifier = Modifier,
+    label: String,
+    onClick: () -> Unit,
+    isShowingAnswer : Boolean = false,
+    isCorrect : Boolean = false,
+    isVibrate : Boolean = false,
+    isRoundedCorner : Boolean = true,
+){
+    val vibrator = rememberVibrator()
+    var clicked by rememberSaveable { mutableStateOf(false) }
+
+    val backgroundColor: Color = when {
+        !isShowingAnswer -> Color.Transparent
+        clicked && isCorrect -> MaterialTheme.colorScheme.scrim
+        clicked && !isCorrect -> MaterialTheme.colorScheme.error
+        else -> Color.Transparent
+    }
+
+    val textColor: Color = when {
+        clicked -> MaterialTheme.colorScheme.onPrimary
+        else -> MaterialTheme.colorScheme.onBackground
+    }
+
+    val cornerRadius = if (isRoundedCorner) 13.dp else 0.dp
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(cornerRadius))
+            .border(
+                width = 1.5.dp,
+                color = if(clicked) backgroundColor else MaterialTheme.colorScheme.secondary,
+                shape = RoundedCornerShape(cornerRadius)
+            )
+            .background(backgroundColor)
+            .clickable {
+                if (!isShowingAnswer) {
+                    clicked = true
+                    onClick()
+                } else if (isVibrate) {
+                    if (isCorrect) vibrator.correctHaptic()
+                    else vibrator.wrongHaptic()
+                }
+            },
+        contentAlignment = Alignment.Center
+    ){
+        Text(
+            text = label,
+            style = KanaSenseiTypography.bodyLarge.copy(
+                fontWeight = FontWeight.Medium,
+                color = textColor
+            ),
+            modifier = Modifier.padding(20.dp)
+        )
+    }
+}

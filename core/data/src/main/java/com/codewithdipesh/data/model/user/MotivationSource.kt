@@ -1,0 +1,17 @@
+package com.codewithdipesh.data.model.user
+
+enum class MotivationSource{
+    ANIME_MANGA,
+    WORK_STUDY,
+    CULTURE,
+    OTHERS;
+
+    fun displayName() : String {
+        return when(this){
+            ANIME_MANGA -> "Anime / Manga"
+            WORK_STUDY -> "Work / Study"
+            CULTURE -> "Japanese Culture"
+            OTHERS -> ""
+        }
+    }
+}
