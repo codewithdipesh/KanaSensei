@@ -39,7 +39,7 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun KanaSenseiTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit = {}
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
