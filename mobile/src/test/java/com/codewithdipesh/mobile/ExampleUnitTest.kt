@@ -1,4 +1,4 @@
-package com.codewithdipesh.app
+package com.codewithdipesh.mobile
 
 import org.junit.Test
 

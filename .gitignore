@@ -18,3 +18,5 @@ local.properties
 /.idea
 /core/build
 /features/build
+
+/mobile/src/
