@@ -29,7 +29,7 @@ fun OptionButton(
     modifier: Modifier = Modifier,
     label: String,
     onClick: () -> Unit,
-    textAlignment: Alignment = Alignment.Center,
+    textAlignment: Alignment = Alignment.CenterStart,
     backgroundColor : Color = MaterialTheme.colorScheme.primary,
     isRoundedCorner : Boolean = true,
 ){

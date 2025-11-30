@@ -14,4 +14,9 @@ enum class MotivationSource{
             OTHERS -> ""
         }
     }
+    companion object {
+        fun getAll() : List<MotivationSource>{
+            return listOf(ANIME_MANGA, WORK_STUDY, CULTURE, OTHERS)
+        }
+    }
 }

@@ -29,9 +29,9 @@ fun QuizChoiceButton(
     modifier: Modifier = Modifier,
     label: String,
     onClick: () -> Unit,
-    isShowingAnswer : Boolean = false,
+    isShowingAnswer : Boolean = true,
     isCorrect : Boolean = false,
-    isVibrate : Boolean = false,
+    isVibrate : Boolean = true,
     isRoundedCorner : Boolean = true,
 ){
     val vibrator = rememberVibrator()
