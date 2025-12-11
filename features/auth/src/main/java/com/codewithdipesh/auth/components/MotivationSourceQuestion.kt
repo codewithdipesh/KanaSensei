@@ -19,6 +19,7 @@ import com.codewithdipesh.ui.theme.KanaSenseiTypography
 @Composable
 fun MotivationSourceQuestion(
     modifier: Modifier = Modifier,
+    selectedOption : MotivationSource?,
     onOptionClicked : (MotivationSource) -> Unit
 ) {
     Column(
@@ -39,6 +40,7 @@ fun MotivationSourceQuestion(
                 modifier = Modifier.fillMaxWidth(),
                 label = it.displayName(),
                 onClick = { onOptionClicked(it) },
+                isSelected = selectedOption == it
             )
             Spacer(Modifier.height(10.dp))
         }

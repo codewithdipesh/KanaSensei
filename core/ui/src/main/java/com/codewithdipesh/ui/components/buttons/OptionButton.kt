@@ -28,21 +28,20 @@ import com.codewithdipesh.ui.theme.KanaSenseiTypography
 fun OptionButton(
     modifier: Modifier = Modifier,
     label: String,
+    isSelected : Boolean,
     onClick: () -> Unit,
     textAlignment: Alignment = Alignment.CenterStart,
     backgroundColor : Color = MaterialTheme.colorScheme.primary,
     isRoundedCorner : Boolean = true,
 ){
 
-    var clicked by rememberSaveable { mutableStateOf(false) }
-
     val backgroundColor: Color = when {
-        clicked -> backgroundColor
+        isSelected -> backgroundColor
         else -> Color.Transparent
     }
 
     val textColor: Color = when {
-        clicked -> MaterialTheme.colorScheme.onPrimary
+        isSelected -> MaterialTheme.colorScheme.onPrimary
         else -> MaterialTheme.colorScheme.onBackground
     }
 
@@ -53,7 +52,7 @@ fun OptionButton(
             .clip(RoundedCornerShape(cornerRadius))
             .border(
                 width = 1.5.dp,
-                color = if(clicked) backgroundColor else MaterialTheme.colorScheme.secondary,
+                color = if(isSelected) backgroundColor else MaterialTheme.colorScheme.secondary,
                 shape = RoundedCornerShape(cornerRadius)
             )
             .background(backgroundColor)

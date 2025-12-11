@@ -1,13 +1,16 @@
 package com.codewithdipesh.auth.model
 
-import com.codewithdipesh.data.model.user.MotivationSource
+import com.codewithdipesh.data.model.auth.AuthResult
 
 data class AuthUI(
-    val motivationSource: MotivationSource? = null,
-    val name : String = "",
-    val japaneseName : String = "",
-
-    val selectedPage : Int = 0,
     val email : String = "",
-    val password : String = ""
+    val password : String = "",
+    val status : AuthResult = AuthResult.NotStarted,
+    val selectedOption : AuthOption = AuthOption.Register
 )
+
+
+enum class AuthOption {
+    Login,
+    Register
+}

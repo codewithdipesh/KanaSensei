@@ -57,9 +57,16 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.androidx.navigation.compose)
 
-    implementation(project(":core:ui"))
+    implementation(project(":core"))
     implementation(project(":core:data"))
+    implementation(project(":core:ui"))
+    implementation(project(":features"))
+    implementation(project(":features:auth"))
+    implementation(project(":features:learning"))
+    implementation(project(":features:kanaTable"))
+    implementation(project(":features:settings"))
 
     implementation(libs.bundles.koin)
 

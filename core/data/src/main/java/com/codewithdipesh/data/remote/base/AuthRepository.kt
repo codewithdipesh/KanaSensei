@@ -9,5 +9,6 @@ interface FirebaseAuthRepository {
     suspend fun register(email: String, password: String,name: String, motivationSource: String): AuthResult
     suspend fun googleLogin(idToken : String, name: String, motivationSource: String) : AuthResult
     fun logout()
+    fun isUserLoggedIn(): Boolean
     suspend fun currentUser() : User?
 }

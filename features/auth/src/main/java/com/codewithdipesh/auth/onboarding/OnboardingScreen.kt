@@ -1,53 +1,62 @@
 package com.codewithdipesh.auth.onboarding
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.codewithdipesh.auth.components.MotivationSourceQuestion
 import com.codewithdipesh.auth.components.NameAndTranslation
+import com.codewithdipesh.data.model.user.MotivationSource
 import com.codewithdipesh.ui.R
-import com.codewithdipesh.ui.components.KanaTextField
 import com.codewithdipesh.ui.components.buttons.AppButton
 import com.codewithdipesh.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.ui.components.progressbar.HorizontalProgressBar
-import com.codewithdipesh.ui.theme.KanaSenseiTypography
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingScreen(
     modifier: Modifier = Modifier,
-    currentPage: Int,
-    totalPage: Int,
-    onBackClick: () -> Unit,
-    onNextClick: () -> Unit
+    onNavigateBack : () -> Unit,
+    onNavigateNext : () -> Unit,
+    selectedMotivatedSource : MotivationSource,
+    onChangeMotivatedSource : (MotivationSource) -> Unit,
+    name: String,
+    onChangeName : (String) -> Unit,
+    translatedName : String?
 ) {
+    var currentPage by rememberSaveable { mutableIntStateOf(1) }
+    val totalPage = 2
+
+    BackHandler {
+        if(currentPage == 1){
+            onNavigateBack()
+        }else{
+            currentPage--
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -73,22 +82,47 @@ fun OnboardingScreen(
                     .padding(horizontal = 24.dp)
                     .padding(top = 30.dp)
             ){
-                when(currentPage){
-                    1 -> {
-                        MotivationSourceQuestion(
-                            onOptionClicked = { } //todo
+                AnimatedContent(
+                    targetState = currentPage,
+                    transitionSpec = {
+                        if (targetState > initialState) {
+                            // Forward → slide left
+                            slideInHorizontally(
+                                initialOffsetX = { it },
+                                animationSpec = tween(300)
+                            ) togetherWith slideOutHorizontally(
+                                targetOffsetX = { -it },
+                                animationSpec = tween(300)
+                            )
+                        } else {
+                            // Backward → slide right
+                            slideInHorizontally(
+                                initialOffsetX = { -it },
+                                animationSpec = tween(300)
+                            ) togetherWith slideOutHorizontally(
+                                targetOffsetX = { it },
+                                animationSpec = tween(300)
+                            )
+                        }.using(
+                            SizeTransform(clip = false)
                         )
                     }
-                    2 -> {
-                        NameAndTranslation(
+                ) { page ->
+                    when (page) {
+                        1 -> MotivationSourceQuestion(
+                            onOptionClicked = onChangeMotivatedSource,
+                            selectedOption = selectedMotivatedSource
+                        )
+                        2, 3 -> NameAndTranslation(
                             modifier = Modifier,
-                            value = "",
-                            onValueChange = { },
-                            showTranslation = true,
-                            translatedValue = null
+                            value = name,
+                            onValueChange = onChangeName,
+                            showTranslation = page == 3,
+                            translatedValue = translatedName
                         )
                     }
                 }
+
             }
 
             //buttons
@@ -108,11 +142,23 @@ fun OnboardingScreen(
                         backgroundColor = MaterialTheme.colorScheme.tertiary,
                         size = 63.dp,
                         iconColor = MaterialTheme.colorScheme.onBackground,
-                        onClick = { /* Handle back button click */ }
+                        onClick = {
+                            if(currentPage == 1){
+                                onNavigateBack()
+                            }else{
+                                currentPage--
+                            }
+                        }
                     )
                     AppButton(
-                        label = "Continue",
-                        onClick = { /* Handle continue button click */ },
+                        label = if(currentPage > 2) "Finish" else "Continue",
+                        onClick = {
+                            if(currentPage > 2){
+                                onNavigateNext()
+                            }else{
+                                currentPage++
+                            }
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
