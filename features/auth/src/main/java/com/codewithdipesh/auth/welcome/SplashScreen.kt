@@ -25,8 +25,6 @@ import com.codewithdipesh.ui.theme.KanaSenseiTypography
 
 @Composable
 fun SplashScreen(
-    onOnboard : () -> Unit,
-    onLogin : () -> Unit,
     modifier: Modifier = Modifier
 ) {
 

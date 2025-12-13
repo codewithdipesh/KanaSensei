@@ -40,22 +40,15 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
     onNavigateBack : () -> Unit,
     onNavigateNext : () -> Unit,
-    selectedMotivatedSource : MotivationSource,
+    selectedMotivatedSource : MotivationSource?,
     onChangeMotivatedSource : (MotivationSource) -> Unit,
     name: String,
     onChangeName : (String) -> Unit,
-    translatedName : String?
+    translatedName : String?,
+    currentPage : Int,
+    onChangePage : (Int) -> Unit,
+    totalPage : Int
 ) {
-    var currentPage by rememberSaveable { mutableIntStateOf(1) }
-    val totalPage = 2
-
-    BackHandler {
-        if(currentPage == 1){
-            onNavigateBack()
-        }else{
-            currentPage--
-        }
-    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -146,7 +139,7 @@ fun OnboardingScreen(
                             if(currentPage == 1){
                                 onNavigateBack()
                             }else{
-                                currentPage--
+                                onChangePage(currentPage - 1)
                             }
                         }
                     )
@@ -156,9 +149,15 @@ fun OnboardingScreen(
                             if(currentPage > 2){
                                 onNavigateNext()
                             }else{
-                                currentPage++
+                                onChangePage(currentPage + 1)
                             }
                         },
+                        clickable = when(currentPage){
+                            1 -> selectedMotivatedSource != null
+                            2 -> name.isNotEmpty()
+                            else -> true
+                        }
+                        ,
                         modifier = Modifier.weight(1f)
                     )
                 }
