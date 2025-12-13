@@ -26,6 +26,7 @@ import com.codewithdipesh.ui.theme.KanaSenseiTypography
 fun AppButton(
     modifier: Modifier = Modifier,
     label: String,
+    clickable: Boolean = true,
     onClick: () -> Unit,
     backgroundColor : Color = MaterialTheme.colorScheme.onBackground,
     labelColor: Color = MaterialTheme.colorScheme.onPrimary,
@@ -34,8 +35,11 @@ fun AppButton(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(if(isRoundedCorner) 13.dp else 0.dp))
-            .background(backgroundColor)
-            .clickable { onClick() },
+            .background( backgroundColor.copy(
+                if(clickable) 1f
+                else 0.7f
+            ) )
+            .clickable { if(clickable) onClick() },
         contentAlignment = Alignment.Center
     ){
         Text(
