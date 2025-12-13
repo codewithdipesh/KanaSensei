@@ -31,7 +31,7 @@ class AuthViewModel(
     val errorListener = MutableSharedFlow<String?>()
 
 
-    fun checkAuth(){
+    init {
         viewModelScope.launch {
             val result = firebaseAuthRepository.currentUser()
             user = result
@@ -48,17 +48,12 @@ class AuthViewModel(
             it.copy(name = name)
         }
     }
-    fun nextPage() {
-        _onBoardingState.update {
-            it.copy(selectedPage = it.selectedPage + 1)
-        }
-    }
-    fun prevPage() {
-        _onBoardingState.update {
-            it.copy(selectedPage = it.selectedPage - 1)
-        }
-    }
+
     suspend fun fetchTranslation(){
+       if(_onBoardingState.value.name.isEmpty()){
+           errorListener.emit("Name is required")
+           return
+       }
        viewModelScope.launch {
            val translation = translateRepository.translate(_onBoardingState.value.name)
            if(translation != null ){
@@ -72,6 +67,10 @@ class AuthViewModel(
 
 
     suspend fun login(){
+        if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
+            errorListener.emit("Field is required")
+            return
+        }
         viewModelScope.launch {
             _authState.update { it.copy(status = AuthResult.Loading)}
 
@@ -87,6 +86,10 @@ class AuthViewModel(
         }
     }
     suspend fun register(){
+        if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
+            errorListener.emit("Field is required")
+            return
+        }
         viewModelScope.launch {
             _authState.update { it.copy(status = AuthResult.Loading)}
 
