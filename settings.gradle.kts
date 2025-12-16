@@ -20,10 +20,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KanaSensei"
-include(":core")
 include(":core:data")
 include(":core:ui")
-include(":features")
 include(":features:auth")
 include(":features:learning")
 include(":features:kanaTable")

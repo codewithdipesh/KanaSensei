@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,13 +45,14 @@ fun NameAndTranslation(
             text = "What should we call You?",
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
+                fontSize = 22.sp,
                 textAlign = TextAlign.Start
             )
         )
         Spacer(Modifier.height(50.dp))
         KanaTextField(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth(),
             value = value,
             onValueChange = onValueChange
         )

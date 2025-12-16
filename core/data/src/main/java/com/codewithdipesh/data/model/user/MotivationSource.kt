@@ -11,7 +11,7 @@ enum class MotivationSource{
             ANIME_MANGA -> "Anime / Manga"
             WORK_STUDY -> "Work / Study"
             CULTURE -> "Japanese Culture"
-            OTHERS -> ""
+            OTHERS -> "Others"
         }
     }
     companion object {

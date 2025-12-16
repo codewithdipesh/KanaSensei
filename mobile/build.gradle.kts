@@ -2,13 +2,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
     namespace = "com.codewithdipesh.kanasensei"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.codewithdipesh.kanasensei"
@@ -41,6 +41,11 @@ android {
     }
 }
 
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
+}
+
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -59,10 +64,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(project(":core"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
-    implementation(project(":features"))
     implementation(project(":features:auth"))
     implementation(project(":features:learning"))
     implementation(project(":features:kanaTable"))

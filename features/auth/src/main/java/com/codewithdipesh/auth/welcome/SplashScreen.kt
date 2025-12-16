@@ -1,12 +1,14 @@
 package com.codewithdipesh.auth.welcome
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -27,6 +29,7 @@ import com.codewithdipesh.ui.theme.KanaSenseiTypography
 fun SplashScreen(
     modifier: Modifier = Modifier
 ) {
+    val isDark = isSystemInDarkTheme()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -36,8 +39,15 @@ fun SplashScreen(
         Box(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
+            Image(
+                painter = if(isDark) painterResource(id = R.drawable.splash_icon_dark)
+                else painterResource(id = R.drawable.splash_icon_light),
+                contentDescription = "splash Screen",
+                modifier = Modifier.width(100.dp)
+            )
         }
     }
 }

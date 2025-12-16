@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -45,6 +47,7 @@ fun WelcomeScreen(
                 painter = painterResource(R.drawable.candle_icon),
                 contentDescription = "japanese_light",
                 modifier = Modifier
+                    .width(150.dp)
                     .align(Alignment.TopEnd)
                     .padding(end = 16.dp)
             )
@@ -63,6 +66,7 @@ fun WelcomeScreen(
                 contentDescription = "japanese_letter",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
+                    .width(200.dp)
                     .align(Alignment.Center)
             )
 
@@ -80,7 +84,7 @@ fun WelcomeScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .padding(horizontal = 32.dp, vertical = 90.dp)
+                .padding(horizontal = 32.dp, vertical = 80.dp)
         ){
            //title and subtitle
             Column(
@@ -93,8 +97,8 @@ fun WelcomeScreen(
                 Text(
                     text = "Learn kana the correct way",
                     style = KanaSenseiTypography.bodyLarge.copy(
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 26.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 30.sp,
                         textAlign = TextAlign.Start
                     )
                 )
@@ -102,7 +106,7 @@ fun WelcomeScreen(
                     text = "Bite-sized lessons, practice sessions, and stroke-tracking.",
                     style = KanaSenseiTypography.bodyLarge.copy(
                         fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                     )
                 )
             }

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.codewithdipesh.ui.theme.KanaSenseiTypography
 
 @Composable
@@ -29,7 +30,7 @@ fun AppButton(
     clickable: Boolean = true,
     onClick: () -> Unit,
     backgroundColor : Color = MaterialTheme.colorScheme.onBackground,
-    labelColor: Color = MaterialTheme.colorScheme.onPrimary,
+    labelColor: Color = MaterialTheme.colorScheme.onSecondary,
     isRoundedCorner : Boolean = true,
 ){
     Box(
@@ -46,6 +47,7 @@ fun AppButton(
             text = label,
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
                 color = labelColor
             ),
             modifier = Modifier.padding(16.dp)
