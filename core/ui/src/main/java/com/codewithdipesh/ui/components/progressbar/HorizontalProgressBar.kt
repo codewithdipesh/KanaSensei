@@ -38,7 +38,7 @@ fun HorizontalProgressBar(
     val animatedIndex by animateFloatAsState(
         targetValue = if (shouldAnimate) currentPosition.toFloat() else previousPosition.toFloat(),
         animationSpec = tween(
-            durationMillis = 350,
+            durationMillis = 300,
             easing = FastOutSlowInEasing
         )
     )
@@ -54,7 +54,7 @@ fun HorizontalProgressBar(
         horizontalArrangement = Arrangement.spacedBy(9.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
-        (1..size).forEach { index ->
+        (0..size - 1).forEach { index ->
 
             val fill = when {
                 index < previousPosition -> 1f            // already past → filled instantly

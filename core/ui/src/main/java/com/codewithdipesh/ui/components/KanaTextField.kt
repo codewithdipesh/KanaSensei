@@ -27,10 +27,11 @@ fun KanaTextField(
             value = value,
             onValueChange = onValueChange,
             textStyle = TextStyle(
-                fontSize = 34.sp,
+                fontSize = 28.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold
             ),
+            singleLine = true,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground.copy(0.3f)),
             modifier = modifier.fillMaxWidth()
         )

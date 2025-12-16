@@ -3,7 +3,7 @@ package com.codewithdipesh.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.auth.model.AuthUI
-import com.codewithdipesh.data.connection.translation.TranslateRepository
+import com.codewithdipesh.data.remote.base.TranslateRepository
 import com.codewithdipesh.data.model.auth.AuthResult
 import com.codewithdipesh.data.model.user.MotivationSource
 import com.codewithdipesh.data.remote.base.FirebaseAuthRepository
@@ -49,12 +49,13 @@ class AuthViewModel(
         }
     }
 
-    suspend fun fetchTranslation(){
-       if(_onBoardingState.value.name.isEmpty()){
-           errorListener.emit("Name is required")
-           return
-       }
+    fun fetchTranslation(){
        viewModelScope.launch {
+           if(_onBoardingState.value.name.isEmpty()){
+               errorListener.emit("Name is required")
+               return@launch
+           }
+
            val translation = translateRepository.translate(_onBoardingState.value.name)
            if(translation != null ){
                _onBoardingState.update { it.copy(japaneseName = translation) }
@@ -66,12 +67,13 @@ class AuthViewModel(
 
 
 
-    suspend fun login(){
-        if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
-            errorListener.emit("Field is required")
-            return
-        }
+    fun login(){
         viewModelScope.launch {
+            if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
+                errorListener.emit("Field is required")
+                return@launch
+            }
+
             _authState.update { it.copy(status = AuthResult.Loading)}
 
             val result = firebaseAuthRepository.login(
@@ -85,12 +87,14 @@ class AuthViewModel(
             }
         }
     }
-    suspend fun register(){
-        if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
-            errorListener.emit("Field is required")
-            return
-        }
+
+    fun register(){
         viewModelScope.launch {
+            if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
+                errorListener.emit("Field is required")
+                return@launch
+            }
+
             _authState.update { it.copy(status = AuthResult.Loading)}
 
             val result = firebaseAuthRepository.register(
@@ -106,7 +110,8 @@ class AuthViewModel(
             }
         }
     }
-    suspend fun googleLogin(idToken: String, name: String, motivationSource: String) {
+
+    fun googleLogin(idToken: String, name: String, motivationSource: String) {
         viewModelScope.launch {
             _authState.update { it.copy(status = AuthResult.Loading)}
 

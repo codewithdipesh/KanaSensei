@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "949675511183",
+    "project_id": "chatroom-a4aa5",
+    "storage_bucket": "chatroom-a4aa5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949675511183:android:c5cb39e848217bd78dcffa",
+        "android_client_info": {
+          "package_name": "com.codewithdipesh.kanasensei"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4n1XwBohp4hUjYVcZjKRvGxd-95wFR9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.codewithdipesh.ui.components.vibrator.correctHaptic
 import com.codewithdipesh.ui.components.vibrator.rememberVibrator
 import com.codewithdipesh.ui.components.vibrator.wrongHaptic
@@ -65,6 +66,7 @@ fun OptionButton(
             text = label,
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
                 color = textColor
             ),
             modifier = Modifier.padding(20.dp)

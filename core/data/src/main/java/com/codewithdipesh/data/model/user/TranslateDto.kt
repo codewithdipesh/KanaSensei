@@ -1,4 +1,4 @@
-package com.codewithdipesh.data.connection.translation
+package com.codewithdipesh.data.model.user
 
 import kotlinx.serialization.Serializable
 

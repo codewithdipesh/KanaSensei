@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -52,16 +54,6 @@ fun OnboardingScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    HorizontalProgressBar(
-                        size = totalPage,
-                        currentPosition = currentPage
-                    )
-                }
-            )
-        },
         containerColor = MaterialTheme.colorScheme.background
     ){ it ->
         Box(
@@ -73,8 +65,14 @@ fun OnboardingScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(horizontal = 24.dp)
-                    .padding(top = 30.dp)
+                    .padding(top = 24.dp)
             ){
+                HorizontalProgressBar(
+                    size = totalPage,
+                    currentPosition = currentPage
+                )
+                Spacer(Modifier.height(60.dp))
+
                 AnimatedContent(
                     targetState = currentPage,
                     transitionSpec = {
@@ -125,7 +123,8 @@ fun OnboardingScreen(
                     .padding(bottom = 35.dp)
             ){
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 24.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ){
@@ -133,7 +132,6 @@ fun OnboardingScreen(
                     KanaIconButton(
                         iconRes = R.drawable.navigate_back_icon,
                         backgroundColor = MaterialTheme.colorScheme.tertiary,
-                        size = 63.dp,
                         iconColor = MaterialTheme.colorScheme.onBackground,
                         onClick = {
                             if(currentPage == 1){
@@ -144,7 +142,7 @@ fun OnboardingScreen(
                         }
                     )
                     AppButton(
-                        label = if(currentPage > 2) "Finish" else "Continue",
+                        label = if(currentPage > 2) "\uD83C\uDF89 Finish" else "Continue",
                         onClick = {
                             if(currentPage > 2){
                                 onNavigateNext()

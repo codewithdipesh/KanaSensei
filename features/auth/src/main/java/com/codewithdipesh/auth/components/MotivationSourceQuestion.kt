@@ -29,7 +29,7 @@ fun MotivationSourceQuestion(
             text = "What motivates u most to learn Japanese?",
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
+                fontSize = 22.sp,
                 textAlign = TextAlign.Start
             )
         )

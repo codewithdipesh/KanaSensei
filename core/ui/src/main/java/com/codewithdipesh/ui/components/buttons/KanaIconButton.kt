@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 fun KanaIconButton(
     modifier: Modifier = Modifier,
     iconRes: Int,
-    size : Dp = 63.dp,
+    size : Dp = 56.dp,
     iconSize : Dp = size/3.5f,
     onClick: () -> Unit,
     iconColor : Color,
