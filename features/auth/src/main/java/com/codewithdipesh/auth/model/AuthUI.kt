@@ -7,9 +7,3 @@ data class AuthUI(
     val password : String = "",
     val status : AuthResult = AuthResult.NotStarted
 )
-
-
-enum class AuthOption {
-    Login,
-    Register
-}
