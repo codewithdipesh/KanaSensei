@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import org.koin.androidx.compose.get
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,7 +33,9 @@ import com.codewithdipesh.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.ui.theme.KanaSenseiTypography
 import kotlinx.coroutines.delay
 import androidx.compose.ui.text.TextStyle
+import com.codewithdipesh.data.textToSpeech.JapaneseTtsManager
 import com.codewithdipesh.ui.R
+import org.koin.compose.koinInject
 
 @Composable
 fun NameAndTranslation(
@@ -36,8 +43,17 @@ fun NameAndTranslation(
     value : String,
     onValueChange : (String) -> Unit,
     showTranslation : Boolean,
+    isTranslating : Boolean,
     translatedValue : String?=null,
+    ttsManager: JapaneseTtsManager = koinInject(),
 ) {
+
+    DisposableEffect(Unit) {
+        onDispose {
+            ttsManager.release()
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.Start
     ){
@@ -84,6 +100,13 @@ fun NameAndTranslation(
                         fontWeight = FontWeight.Bold
                     )
                 )
+                AnimatedVisibility(visible = isTranslating) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 1.5.dp
+                    )
+                }
                 AnimatedVisibility(visible = showSound) {
                     KanaIconButton(
                         iconRes = R.drawable.icon_sound_on,
@@ -91,7 +114,7 @@ fun NameAndTranslation(
                         iconColor = MaterialTheme.colorScheme.onPrimary,
                         backgroundColor = MaterialTheme.colorScheme.primary,
                         onClick = {
-                            // Play sound logic here
+                            ttsManager.speak(translatedValue)
                         }
                     )
                 }

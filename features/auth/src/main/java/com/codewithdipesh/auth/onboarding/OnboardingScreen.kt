@@ -42,6 +42,8 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
     onNavigateBack : () -> Unit,
     onNavigateNext : () -> Unit,
+    onTranslate : () -> Unit,
+    isTranslating : Boolean,
     selectedMotivatedSource : MotivationSource?,
     onChangeMotivatedSource : (MotivationSource) -> Unit,
     name: String,
@@ -109,7 +111,8 @@ fun OnboardingScreen(
                             value = name,
                             onValueChange = onChangeName,
                             showTranslation = page == 3,
-                            translatedValue = translatedName
+                            translatedValue = translatedName,
+                            isTranslating = isTranslating
                         )
                     }
                 }
@@ -146,13 +149,18 @@ fun OnboardingScreen(
                         onClick = {
                             if(currentPage > 2){
                                 onNavigateNext()
-                            }else{
+                            }
+                            else{
+                                if(currentPage == 2){
+                                    onTranslate()
+                                }
                                 onChangePage(currentPage + 1)
                             }
                         },
                         clickable = when(currentPage){
                             1 -> selectedMotivatedSource != null
                             2 -> name.isNotEmpty()
+                            3 -> !isTranslating
                             else -> true
                         }
                         ,

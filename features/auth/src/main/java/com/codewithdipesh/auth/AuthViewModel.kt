@@ -1,5 +1,6 @@
 package com.codewithdipesh.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.auth.model.AuthUI
@@ -51,17 +52,20 @@ class AuthViewModel(
 
     fun fetchTranslation(){
        viewModelScope.launch {
+           _onBoardingState.update { it.copy(isTranslating = true) }
            if(_onBoardingState.value.name.isEmpty()){
                errorListener.emit("Name is required")
                return@launch
            }
 
            val translation = translateRepository.translate(_onBoardingState.value.name)
+           Log.d("ViewModel", "fetchTranslation: $translation")
            if(translation != null ){
                _onBoardingState.update { it.copy(japaneseName = translation) }
            }else{
                errorListener.emit("Translation failed")
            }
+           _onBoardingState.update { it.copy(isTranslating = false) }
        }
     }
 
