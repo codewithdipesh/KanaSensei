@@ -19,10 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,12 +55,23 @@ fun OnboardingScreen(
     translatedName : String?,
     currentPage : Int,
     onChangePage : (Int) -> Unit,
-    totalPage : Int
+    totalPage : Int,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    actionColor = MaterialTheme.colorScheme.error
+                )
+            }
+        }
     ){ it ->
         Box(
             modifier = Modifier
@@ -67,7 +82,6 @@ fun OnboardingScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(horizontal = 24.dp)
-                    .padding(top = 24.dp)
             ){
                 HorizontalProgressBar(
                     size = totalPage,
