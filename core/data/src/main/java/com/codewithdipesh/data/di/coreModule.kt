@@ -1,5 +1,7 @@
 package com.codewithdipesh.data.di
 
+import com.codewithdipesh.data.connectivity.ConnectivityObserver
+import com.codewithdipesh.data.connectivity.NetworkConnectivityObserver
 import com.codewithdipesh.data.remote.base.FirebaseAuthRepository
 import com.codewithdipesh.data.remote.base.TranslateRepository
 import com.codewithdipesh.data.remote.implementation.FirebaseAuthRepositoryImpl
@@ -34,7 +36,8 @@ val coreModule = module {
     }
     single<FirebaseFirestore> { FirebaseFirestore.getInstance() }
 
-    single { TranslateRepository(get()) }
+    single { TranslateRepository() }
     single<FirebaseAuthRepository> { FirebaseAuthRepositoryImpl(get(),get()) }
     single { JapaneseTtsManager(androidContext()) }
+    single<ConnectivityObserver> { NetworkConnectivityObserver(androidContext()) }
 }
