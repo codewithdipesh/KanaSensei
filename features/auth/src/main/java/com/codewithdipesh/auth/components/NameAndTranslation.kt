@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import org.koin.androidx.compose.get
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -48,12 +46,6 @@ fun NameAndTranslation(
     ttsManager: JapaneseTtsManager = koinInject(),
 ) {
 
-    DisposableEffect(Unit) {
-        onDispose {
-            ttsManager.release()
-        }
-    }
-
     Column(
         horizontalAlignment = Alignment.Start
     ){
@@ -70,6 +62,7 @@ fun NameAndTranslation(
             modifier = modifier
                 .fillMaxWidth(),
             value = value,
+            readOnly = showTranslation,
             onValueChange = onValueChange
         )
         Spacer(Modifier.height(50.dp))

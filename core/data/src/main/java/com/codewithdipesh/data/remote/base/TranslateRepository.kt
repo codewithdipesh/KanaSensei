@@ -13,31 +13,38 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class TranslateRepository(
-    private val apiClient : HttpClient
-) {
+class TranslateRepository() {
 
-    suspend fun translate(text: String): String? = withContext(Dispatchers.IO) {
-        try {
-            Log.d("TranslateRepository", "Translating text: $text")
+    fun translate(input: String): String {
+        val text = input
+            .lowercase()
+            .replace(Regex("[^a-z]"), "")
 
-            val httpResponse = apiClient.post("https://libretranslate.com/translate") {
-                contentType(ContentType.Application.Json)
-                setBody(TranslateRequest(q = text))
+        val result = StringBuilder()
+        var i = 0
+
+        while (i < text.length) {
+            var matched = false
+
+            // Try longest match first (max 4 chars)
+            for (len in 4 downTo 1) {
+                if (i + len <= text.length) {
+                    val chunk = text.substring(i, i + len)
+                    val kana = PHONEMES[chunk]
+                    if (kana != null) {
+                        result.append(kana)
+                        i += len
+                        matched = true
+                        break
+                    }
+                }
             }
 
-            Log.d("TranslateRepository", "Response status: ${httpResponse.status}")
-            val responseBody = httpResponse.bodyAsText()
-            Log.d("TranslateRepository", "Response body: $responseBody")
-
-            val response = httpResponse.body<TranslateResponse>()
-            Log.d("TranslateRepository", "Parsed response: $response")
-
-            response.translatedText.ifBlank { null }
-        } catch (e: Exception) {
-            Log.e("TranslateRepository", "Translation error: ${e.message}", e)
-            e.printStackTrace()
-            null
+            if (!matched) {
+                i++ // skip unknown safely
+            }
         }
+        return result.toString()
     }
+
 }
