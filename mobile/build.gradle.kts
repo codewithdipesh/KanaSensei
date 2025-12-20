@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.auth)
 
+    implementation(libs.splash.screen)
+
     implementation(libs.androidx.credential.credentials)
     implementation(libs.google.identity)
 

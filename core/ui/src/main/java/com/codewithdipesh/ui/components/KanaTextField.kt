@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun KanaTextField(
     modifier: Modifier = Modifier,
+    readOnly : Boolean = false,
     value: String,
     onValueChange: (String) -> Unit
 ) {
@@ -32,6 +33,7 @@ fun KanaTextField(
                 fontWeight = FontWeight.Bold
             ),
             singleLine = true,
+            readOnly = readOnly,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground.copy(0.3f)),
             modifier = modifier.fillMaxWidth()
         )
