@@ -19,5 +19,5 @@ local.properties
 /core/build
 /features/build
 
-/mobile/src/
 mobile/google-services.json
+mobile/src/oauth-client-config.json
