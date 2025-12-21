@@ -26,23 +26,16 @@ fun SplashScreen(
 ) {
     val isDark = isSystemInDarkTheme()
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background
-    ) { it ->
-        //background
-        Box(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = if(isDark) painterResource(id = R.drawable.splash_icon_dark)
-                else painterResource(id = R.drawable.splash_icon_light),
-                contentDescription = "splash Screen",
-                modifier = Modifier.width(100.dp)
-            )
-        }
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = if(isDark) painterResource(id = R.drawable.splash_icon_dark)
+            else painterResource(id = R.drawable.splash_icon_light),
+            contentDescription = "splash Screen",
+            modifier = Modifier.width(100.dp)
+        )
     }
 }

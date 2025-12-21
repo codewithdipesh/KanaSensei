@@ -31,16 +31,11 @@ fun WelcomeScreen(
     onLogin : () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background
-    ){ it ->
-        //background
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ){
         Box(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             //light
             Image(
@@ -82,11 +77,10 @@ fun WelcomeScreen(
         //title & buttons
         Box(
             modifier = Modifier
-                .padding(it)
                 .fillMaxSize()
                 .padding(horizontal = 32.dp, vertical = 80.dp)
         ){
-           //title and subtitle
+            //title and subtitle
             Column(
                 modifier = Modifier
                     .align(Alignment.TopStart)
