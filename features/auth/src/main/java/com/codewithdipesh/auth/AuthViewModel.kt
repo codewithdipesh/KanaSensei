@@ -89,10 +89,23 @@ class AuthViewModel(
     }
 
 
+    fun setEmail(email: String) {
+        _authState.update {
+            it.copy(email = email)
+        }
+    }
 
+    fun setPassword(password: String) {
+        _authState.update {
+            it.copy(password = password)
+        }
+    }
     fun login(){
         viewModelScope.launch {
-            if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
+            val email = _authState.value.email.trim()
+            val password = _authState.value.password
+
+            if(email.isEmpty() || password.isEmpty()){
                 errorListener.emit("Field is required")
                 return@launch
             }
@@ -105,8 +118,8 @@ class AuthViewModel(
             _authState.update { it.copy(status = AuthResult.Loading)}
 
             val result = firebaseAuthRepository.login(
-                email = _authState.value.email,
-                password = _authState.value.password
+                email = email,
+                password = password
             )
             _authState.update { it.copy(status = result)}
 
@@ -118,7 +131,10 @@ class AuthViewModel(
 
     fun register(){
         viewModelScope.launch {
-            if(_authState.value.email.isEmpty() || _authState.value.password.isEmpty()){
+            val email = _authState.value.email.trim()
+            val password = _authState.value.password
+
+            if(email.isEmpty() || password.isEmpty()){
                 errorListener.emit("Field is required")
                 return@launch
             }
@@ -131,8 +147,8 @@ class AuthViewModel(
             _authState.update { it.copy(status = AuthResult.Loading)}
 
             val result = firebaseAuthRepository.register(
-                email = _authState.value.email,
-                password = _authState.value.password,
+                email = email,
+                password = password,
                 name = _onBoardingState.value.name,
                 motivationSource = _onBoardingState.value.motivationSource?.displayName() ?: "Unknown"
             )

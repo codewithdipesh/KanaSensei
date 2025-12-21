@@ -1,11 +1,15 @@
 package com.codewithdipesh.ui.components.buttons
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,6 +33,8 @@ fun AppButton(
     label: String,
     clickable: Boolean = true,
     onClick: () -> Unit,
+    iconRes: Int? = null,
+    iconSize: Dp = 26.dp,
     backgroundColor : Color = MaterialTheme.colorScheme.onBackground,
     labelColor: Color = MaterialTheme.colorScheme.onSecondary,
     isRoundedCorner : Boolean = true,
@@ -43,14 +49,29 @@ fun AppButton(
             .clickable { if(clickable) onClick() },
         contentAlignment = Alignment.Center
     ){
-        Text(
-            text = label,
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Medium,
-                fontSize = 18.sp,
-                color = labelColor
-            ),
-            modifier = Modifier.padding(16.dp)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .wrapContentHeight(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            if(iconRes != null){
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(iconSize)
+                )
+            }
+            Text(
+                text = label,
+                style = KanaSenseiTypography.bodyLarge.copy(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp,
+                    color = labelColor
+                ),
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }

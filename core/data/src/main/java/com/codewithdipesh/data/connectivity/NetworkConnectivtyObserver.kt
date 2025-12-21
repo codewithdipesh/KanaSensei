@@ -52,7 +52,6 @@ class NetworkConnectivityObserver(
                 .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
                 .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
                 .addTransportType(NetworkCapabilities.TRANSPORT_VPN)
-                .addTransportType(NetworkCapabilities.TRANSPORT_BLUETOOTH)
                 .build()
 
             connectivityManager.registerNetworkCallback(request, callback)

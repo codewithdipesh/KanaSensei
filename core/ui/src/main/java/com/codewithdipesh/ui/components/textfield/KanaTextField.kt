@@ -1,4 +1,4 @@
-package com.codewithdipesh.ui.components
+package com.codewithdipesh.ui.components.textfield
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

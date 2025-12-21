@@ -12,7 +12,12 @@
           "package_name": "com.codewithdipesh.kanasensei"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "949675511183-8jns1lad56em4q2djuu5517ctmrl14qe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB4n1XwBohp4hUjYVcZjKRvGxd-95wFR9o"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "949675511183-8jns1lad56em4q2djuu5517ctmrl14qe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
