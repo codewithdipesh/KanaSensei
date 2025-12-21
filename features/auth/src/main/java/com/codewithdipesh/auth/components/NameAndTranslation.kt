@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -21,12 +20,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codewithdipesh.ui.components.KanaTextField
+import com.codewithdipesh.ui.components.textfield.KanaTextField
 import com.codewithdipesh.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.ui.theme.KanaSenseiTypography
 import kotlinx.coroutines.delay
@@ -74,7 +72,7 @@ fun NameAndTranslation(
             LaunchedEffect(translatedValue) {
                 visibleChars = 0
                 translatedValue.indices.forEach { index ->
-                    delay(50L)
+                    delay(100L)
                     visibleChars = index + 1
                 }
                 showSound = true
