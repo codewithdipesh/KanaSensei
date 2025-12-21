@@ -200,7 +200,6 @@ fun NavGraphBuilder.authGraph(
                    onChangePage = { currentPage = it },
                    onTranslate = { viewModel.fetchTranslation() },
                    isTranslating = isTranslating,
-                   snackbarHostState = snackbarHostState
                )
            }
        }
