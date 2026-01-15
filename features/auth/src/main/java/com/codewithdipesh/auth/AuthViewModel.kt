@@ -25,7 +25,9 @@ class AuthViewModel(
     private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
-    var user : User? = null
+    private val _user = MutableStateFlow<User?>(null)
+    val user = _user.asStateFlow()
+
 
     private val _onBoardingState = MutableStateFlow(OnboardingUI())
     val onBoardingState = _onBoardingState.asStateFlow()
@@ -45,8 +47,7 @@ class AuthViewModel(
 
     init {
         viewModelScope.launch {
-            val result = firebaseAuthRepository.currentUser()
-            user = result
+            _user.value = firebaseAuthRepository.currentUser()
         }
     }
 

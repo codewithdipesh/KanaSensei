@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -110,16 +111,16 @@ fun NavApp(
 fun NavGraphBuilder.authGraph(
    navController: NavController
 ) {
-   navigation(
+    navigation(
        route = Screen.AuthGraph.route,
        startDestination = Screen.AuthGraph.SplashScreen.route
    ) {
        composable(Screen.AuthGraph.SplashScreen.route) {
            val viewModel : AuthViewModel = koinViewModel()
-           val user = viewModel.user
+
+           val user = viewModel.user.collectAsStateWithLifecycle()
 
            LaunchedEffect(Unit) {
-               delay(2000)
                if(user != null) {
                    navController.navigate(Screen.HomeGraph.Home.route) {
                        popUpTo(Screen.AuthGraph.route) { inclusive = true }
@@ -176,7 +177,7 @@ fun NavGraphBuilder.authGraph(
                                                errorMessage.contains("failed")) "Retry" else null,
                                withDismissAction = true
                            )
-                           if(result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
+                           if(result == SnackbarResult.ActionPerformed) {
                                if(currentPage == 2 || currentPage == 3) {
                                    viewModel.fetchTranslation()
                                }
@@ -205,7 +206,10 @@ fun NavGraphBuilder.authGraph(
        }
 
        composable(Screen.AuthGraph.SignUpScreen.route) {
-           val viewModel : AuthViewModel = koinViewModel()
+           val parentEntry = remember {
+               navController.getBackStackEntry(Screen.AuthGraph.route)
+           }
+           val viewModel: AuthViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
            val context = LocalContext.current
            val scope = rememberCoroutineScope()
            val snackbarHostState = remember { SnackbarHostState() }
@@ -310,7 +314,10 @@ fun NavGraphBuilder.authGraph(
        }
 
        composable(Screen.AuthGraph.LoginScreen.route) {
-           val viewModel : AuthViewModel = koinViewModel()
+           val parentEntry = remember {
+               navController.getBackStackEntry(Screen.AuthGraph.route)
+           }
+           val viewModel: AuthViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
            val context = LocalContext.current
            val scope = rememberCoroutineScope()
            val snackbarHostState = remember { SnackbarHostState() }
@@ -408,7 +415,14 @@ fun NavGraphBuilder.authGraph(
                        authStatus = status,
                        onLoginClick = { viewModel.login() },
                        onGoogleSignIn = { handleGoogleSignIn() },
-                       onSignUpClick = { navController.navigate(Screen.AuthGraph.SignUpScreen.route) }
+                       onSignUpClick = {
+                           if(motivationSource != null && name.isNotEmpty()){
+                               navController.navigate(Screen.AuthGraph.SignUpScreen.route)
+                           }
+                           else{
+                               navController.navigate(Screen.AuthGraph.OnboardingScreen.route)
+                           }
+                       }
                    )
                }
            }
