@@ -1,18 +1,5 @@
 package com.codewithdipesh.data.remote.base
 
-import android.util.Log
-import com.codewithdipesh.data.model.user.TranslateRequest
-import com.codewithdipesh.data.model.user.TranslateResponse
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-
 class TranslateRepository() {
 
     fun translate(input: String): String {
