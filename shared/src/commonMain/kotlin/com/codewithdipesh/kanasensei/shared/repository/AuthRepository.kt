@@ -1,7 +1,8 @@
-package com.codewithdipesh.data.remote.base
+package com.codewithdipesh.kanasensei.shared.repository
 
-import com.codewithdipesh.data.model.auth.AuthResult
-import com.codewithdipesh.data.model.user.User
+import com.codewithdipesh.kanasensei.shared.model.auth.AuthResult
+import com.codewithdipesh.kanasensei.shared.model.user.User
+
 
 interface FirebaseAuthRepository {
 
