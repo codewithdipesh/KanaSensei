@@ -21,3 +21,4 @@ local.properties
 
 mobile/google-services.json
 mobile/src/oauth-client-config.json
+/.kotlin/metadata
