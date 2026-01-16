@@ -1,7 +1,8 @@
 package com.codewithdipesh.data.model.content
 
-import java.time.LocalDateTime
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Character(
     val id: String = "",
     val character: String = "",
@@ -11,6 +12,6 @@ data class Character(
     val audioUrl: String = "",
     val example_word: String = "",
     val notes: String = "",
-    val createdAt: LocalDateTime? = null,
-    val updatedAt: LocalDateTime? = null
+    val createdAt: Long? = null,  //fix it with db
+    val updatedAt: Long? = null
 )
