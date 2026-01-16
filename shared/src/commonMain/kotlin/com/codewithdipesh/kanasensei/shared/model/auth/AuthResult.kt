@@ -1,6 +1,6 @@
-package com.codewithdipesh.data.model.auth
+package com.codewithdipesh.kanasensei.shared.model.auth
 
-import com.codewithdipesh.data.model.user.User
+import com.codewithdipesh.kanasensei.shared.model.user.User
 
 sealed class AuthResult {
     data class Success(val user: User) : AuthResult()

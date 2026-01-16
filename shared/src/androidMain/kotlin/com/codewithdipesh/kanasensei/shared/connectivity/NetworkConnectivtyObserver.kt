@@ -1,4 +1,4 @@
-package com.codewithdipesh.data.connectivity
+package com.codewithdipesh.kanasensei.shared.connectivity
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -1,4 +1,4 @@
-package com.codewithdipesh.data.model.content
+package com.codewithdipesh.kanasensei.shared.model.content
 
 import kotlinx.serialization.Serializable
 

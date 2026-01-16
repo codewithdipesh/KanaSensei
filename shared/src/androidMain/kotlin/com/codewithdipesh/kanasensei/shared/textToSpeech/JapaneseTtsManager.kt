@@ -1,4 +1,4 @@
-package com.codewithdipesh.data.textToSpeech
+package com.codewithdipesh.kanasensei.shared.textToSpeech
 
 import android.content.Context
 import android.speech.tts.TextToSpeech

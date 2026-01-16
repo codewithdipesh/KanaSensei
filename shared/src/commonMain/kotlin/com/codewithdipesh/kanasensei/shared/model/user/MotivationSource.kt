@@ -1,4 +1,4 @@
-package com.codewithdipesh.data.model.user
+package com.codewithdipesh.kanasensei.shared.model.user
 
 enum class MotivationSource{
     ANIME_MANGA,

@@ -1,4 +1,4 @@
-package com.codewithdipesh.data.connectivity
+package com.codewithdipesh.kanasensei.shared.connectivity
 
 import kotlinx.coroutines.flow.Flow
 

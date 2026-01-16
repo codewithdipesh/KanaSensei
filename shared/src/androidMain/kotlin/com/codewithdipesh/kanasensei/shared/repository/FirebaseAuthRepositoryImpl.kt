@@ -1,15 +1,13 @@
-package com.codewithdipesh.data.remote.implementation
+package com.codewithdipesh.kanasensei.shared.repository
 
-import com.codewithdipesh.data.model.auth.AuthResult
-import com.codewithdipesh.data.model.user.User
-import com.codewithdipesh.data.remote.base.FirebaseAuthRepository
+import com.codewithdipesh.kanasensei.shared.model.auth.AuthResult
+import com.codewithdipesh.kanasensei.shared.model.user.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
-class FirebaseAuthRepositoryImpl @Inject constructor(
+class FirebaseAuthRepositoryImpl(
     private val auth: FirebaseAuth,
     private val db: FirebaseFirestore
 ) : FirebaseAuthRepository {
@@ -53,7 +51,6 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
         name: String,
         motivationSource: String
     ): AuthResult {
-
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
             val firebaseUser = auth.currentUser ?: throw Exception("User not found")
@@ -75,7 +72,6 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             AuthResult.Error(e.message ?: "Registration failed")
         }
-
     }
 
     override suspend fun googleLogin(
@@ -133,13 +129,13 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
     }
 
     override fun logout() = auth.signOut()
+
     override fun isUserLoggedIn(): Boolean {
         return auth.currentUser != null
     }
 
     override suspend fun currentUser(): User? {
-        val firebaseUser = auth.currentUser
-            ?: return null
+        val firebaseUser = auth.currentUser ?: return null
 
         val userDoc = db.collection("users")
             .document(firebaseUser.uid)

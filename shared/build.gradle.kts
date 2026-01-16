@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -81,6 +82,7 @@ kotlin {
                 implementation(libs.material)
 
                 // Firebase
+                implementation(project.dependencies.platform(libs.firebase.bom))
                 implementation(libs.firebase.firestore)
                 implementation(libs.firebase.auth)
 
