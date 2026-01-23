@@ -43,9 +43,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":core:ui"))
-    implementation(project(":core:data"))
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
 
