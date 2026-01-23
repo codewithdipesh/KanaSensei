@@ -79,8 +79,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(project(":core:data"))
-    implementation(project(":core:ui"))
     implementation(project(":features:auth"))
     implementation(project(":features:learning"))
     implementation(project(":features:kanaTable"))

@@ -21,7 +21,7 @@ serialization = "1.7.3"
 coil = "2.6.0"
 accompanist = "0.36.0"
 navigation = "2.9.6"
-compose = "1.7.0"
+compose = "1.6.10"
 material3 = "1.4.0"
 googleServices = "4.4.2"
 googleCredential = "1.6.0-beta03"
@@ -106,10 +106,11 @@ androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Compose Multiplatform
-jetbrains-compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version = "1.6.0" }
-jetbrains-compose-foundation = { group = "org.jetbrains.compose.foundation", name = "foundation", version = "1.6.0" }
-jetbrains-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version = "1.6.0" }
-jetbrains-compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version = "1.6.0" }
+jetbrains-compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "compose" }
+jetbrains-compose-foundation = { group = "org.jetbrains.compose.foundation", name = "foundation", version.ref = "compose" }
+jetbrains-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "compose" }
+jetbrains-compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "compose" }
+jetbrains-compose-components = {group="org.jetbrains.compose.components",name="components-resources",version.ref = "compose"}
 
 
 [bundles]
@@ -159,7 +160,6 @@ firebase = ["firebase-firestore", "firebase-auth"]
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -168,4 +168,6 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 

@@ -16,15 +16,17 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
 rootProject.name = "KanaSensei"
-include(":core:data")
-include(":core:ui")
 include(":features:auth")
 include(":features:learning")
 include(":features:kanaTable")
 include(":features:settings")
 include(":mobile")
-include(":shared")
+include(":sharedfeature")
+include(":sharedcore:core")
+include(":sharedcore:ui")
