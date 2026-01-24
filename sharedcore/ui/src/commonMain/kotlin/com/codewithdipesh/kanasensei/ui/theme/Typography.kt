@@ -1,21 +1,24 @@
 package com.codewithdipesh.kanasensei.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import kanasensei.sharedcore.ui.generated.resources.Res
+import com.codewithdipesh.kanasensei.ui.resources.Res
+import com.codewithdipesh.kanasensei.ui.resources.font.sf_pro_display_regular
+import org.jetbrains.compose.resources.Font
 
-
-val SFProDisplay = FontFamily(
-    listOf(
-        Font(Res.font.sf_pro_display_regular, FontWeight.Normal),
-        Font(Res.font.sf_pro_display_medium, FontWeight.Medium),
-        Font(Res.font.sf_pro_display_bold, FontWeight.Bold),
-    )
+@Composable
+fun SFProDisplayFontFamily() = FontFamily(
+    Font(Res.font.sf_pro_display_regular, FontWeight.Normal),
+    Font(Res.font.sf_pro_display_medium, FontWeight.Medium),
+    Font(Res.font.sf_pro_display_bold, FontWeight.Bold)
 )
+
+// Fallback for non-composable contexts
+val SFProDisplay = FontFamily.Default
 
 
 
