@@ -21,3 +21,6 @@ local.properties
 
 mobile/google-services.json
 mobile/src/oauth-client-config.json
+/.kotlin/metadata
+/sharedcore/core/build
+/sharedcore/ui/build
