@@ -22,11 +22,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KanaSensei"
-include(":features:auth")
-include(":features:learning")
-include(":features:kanaTable")
-include(":features:settings")
 include(":mobile")
-include(":sharedfeature")
 include(":sharedcore:core")
 include(":sharedcore:ui")
+include(":sharedfeature:auth")

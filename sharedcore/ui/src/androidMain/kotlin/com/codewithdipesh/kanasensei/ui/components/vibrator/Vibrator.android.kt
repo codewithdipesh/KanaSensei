@@ -23,9 +23,11 @@ fun Context.getVibrator(): Vibrator? {
 }
 
 @Composable
-fun rememberVibrator(): Vibrator? {
+actual fun rememberHapticManager(): HapticManager {
     val context = LocalContext.current
-    return remember { context.getVibrator() }
+    return remember {
+        HapticManager(context.getVibrator())
+    }
 }
 
 

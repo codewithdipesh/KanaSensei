@@ -3,22 +3,17 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.compose)
-}
-
-compose {
-    resources {
-        publicResClass = true
-        packageOfResClass = "com.codewithdipesh.kanasensei.ui.resources"
-        generateResClass = always
-    }
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
 
+    // Target declarations - add or remove as needed below. These define
+    // which platforms this KMP module supports.
+    // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "com.codewithdipesh.kanasensei.ui"
+        namespace = "com.codewithdipesh.kanasensei.sharedfeature.auth"
         compileSdk = 36
         minSdk = 24
 
@@ -32,7 +27,7 @@ kotlin {
         }
     }
 
-    val xcfName = "sharedKit"
+    val xcfName = "sharedfeatureKit"
 
     iosX64 {
         binaries.framework {
@@ -56,30 +51,38 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
-                // Use 'api' to export these to modules that depend on sharedcore:ui
-                api(libs.jetbrains.compose.ui)
-                api(libs.jetbrains.compose.foundation)
-                api(libs.jetbrains.compose.material3)
-                api(libs.jetbrains.compose.runtime)
-                api(libs.jetbrains.compose.components)
+                api(project(":sharedcore:core"))
+                api(project(":sharedcore:ui"))
 
+                implementation(libs.jetbrains.compose.ui)
+                implementation(libs.jetbrains.compose.foundation)
+                implementation(libs.jetbrains.compose.material3)
+                implementation(libs.jetbrains.compose.runtime)
+                implementation(libs.jetbrains.compose.components)
+                api(libs.androidx.lifecycle.viewmodel)
+
+                implementation(libs.bundles.kmp.common)
+                implementation(libs.coroutines.core)
+                implementation(libs.serialization.json)
+                implementation(libs.bundles.kmp.ktor)
+                implementation(libs.koin.core)
+                implementation(libs.napier)
             }
         }
 
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
-                implementation(libs.coroutines.test)
             }
         }
 
         androidMain {
             dependencies {
-                // Android KTX & Appcompat
+                implementation(libs.androidx.lifecycle.runtime.ktx)
                 implementation(libs.androidx.core.ktx)
-                implementation(libs.androidx.appcompat)
-                implementation(libs.material)
+                implementation(libs.coroutines.android)
+                implementation(libs.koin.android)
+                implementation(libs.androidx.activity.compose)
             }
         }
 
@@ -93,11 +96,7 @@ kotlin {
 
         iosMain {
             dependencies {
-                // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
-                // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
-                // on common by default and will correctly pull the iOS artifacts of any
-                // KMP dependencies declared in commonMain.
+
             }
         }
     }

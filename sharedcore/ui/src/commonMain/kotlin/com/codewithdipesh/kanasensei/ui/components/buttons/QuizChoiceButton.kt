@@ -19,9 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.codewithdipesh.kanasensei.ui.components.vibrator.correctHaptic
-import com.codewithdipesh.kanasensei.ui.components.vibrator.rememberVibrator
-import com.codewithdipesh.kanasensei.ui.components.vibrator.wrongHaptic
+import com.codewithdipesh.kanasensei.ui.components.vibrator.rememberHapticManager
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 
 @Composable
@@ -34,7 +32,7 @@ fun QuizChoiceButton(
     isVibrate : Boolean = true,
     isRoundedCorner : Boolean = true,
 ){
-    val vibrator = rememberVibrator()
+    val vibrator = rememberHapticManager()
     var clicked by rememberSaveable { mutableStateOf(false) }
 
     val backgroundColor: Color = when {

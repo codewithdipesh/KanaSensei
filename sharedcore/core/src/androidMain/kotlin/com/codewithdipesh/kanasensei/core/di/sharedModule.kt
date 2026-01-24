@@ -5,7 +5,7 @@ import com.codewithdipesh.kanasensei.core.connectivity.NetworkConnectivityObserv
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
 import com.codewithdipesh.kanasensei.core.repository.TranslateRepository
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepositoryImpl
-import com.codewithdipesh.kanasensei.core.textToSpeech.JapaneseTtsManager
+import com.codewithdipesh.kanasensei.core.testToSpeech.JapaneseTtsManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.ktor.client.HttpClient
