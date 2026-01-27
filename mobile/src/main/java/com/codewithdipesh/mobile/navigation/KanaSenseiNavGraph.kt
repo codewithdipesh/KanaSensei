@@ -24,9 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -34,17 +31,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.codewithdipesh.auth.AuthViewModel
-import com.codewithdipesh.auth.access.LoginScreen
-import com.codewithdipesh.auth.access.SignUpScreen
-import com.codewithdipesh.auth.onboarding.OnboardingScreen
-import com.codewithdipesh.auth.welcome.SplashScreen
-import com.codewithdipesh.auth.welcome.WelcomeScreen
-import com.codewithdipesh.data.connectivity.ConnectivityObserver
-import com.codewithdipesh.data.model.auth.AuthResult
-import com.codewithdipesh.kanasensei.BuildConfig
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
+import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
+import com.codewithdipesh.kanasensei.sharedfeature.auth.AuthViewModel
+import com.codewithdipesh.kanasensei.sharedfeature.auth.access.LoginScreen
+import com.codewithdipesh.kanasensei.sharedfeature.auth.access.SignUpScreen
+import com.codewithdipesh.kanasensei.sharedfeature.auth.onboarding.OnboardingScreen
+import com.codewithdipesh.kanasensei.sharedfeature.auth.welcome.SplashScreen
+import com.codewithdipesh.kanasensei.sharedfeature.auth.welcome.WelcomeScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -115,18 +110,25 @@ fun NavGraphBuilder.authGraph(
        startDestination = Screen.AuthGraph.SplashScreen.route
    ) {
        composable(Screen.AuthGraph.SplashScreen.route) {
-           val viewModel : AuthViewModel = koinViewModel()
+           val parentEntry = remember {
+               navController.getBackStackEntry(Screen.AuthGraph.route)
+           }
+           val viewModel: AuthViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
 
-           val user = viewModel.user.collectAsStateWithLifecycle()
+           val user by viewModel.user.collectAsStateWithLifecycle()
+           val isAuthChecked by viewModel.isAuthChecked.collectAsStateWithLifecycle()
 
            LaunchedEffect(Unit) {
-               if(user != null) {
-                   navController.navigate(Screen.HomeGraph.Home.route) {
-                       popUpTo(Screen.AuthGraph.route) { inclusive = true }
-                   }
-               }else{
-                   navController.navigate(Screen.AuthGraph.WelcomeScreen.route) {
-                       popUpTo(Screen.AuthGraph.route) { inclusive = true }
+               delay(2500)
+               if (isAuthChecked) {
+                   if (user != null) {
+                       navController.navigate(Screen.HomeGraph.Home.route) {
+                           popUpTo(Screen.AuthGraph.route) { inclusive = true }
+                       }
+                   } else {
+                       navController.navigate(Screen.AuthGraph.WelcomeScreen.route) {
+                           popUpTo(Screen.AuthGraph.route) { inclusive = true }
+                       }
                    }
                }
            }
@@ -144,7 +146,10 @@ fun NavGraphBuilder.authGraph(
 
        composable(Screen.AuthGraph.OnboardingScreen.route) {
            val scope = rememberCoroutineScope()
-           val viewModel : AuthViewModel = koinViewModel()
+           val parentEntry = remember {
+               navController.getBackStackEntry(Screen.AuthGraph.route)
+           }
+           val viewModel: AuthViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
 
            val onBoardState by viewModel.onBoardingState.collectAsStateWithLifecycle()
            val selectedMotivatedSource = onBoardState.motivationSource
@@ -194,6 +199,7 @@ fun NavGraphBuilder.authGraph(
                    onChangeMotivatedSource = { viewModel.setMotivationSource(it) },
                    name = name,
                    onChangeName = { viewModel.setUserName(it) },
+                   onPlayJapaneseName = { viewModel.speakJapaneseName(it) },
                    translatedName = japaneseName,
                    currentPage = currentPage,
                    totalPage = totalPage,
@@ -210,18 +216,14 @@ fun NavGraphBuilder.authGraph(
            }
            val viewModel: AuthViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
            val context = LocalContext.current
-           val scope = rememberCoroutineScope()
            val snackbarHostState = remember { SnackbarHostState() }
            val keyboardController = LocalSoftwareKeyboardController.current
            val focusManager = LocalFocusManager.current
 
            val authState by viewModel.authState.collectAsStateWithLifecycle()
-           val onBoardState by viewModel.onBoardingState.collectAsStateWithLifecycle()
            val email = authState.email
            val password = authState.password
            val status = authState.status
-           val name = onBoardState.name
-           val motivationSource = onBoardState.motivationSource
 
            // Navigate to Home on successful auth
            LaunchedEffect(status) {
@@ -242,46 +244,6 @@ fun NavGraphBuilder.authGraph(
                            message = errorMessage,
                            withDismissAction = true
                        )
-                   }
-               }
-           }
-
-           fun handleGoogleSignIn() {
-               scope.launch {
-                   try {
-                       val credentialManager = CredentialManager.create(context)
-
-                       val googleIdOption = GetGoogleIdOption.Builder()
-                           .setFilterByAuthorizedAccounts(false)
-                           .setServerClientId(BuildConfig.WEB_CLIENT_ID)
-                           .build()
-
-                       val request = GetCredentialRequest.Builder()
-                           .addCredentialOption(googleIdOption)
-                           .build()
-
-                       val result = credentialManager.getCredential(
-                           request = request,
-                           context = context
-                       )
-
-                       val credential = result.credential
-                       if (credential is GoogleIdTokenCredential) {
-                           val googleIdToken = credential.idToken
-                           viewModel.googleLogin(
-                               idToken = googleIdToken,
-                               name = name.ifEmpty { credential.displayName ?: "User" },
-                               motivationSource = motivationSource?.displayName() ?: "Unknown"
-                           )
-                       }
-                   } catch (e: GetCredentialException) {
-                       keyboardController?.hide()
-                       focusManager.clearFocus()
-                       snackbarHostState.showSnackbar("Google Sign-In failed: ${e.message}")
-                   } catch (e: Exception) {
-                       keyboardController?.hide()
-                       focusManager.clearFocus()
-                       snackbarHostState.showSnackbar("Error: ${e.message}")
                    }
                }
            }
@@ -305,7 +267,7 @@ fun NavGraphBuilder.authGraph(
                        onPasswordchanged = { viewModel.setPassword(it) },
                        authStatus = status,
                        onSignUpClick = { viewModel.register() },
-                       onGoogleSignIn = { handleGoogleSignIn() },
+                       onGoogleSignIn = { viewModel.startGoogleSignIn(context) },
                        onLoginClick = { navController.navigate(Screen.AuthGraph.LoginScreen.route) }
                    )
                }
@@ -318,7 +280,6 @@ fun NavGraphBuilder.authGraph(
            }
            val viewModel: AuthViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
            val context = LocalContext.current
-           val scope = rememberCoroutineScope()
            val snackbarHostState = remember { SnackbarHostState() }
            val keyboardController = LocalSoftwareKeyboardController.current
            val focusManager = LocalFocusManager.current
@@ -354,46 +315,6 @@ fun NavGraphBuilder.authGraph(
                }
            }
 
-           fun handleGoogleSignIn() {
-               scope.launch {
-                   try {
-                       val credentialManager = CredentialManager.create(context)
-
-                       val googleIdOption = GetGoogleIdOption.Builder()
-                           .setFilterByAuthorizedAccounts(false)
-                           .setServerClientId(BuildConfig.WEB_CLIENT_ID)
-                           .build()
-
-                       val request = GetCredentialRequest.Builder()
-                           .addCredentialOption(googleIdOption)
-                           .build()
-
-                       val result = credentialManager.getCredential(
-                           request = request,
-                           context = context
-                       )
-
-                       val credential = result.credential
-                       if (credential is GoogleIdTokenCredential) {
-                           val googleIdToken = credential.idToken
-                           viewModel.googleLogin(
-                               idToken = googleIdToken,
-                               name = name.ifEmpty { credential.displayName ?: "User" },
-                               motivationSource = motivationSource?.displayName() ?: "Unknown"
-                           )
-                       }
-                   } catch (e: GetCredentialException) {
-                       keyboardController?.hide()
-                       focusManager.clearFocus()
-                       snackbarHostState.showSnackbar("Google Sign-In failed: ${e.message}")
-                   } catch (e: Exception) {
-                       keyboardController?.hide()
-                       focusManager.clearFocus()
-                       snackbarHostState.showSnackbar("Error: ${e.message}")
-                   }
-               }
-           }
-
            Scaffold(
                snackbarHost = {
                    SnackbarHost(snackbarHostState) { data ->
@@ -413,7 +334,7 @@ fun NavGraphBuilder.authGraph(
                        onPasswordchanged = { viewModel.setPassword(it) },
                        authStatus = status,
                        onLoginClick = { viewModel.login() },
-                       onGoogleSignIn = { handleGoogleSignIn() },
+                       onGoogleSignIn = { viewModel.startGoogleSignIn(context) },
                        onSignUpClick = {
                            if(motivationSource != null && name.isNotEmpty()){
                                navController.navigate(Screen.AuthGraph.SignUpScreen.route)

@@ -15,6 +15,31 @@ compose {
     }
 }
 
+// Workaround for com.android.kotlin.multiplatform.library plugin not setting up
+// the output directory for Compose Multiplatform resource copying task
+val composeAssetsDir = layout.buildDirectory.dir("generated/compose/resourceGenerator/androidAssets/androidMain")
+
+afterEvaluate {
+    tasks.matching { it.name == "copyAndroidMainComposeResourcesToAndroidAssets" }.configureEach {
+        // Use reflection to set the outputDirectory property since the class is internal
+        val outputDirProperty = this::class.java.methods.find { it.name == "getOutputDirectory" }
+        if (outputDirProperty != null) {
+            val directoryProperty = outputDirProperty.invoke(this) as org.gradle.api.file.DirectoryProperty
+            directoryProperty.set(composeAssetsDir)
+        }
+    }
+
+    // Make sure Android compile tasks depend on compose resource generation
+    tasks.matching { it.name.contains("merge") && it.name.contains("Assets") }.configureEach {
+        dependsOn(tasks.matching { it.name == "copyAndroidMainComposeResourcesToAndroidAssets" })
+    }
+
+    // Register the generated assets directory with Android
+    extensions.findByType(com.android.build.api.dsl.LibraryExtension::class.java)?.let { android ->
+        android.sourceSets.getByName("main").assets.srcDir(composeAssetsDir)
+    }
+}
+
 kotlin {
 
     androidLibrary {

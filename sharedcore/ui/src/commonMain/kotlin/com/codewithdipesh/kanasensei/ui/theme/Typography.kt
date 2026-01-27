@@ -7,7 +7,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import com.codewithdipesh.kanasensei.ui.resources.Res
-import com.codewithdipesh.kanasensei.ui.resources.font.sf_pro_display_regular
+import com.codewithdipesh.kanasensei.ui.resources.sf_pro_display_bold
+import com.codewithdipesh.kanasensei.ui.resources.sf_pro_display_medium
+import com.codewithdipesh.kanasensei.ui.resources.sf_pro_display_regular
 import org.jetbrains.compose.resources.Font
 
 @Composable

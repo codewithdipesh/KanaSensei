@@ -5,11 +5,6 @@ import android.speech.tts.TextToSpeech
 import java.util.Locale
 
 
-actual fun rememberJapaneseTtsManager(): JapaneseTtsManager {
-    val context = LocalContext.current
-    return JapaneseTtsManager(context)
-}
-
 actual class JapaneseTtsManager(
     private val context: Context
 ) {
