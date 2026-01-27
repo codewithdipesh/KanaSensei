@@ -27,6 +27,8 @@ import com.codewithdipesh.kanasensei.core.model.user.MotivationSource
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.kanasensei.ui.components.progressbar.HorizontalProgressBar
+import com.codewithdipesh.kanasensei.ui.resources.Res
+import com.codewithdipesh.kanasensei.ui.resources.navigate_back_icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +42,7 @@ fun OnboardingScreen(
     onChangeMotivatedSource : (MotivationSource) -> Unit,
     name: String,
     onChangeName : (String) -> Unit,
+    onPlayJapaneseName : (String) -> Unit,
     translatedName : String?,
     currentPage : Int,
     onChangePage : (Int) -> Unit,
@@ -98,7 +101,8 @@ fun OnboardingScreen(
                         onValueChange = onChangeName,
                         showTranslation = page == 3,
                         translatedValue = translatedName,
-                        isTranslating = isTranslating
+                        isTranslating = isTranslating,
+                        onPlayJapaneseName = onPlayJapaneseName
                     )
                 }
             }
@@ -119,7 +123,7 @@ fun OnboardingScreen(
             ){
                 //back button
                 KanaIconButton(
-                    iconRes = R.drawable.navigate_back_icon,
+                    iconRes = Res.drawable.navigate_back_icon,
                     backgroundColor = MaterialTheme.colorScheme.tertiary,
                     iconColor = MaterialTheme.colorScheme.onBackground,
                     onClick = {

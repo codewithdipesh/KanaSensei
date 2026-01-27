@@ -3,14 +3,18 @@ package com.codewithdipesh.kanasensei.sharedfeature.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codewithdipesh.kanasensei.core.auth.GoogleAuthHelper
+import com.codewithdipesh.kanasensei.core.auth.GoogleAuthResult
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.core.model.user.MotivationSource
 import com.codewithdipesh.kanasensei.core.model.user.User
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
 import com.codewithdipesh.kanasensei.core.repository.TranslateRepository
+import com.codewithdipesh.kanasensei.core.testToSpeech.JapaneseTtsManager
 import com.codewithdipesh.kanasensei.sharedfeature.auth.model.AuthUI
 import com.codewithdipesh.kanasensei.sharedfeature.auth.model.OnboardingUI
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,12 +26,16 @@ import kotlinx.coroutines.launch
 class AuthViewModel(
     private val firebaseAuthRepository: FirebaseAuthRepository,
     private val translateRepository: TranslateRepository,
-    private val connectivityObserver: ConnectivityObserver
+    private val connectivityObserver: ConnectivityObserver,
+    private val ttsManager: JapaneseTtsManager,
+    private val googleAuthHelper: GoogleAuthHelper
 ) : ViewModel() {
 
     private val _user = MutableStateFlow<User?>(null)
     val user = _user.asStateFlow()
 
+    private val _isAuthChecked = MutableStateFlow(false)
+    val isAuthChecked = _isAuthChecked.asStateFlow()
 
     private val _onBoardingState = MutableStateFlow(OnboardingUI())
     val onBoardingState = _onBoardingState.asStateFlow()
@@ -48,6 +56,8 @@ class AuthViewModel(
     init {
         viewModelScope.launch {
             _user.value = firebaseAuthRepository.currentUser()
+            Napier.w(_user.value.toString(), tag = "User")
+            _isAuthChecked.value = true
         }
     }
 
@@ -67,26 +77,29 @@ class AuthViewModel(
     }
 
     fun fetchTranslation(){
+       Napier.d("fetchTranslation called, name = '${_onBoardingState.value.name}'", tag = "AuthViewModel")
        viewModelScope.launch {
            _onBoardingState.update { it.copy(isTranslating = true) }
 
-           if(_onBoardingState.value.name.isEmpty()){
+           val currentName = _onBoardingState.value.name
+           Napier.d("Inside coroutine, name = '$currentName'", tag = "AuthViewModel")
+
+           if(currentName.isEmpty()){
+               Napier.e("Name is empty, returning", tag = "AuthViewModel")
                errorListener.emit("Name is required")
                _onBoardingState.update { it.copy(isTranslating = false) }
                return@launch
            }
 
-           if(!isOnline()){
-               errorListener.emit("You're offline")
-               _onBoardingState.update { it.copy(isTranslating = false) }
-               return@launch
-           }
-
-           val translation = translateRepository.translate(_onBoardingState.value.name)
-           print("ViewModel" + "fetchTranslation: $translation")
-           _onBoardingState.update { it.copy(japaneseName = translation) }
-           _onBoardingState.update { it.copy(isTranslating = false) }
+           val translation = translateRepository.translate(currentName)
+           Napier.d("Translation result: '$translation'", tag = "AuthViewModel")
+           _onBoardingState.update { it.copy(japaneseName = translation, isTranslating = false) }
+           Napier.d("State updated, japaneseName = '${_onBoardingState.value.japaneseName}'", tag = "AuthViewModel")
        }
+    }
+
+    fun speakJapaneseName(name: String){
+        ttsManager.speak(name)
     }
 
 
@@ -161,24 +174,43 @@ class AuthViewModel(
         }
     }
 
-    fun googleLogin(idToken: String, name: String, motivationSource: String) {
+    fun startGoogleSignIn(activityContext: Any) {
         viewModelScope.launch {
-            if(!isOnline()){
+            if (!isOnline()) {
                 errorListener.emit("You're offline")
                 return@launch
             }
 
-            _authState.update { it.copy(status = AuthResult.Loading)}
+            _authState.update { it.copy(status = AuthResult.Loading) }
 
-            val result = firebaseAuthRepository.googleLogin(idToken, name, motivationSource)
+            when (val result = googleAuthHelper.signIn(activityContext)) {
+                is GoogleAuthResult.Success -> {
+                    val name = _onBoardingState.value.name.ifEmpty { result.displayName ?: "User" }
+                    val motivationSource = _onBoardingState.value.motivationSource?.displayName() ?: "Unknown"
 
-            _authState.update { it.copy(status = result)}
+                    val authResult = firebaseAuthRepository.googleLogin(
+                        idToken = result.idToken,
+                        name = name,
+                        motivationSource = motivationSource
+                    )
 
-            if (result is AuthResult.Error) {
-                errorListener.emit(result.message)
+                    _authState.update { it.copy(status = authResult) }
+
+                    if (authResult is AuthResult.Error) {
+                        errorListener.emit(authResult.message)
+                    }
+                }
+
+                is GoogleAuthResult.Error -> {
+                    _authState.update { it.copy(status = AuthResult.Error(result.message)) }
+                    errorListener.emit(result.message)
+                }
+
+                is GoogleAuthResult.Cancelled -> {
+                    _authState.update { it.copy(status = AuthResult.Error("Cancelled")) }
+                    errorListener.emit("Cancelled")
+                }
             }
         }
     }
-
-
 }

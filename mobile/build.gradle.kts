@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jetbrains.compose)
     id("com.google.gms.google-services")
     alias(libs.plugins.firebase.crashlytics)
 }
@@ -34,6 +35,13 @@ android {
         buildConfigField("String", "WEB_CLIENT_ID", "\"$webClientId\"")
     }
 
+    // Include compose resources from sharedcore:ui module
+    sourceSets {
+        getByName("main") {
+            assets.srcDir(project(":sharedcore:ui").layout.buildDirectory.dir("generated/compose/resourceGenerator/androidAssets/androidMain"))
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -60,6 +68,13 @@ configurations.all {
     exclude(group = "com.intellij", module = "annotations")
 }
 
+// Ensure compose resources from sharedcore:ui are generated before merging assets
+afterEvaluate {
+    tasks.matching { it.name.contains("merge") && it.name.contains("Assets") }.configureEach {
+        dependsOn(":sharedcore:ui:copyAndroidMainComposeResourcesToAndroidAssets")
+    }
+}
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -79,7 +94,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(project(":sharedfeature:auth"))
+    api(project(":sharedcore:core"))
+    api(project(":sharedcore:ui"))
+    api(project(":sharedfeature:auth"))
 
     implementation(libs.bundles.koin)
 

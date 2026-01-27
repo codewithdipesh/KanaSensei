@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import com.codewithdipesh.kanasensei.ui.resources.Res
-import com.codewithdipesh.kanasensei.ui.resources.drawable.splash_icon_dark
-import com.codewithdipesh.kanasensei.ui.resources.drawable.splash_icon_light
+import com.codewithdipesh.kanasensei.ui.resources.splash_icon_dark
+import com.codewithdipesh.kanasensei.ui.resources.splash_icon_light
 
 @Composable
 fun SplashScreen(

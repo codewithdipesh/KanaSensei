@@ -137,16 +137,29 @@ class FirebaseAuthRepositoryImpl(
     override suspend fun currentUser(): User? {
         val firebaseUser = auth.currentUser ?: return null
 
-        val userDoc = db.collection("users")
-            .document(firebaseUser.uid)
-            .get()
-            .await()
+        return try {
+            firebaseUser.reload().await()
 
-        if (!userDoc.exists()) return null
+            val userDoc = db.collection("users")
+                .document(firebaseUser.uid)
+                .get()
+                .await()
 
-        val user = userDoc.toObject(User::class.java)
-            ?: return null
+            if (!userDoc.exists()) {
+                auth.signOut()
+                return null
+            }
 
-        return user
+            val user = userDoc.toObject(User::class.java)
+            if (user == null) {
+                auth.signOut()
+                return null
+            }
+
+            user
+        } catch (e: Exception) {
+            auth.signOut()
+            null
+        }
     }
 }

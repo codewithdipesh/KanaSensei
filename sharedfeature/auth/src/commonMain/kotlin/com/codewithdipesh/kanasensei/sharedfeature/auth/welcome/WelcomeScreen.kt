@@ -24,10 +24,10 @@ import org.jetbrains.compose.resources.painterResource
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.kanasensei.ui.resources.Res
-import com.codewithdipesh.kanasensei.ui.resources.drawable.candle_icon
-import com.codewithdipesh.kanasensei.ui.resources.drawable.sakura_icon
-import com.codewithdipesh.kanasensei.ui.resources.drawable.a_japanese
-import com.codewithdipesh.kanasensei.ui.resources.drawable.fan_icon
+import com.codewithdipesh.kanasensei.ui.resources. a_japanese
+import com.codewithdipesh.kanasensei.ui.resources.candle_icon
+import com.codewithdipesh.kanasensei.ui.resources.fan_icon
+import com.codewithdipesh.kanasensei.ui.resources.sakura_icon
 
 @Composable
 fun WelcomeScreen(
