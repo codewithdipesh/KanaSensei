@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.codewithdipesh.kanasensei.navigation.NavApp
-import com.codewithdipesh.ui.theme.KanaSenseiTheme
+import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

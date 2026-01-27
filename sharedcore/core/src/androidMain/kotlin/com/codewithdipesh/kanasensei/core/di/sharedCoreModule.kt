@@ -15,7 +15,7 @@ import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val sharedModule = module {
+val sharedCoreModule = module {
 
     single {
         HttpClient {

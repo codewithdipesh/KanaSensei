@@ -25,8 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codewithdipesh.kanasensei.core.testToSpeech.JapaneseTtsManager
-import com.codewithdipesh.kanasensei.core.testToSpeech.rememberJapaneseTtsManager
 import com.codewithdipesh.kanasensei.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.kanasensei.ui.components.textfield.KanaTextField
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
@@ -39,11 +37,11 @@ fun NameAndTranslation(
     modifier: Modifier = Modifier,
     value : String,
     onValueChange : (String) -> Unit,
+    onPlayJapaneseName : (String) -> Unit,
     showTranslation : Boolean,
     isTranslating : Boolean,
     translatedValue : String?=null
 ) {
-    val ttsManager = rememberJapaneseTtsManager()
     Column(
         horizontalAlignment = Alignment.Start
     ){
@@ -105,7 +103,7 @@ fun NameAndTranslation(
                         iconColor = MaterialTheme.colorScheme.onPrimary,
                         backgroundColor = MaterialTheme.colorScheme.primary,
                         onClick = {
-                            ttsManager.speak(translatedValue)
+                            onPlayJapaneseName(translatedValue)
                         }
                     )
                 }

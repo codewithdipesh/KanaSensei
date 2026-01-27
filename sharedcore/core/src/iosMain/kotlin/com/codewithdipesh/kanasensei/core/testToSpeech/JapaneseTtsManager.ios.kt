@@ -7,7 +7,3 @@ actual class JapaneseTtsManager {
     actual fun release() {
     }
 }
-
-actual fun rememberJapaneseTtsManager(): JapaneseTtsManager {
-    TODO("Not yet implemented")
-}

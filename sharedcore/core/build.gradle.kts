@@ -98,6 +98,12 @@ kotlin {
 
                 // Room (optional, if using local database)
                 implementation(libs.bundles.room)
+
+                implementation(libs.androidx.activity.compose)
+
+                // Google Sign-In (Credential Manager)
+                implementation(libs.androidx.credential.credentials)
+                implementation(libs.google.identity)
             }
         }
 
