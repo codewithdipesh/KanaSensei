@@ -36,6 +36,8 @@ moko = "0.23.0"  # For expect/actual patterns
 datetime = "0.6.0"  # For cross-platform date/time
 napier = "2.7.1"  # For KMP logging
 androidx-viewmodel = "2.10.0"
+ksp = "2.1.10-1.0.29"
+composePreview = "1.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -113,6 +115,7 @@ jetbrains-compose-foundation = { group = "org.jetbrains.compose.foundation", nam
 jetbrains-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "compose" }
 jetbrains-compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "compose" }
 jetbrains-compose-components = {group="org.jetbrains.compose.components",name="components-resources",version.ref = "compose"}
+jetbrains-compose-preview = { group = "org.jetbrains.compose.ui",name ="ui-tooling-preview", version.ref = "composePreview" }
 
 
 [bundles]
@@ -155,7 +158,7 @@ kmp-ktor = [
     "ktor-serialization-kotlinx-json",
     "ktor-client-logging"
 ]
-room = ["room-runtime", "room-ktx","room-compiler"]
+room = ["room-runtime", "room-ktx"]
 koin = ["koin-core", "koin-android", "koin-compose"]
 firebase = ["firebase-firestore", "firebase-auth"]
 
@@ -172,4 +175,5 @@ android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

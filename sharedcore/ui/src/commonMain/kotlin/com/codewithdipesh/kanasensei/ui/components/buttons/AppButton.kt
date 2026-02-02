@@ -31,6 +31,7 @@ import org.jetbrains.compose.resources.painterResource
 fun AppButton(
     modifier: Modifier = Modifier,
     label: String,
+    labelSize : Int = 18,
     clickable: Boolean = true,
     onClick: () -> Unit,
     iconRes: DrawableResource? = null,
@@ -67,7 +68,7 @@ fun AppButton(
                 text = label,
                 style = KanaSenseiTypography.bodyMedium.copy(
                     fontWeight = FontWeight.Medium,
-                    fontSize = 18.sp,
+                    fontSize = labelSize.sp,
                     color = labelColor
                 ),
                 modifier = Modifier.padding(16.dp)

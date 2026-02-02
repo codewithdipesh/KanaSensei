@@ -1,10 +1,16 @@
 package com.codewithdipesh.kanasensei.core.di
 
+import androidx.room.Room
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
 import com.codewithdipesh.kanasensei.core.connectivity.NetworkConnectivityObserver
+import com.codewithdipesh.kanasensei.core.local.KanaSenseiDatabase
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
-import com.codewithdipesh.kanasensei.core.repository.TranslateRepository
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepositoryImpl
+import com.codewithdipesh.kanasensei.core.repository.ProgressRepository
+import com.codewithdipesh.kanasensei.core.repository.ProgressRepositoryImpl
+import com.codewithdipesh.kanasensei.core.repository.TranslateRepository
+import com.codewithdipesh.kanasensei.core.sync.ContentSyncManager
+import com.codewithdipesh.kanasensei.core.sync.ContentSyncManagerImpl
 import com.codewithdipesh.kanasensei.core.testToSpeech.JapaneseTtsManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -49,5 +55,33 @@ val sharedCoreModule = module {
 
     single<ConnectivityObserver> {
         NetworkConnectivityObserver(androidContext())
+    }
+
+    // Room Database
+    single<KanaSenseiDatabase> {
+        Room.databaseBuilder(
+            androidContext(),
+            KanaSenseiDatabase::class.java,
+            "kanasensei.db"
+        ).build()
+    }
+
+    single { get<KanaSenseiDatabase>().progressDao() }
+
+    // Progress Repository
+    single<ProgressRepository> {
+        ProgressRepositoryImpl(
+            progressDao = get(),
+            firestore = get(),
+            connectivityObserver = get()
+        )
+    }
+
+    // Content Sync Manager
+    single<ContentSyncManager> {
+        ContentSyncManagerImpl(
+            progressDao = get(),
+            firestore = get()
+        )
     }
 }

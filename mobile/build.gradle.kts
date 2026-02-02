@@ -97,6 +97,7 @@ dependencies {
     api(project(":sharedcore:core"))
     api(project(":sharedcore:ui"))
     api(project(":sharedfeature:auth"))
+    api(project(":sharedfeature:learning"))
 
     implementation(libs.bundles.koin)
 
@@ -109,5 +110,7 @@ dependencies {
 
     implementation(libs.androidx.credential.credentials)
     implementation(libs.google.identity)
+
+    implementation(libs.kotlinx.datetime)
 
 }

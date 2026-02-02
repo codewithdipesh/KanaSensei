@@ -3,13 +3,14 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
 
     androidLibrary {
-        namespace = "com.codewithdipesh.kanasensei.core"
+        namespace = "com.codewithdipesh.kanasensei.sharedfeature.learning"
         compileSdk = 36
         minSdk = 24
 
@@ -23,7 +24,7 @@ kotlin {
         }
     }
 
-    val xcfName = "sharedKit"
+    val xcfName = "sharedfeatureKit"
 
     iosX64 {
         binaries.framework {
@@ -47,23 +48,22 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
+                api(project(":sharedcore:core"))
+                api(project(":sharedcore:ui"))
 
-                // KMP Core dependencies
+                implementation(libs.jetbrains.compose.ui)
+                implementation(libs.jetbrains.compose.foundation)
+                implementation(libs.jetbrains.compose.material3)
+                implementation(libs.jetbrains.compose.runtime)
+                implementation(libs.jetbrains.compose.components)
+                api(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.jetbrains.compose.preview)
+
                 implementation(libs.bundles.kmp.common)
-
-                // Coroutines & Serialization for data models & business logic
                 implementation(libs.coroutines.core)
                 implementation(libs.serialization.json)
-                implementation(libs.kotlinx.datetime)
-
-                // Ktor for API calls
                 implementation(libs.bundles.kmp.ktor)
-
-                // Dependency Injection
                 implementation(libs.koin.core)
-
-                // Logging
                 implementation(libs.napier)
             }
         }
@@ -71,40 +71,17 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
-                implementation(libs.coroutines.test)
             }
         }
 
         androidMain {
             dependencies {
-                // Android KTX & Appcompat
+                implementation(libs.androidx.lifecycle.runtime.ktx)
                 implementation(libs.androidx.core.ktx)
-                implementation(libs.androidx.appcompat)
-                implementation(libs.material)
-
-                // Firebase
-                implementation(project.dependencies.platform(libs.firebase.bom))
-                implementation(libs.firebase.firestore)
-                implementation(libs.firebase.auth)
-
-                // Android Ktor engine
-                implementation(libs.ktor.client.android)
-                implementation(libs.ktor.client.okhttp)
-
-                // Coroutines Android dispatcher
                 implementation(libs.coroutines.android)
-
-                // Koin for Android
                 implementation(libs.koin.android)
-
-                // Room (optional, if using local database)
-                implementation(libs.bundles.room)
-
                 implementation(libs.androidx.activity.compose)
-
-                // Google Sign-In (Credential Manager)
-                implementation(libs.androidx.credential.credentials)
-                implementation(libs.google.identity)
+                implementation(libs.jetbrains.compose.preview)
             }
         }
 
@@ -118,21 +95,9 @@ kotlin {
 
         iosMain {
             dependencies {
-                // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
-                // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
-                // on common by default and will correctly pull the iOS artifacts of any
-                // KMP dependencies declared in commonMain.
+
             }
         }
     }
 
-}
-
-dependencies {
-    add("kspAndroid", libs.room.compiler)
-}
-
-ksp {
-    arg("room.schemaLocation", "${projectDir}/schemas")
 }
