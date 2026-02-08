@@ -1,7 +1,6 @@
 package com.codewithdipesh.kanasensei.core.repository
 
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterWithProgress
-import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
 import com.codewithdipesh.kanasensei.core.model.progress.SyncResult
 import com.codewithdipesh.kanasensei.core.model.user.UserProgress
@@ -9,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProgressRepository {
 
-    // ===== Progress Observation =====
+    //Progress Observation
 
     fun observeProgress(userId: String): Flow<UserProgress>
 
     suspend fun getProgress(userId: String): UserProgress
 
-    // ===== Lesson Completion =====
+    //Lesson Completion
 
     suspend fun completeLesson(
         userId: String,
@@ -23,20 +22,17 @@ interface ProgressRepository {
         chapterId: String
     ): ProgressUpdateResult
 
-    // ===== Kana Learning =====
+    //Kana Learning
 
     suspend fun markKanaLearned(userId: String, kanaId: String)
 
     fun observeLearnedKanaIds(userId: String): Flow<List<String>>
 
-    // ===== Content with Progress =====
+    //Content with Progress
 
     fun observeChaptersWithProgress(userId: String): Flow<List<ChapterWithProgress>>
 
-    fun observeLessonsWithProgress(userId: String, chapterId: String): Flow<List<LessonWithProgress>>
-
-    // ===== Sync Operations =====
-
+    //Sync Operations
     suspend fun syncToCloud(userId: String): SyncResult
 
     suspend fun syncFromCloud(userId: String): SyncResult

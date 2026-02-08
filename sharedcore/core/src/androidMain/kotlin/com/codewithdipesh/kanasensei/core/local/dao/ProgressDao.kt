@@ -94,6 +94,9 @@ interface ProgressDao {
     @Query("SELECT * FROM cached_lessons WHERE chapterId = :chapterId ORDER BY orderNumber ASC")
     fun observeLessonsForChapter(chapterId: String): Flow<List<CachedLessonEntity>>
 
+    @Query("SELECT * FROM cached_lessons ORDER BY chapterId ASC, orderNumber ASC")
+    fun observeAllLessons(): Flow<List<CachedLessonEntity>>
+
     @Query("SELECT * FROM cached_lessons WHERE id = :lessonId")
     suspend fun getLessonById(lessonId: String): CachedLessonEntity?
 

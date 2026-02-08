@@ -5,12 +5,12 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val learningModule = module {
-    viewModel { (userId: String) ->
+    viewModel {
         LearningViewModel(
             progressRepository = get(),
             contentSyncManager = get(),
             connectivityObserver = get(),
-            userId = userId
+            firebaseAuthRepository = get()
         )
     }
 }

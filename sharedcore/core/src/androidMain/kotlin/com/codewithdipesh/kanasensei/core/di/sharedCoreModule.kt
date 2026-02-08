@@ -63,7 +63,9 @@ val sharedCoreModule = module {
             androidContext(),
             KanaSenseiDatabase::class.java,
             "kanasensei.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     single { get<KanaSenseiDatabase>().progressDao() }

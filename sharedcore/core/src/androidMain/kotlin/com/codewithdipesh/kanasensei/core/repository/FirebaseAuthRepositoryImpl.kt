@@ -138,14 +138,14 @@ class FirebaseAuthRepositoryImpl(
         val firebaseUser = auth.currentUser ?: return null
 
         return try {
-            firebaseUser.reload().await()
-
+            // Use Firestore's offline cache - no need for reload()
             val userDoc = db.collection("users")
                 .document(firebaseUser.uid)
                 .get()
                 .await()
 
             if (!userDoc.exists()) {
+                // Server confirmed user doesn't exist - sign out
                 auth.signOut()
                 return null
             }
@@ -158,8 +158,14 @@ class FirebaseAuthRepositoryImpl(
 
             user
         } catch (e: Exception) {
-            auth.signOut()
-            null
+            // Network error - don't sign out, return basic user from cached FirebaseAuth
+            User(
+                uid = firebaseUser.uid,
+                name = firebaseUser.displayName ?: "",
+                motivationSource = "",
+                createdAt = firebaseUser.metadata?.creationTimestamp ?: 0L,
+                lastLogin = firebaseUser.metadata?.lastSignInTimestamp ?: 0L
+            )
         }
     }
 }

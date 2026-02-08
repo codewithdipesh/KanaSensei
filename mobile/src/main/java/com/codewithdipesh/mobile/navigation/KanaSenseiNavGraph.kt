@@ -3,8 +3,10 @@ package com.codewithdipesh.kanasensei.navigation
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,10 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -39,10 +43,15 @@ import com.codewithdipesh.kanasensei.sharedfeature.auth.access.SignUpScreen
 import com.codewithdipesh.kanasensei.sharedfeature.auth.onboarding.OnboardingScreen
 import com.codewithdipesh.kanasensei.sharedfeature.auth.welcome.SplashScreen
 import com.codewithdipesh.kanasensei.sharedfeature.auth.welcome.WelcomeScreen
+import com.codewithdipesh.sharedfeature.learning.home.LearningEvent
+import com.codewithdipesh.sharedfeature.learning.home.LearningHomeScreen
+import com.codewithdipesh.sharedfeature.learning.home.LearningViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun NavApp(
@@ -74,30 +83,36 @@ fun NavApp(
         }
     }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) { data ->
-                Snackbar(
-                    snackbarData = data,
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                    actionColor = MaterialTheme.colorScheme.error
-                )
-            }
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = Screen.AuthGraph.route,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
+        ) {
+            authGraph(navController)
+            homeGraph(navController)
         }
-    ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            NavHost(
-                navController = navController,
-                startDestination = Screen.AuthGraph.route,
-                enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None },
-                popEnterTransition = { EnterTransition.None },
-                popExitTransition = { ExitTransition.None },
-            ){
-                authGraph(navController)
-                homeGraph(navController)
-            }
+
+        // Network snackbar
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+                .padding(bottom = 16.dp)
+        ) { data ->
+            Snackbar(
+                snackbarData = data,
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                actionColor = MaterialTheme.colorScheme.error
+            )
         }
     }
 }
@@ -118,11 +133,11 @@ fun NavGraphBuilder.authGraph(
            val user by viewModel.user.collectAsStateWithLifecycle()
            val isAuthChecked by viewModel.isAuthChecked.collectAsStateWithLifecycle()
 
-           LaunchedEffect(Unit) {
-               delay(2500)
+           LaunchedEffect(isAuthChecked) {
                if (isAuthChecked) {
+                   delay(1500) // Show splash for at least 1.5s
                    if (user != null) {
-                       navController.navigate(Screen.HomeGraph.Home.route) {
+                       navController.navigate(Screen.HomeGraph.Learning.route) {
                            popUpTo(Screen.AuthGraph.route) { inclusive = true }
                        }
                    } else {
@@ -228,7 +243,7 @@ fun NavGraphBuilder.authGraph(
            // Navigate to Home on successful auth
            LaunchedEffect(status) {
                if (status is AuthResult.Success) {
-                   navController.navigate(Screen.HomeGraph.Home.route) {
+                   navController.navigate(Screen.HomeGraph.Learning.route) {
                        popUpTo(Screen.AuthGraph.route) { inclusive = true }
                    }
                }
@@ -295,7 +310,7 @@ fun NavGraphBuilder.authGraph(
            // Navigate to Home on successful auth
            LaunchedEffect(status) {
                if (status is AuthResult.Success) {
-                   navController.navigate(Screen.HomeGraph.Home.route) {
+                   navController.navigate(Screen.HomeGraph.Learning.route) {
                        popUpTo(Screen.AuthGraph.route) { inclusive = true }
                    }
                }
@@ -355,13 +370,110 @@ fun NavGraphBuilder.authGraph(
 
 fun NavGraphBuilder.homeGraph(
     navController: NavController
-){
+) {
     navigation(
         route = Screen.HomeGraph.route,
-        startDestination = Screen.HomeGraph.Home.route
-    ){
-        composable(Screen.HomeGraph.Home.route){
+        startDestination = Screen.HomeGraph.Learning.route
+    ) {
+        composable(Screen.HomeGraph.Learning.route) {
+            val parentEntry = remember {
+                navController.getBackStackEntry(Screen.HomeGraph.route)
+            }
+            val viewModel: LearningViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
 
+            val currentUser by viewModel.user.collectAsStateWithLifecycle()
+            val isUserLoaded by viewModel.isUserLoaded.collectAsStateWithLifecycle()
+
+            // Wait for user to load, then check if logged in
+            if (isUserLoaded && currentUser == null) {
+                LaunchedEffect(Unit) {
+                    navController.navigate(Screen.AuthGraph.route) {
+                        popUpTo(Screen.HomeGraph.Learning.route) { inclusive = true }
+                    }
+                }
+                return@composable
+            }
+
+            // Show nothing while loading user
+            if (!isUserLoaded) {
+                return@composable
+            }
+
+
+
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val snackbarHostState = remember { SnackbarHostState() }
+            val scope = rememberCoroutineScope()
+
+            // Collect events for errors and notifications
+            LaunchedEffect(Unit) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is LearningEvent.Error -> {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = event.message,
+                                    withDismissAction = true
+                                )
+                            }
+                        }
+                        is LearningEvent.LessonCompleted -> {
+                            if (event.chapterCompleted) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = "Chapter completed! Moving to next chapter.",
+                                        withDismissAction = true
+                                    )
+                                }
+                            }
+                        }
+                        is LearningEvent.SyncCompleted -> {
+                           //show nothing
+                        }
+                    }
+                }
+            }
+
+            // Show error from uiState
+            LaunchedEffect(uiState.error) {
+                uiState.error?.let { error ->
+                    scope.launch {
+                        val result = snackbarHostState.showSnackbar(
+                            message = error,
+                            actionLabel = "Retry",
+                            withDismissAction = true
+                        )
+                        if (result == SnackbarResult.ActionPerformed) {
+                            viewModel.refreshFromCloud()
+                        }
+                        viewModel.clearError()
+                    }
+                }
+            }
+
+            LearningHomeScreen(
+                isLoading = uiState.isLoading,
+                chapters = uiState.chapters,
+                selectedLessonId = uiState.selectedLessonId,
+                onLessonStart = { lessonWithProgress ->
+                    //navigate to lesson details screen
+                },
+                onLessonSelect = { lessonId ->
+                    viewModel.selectLesson(
+                        if (uiState.selectedLessonId == lessonId) null else lessonId
+                    )
+                },
+                snackBarHost = {
+                    SnackbarHost(snackbarHostState) { data ->
+                        Snackbar(
+                            snackbarData = data,
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                            actionColor = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            )
         }
     }
 }

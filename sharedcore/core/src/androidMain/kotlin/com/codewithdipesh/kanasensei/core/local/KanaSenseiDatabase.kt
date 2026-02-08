@@ -19,7 +19,7 @@ import com.codewithdipesh.kanasensei.core.local.entity.UserProgressEntity
         CachedChapterEntity::class,
         CachedLessonEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class KanaSenseiDatabase : RoomDatabase() {

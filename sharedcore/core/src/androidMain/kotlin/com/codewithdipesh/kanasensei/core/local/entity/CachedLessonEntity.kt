@@ -13,6 +13,8 @@ data class CachedLessonEntity(
     val shortDescription: String,
     val detailedDescription: String,
     val orderNumber: Int,
+    val teaserImage: String,
+    val teaserText: String,
     val createdAt: Long,
     val updatedAt: Long
 )

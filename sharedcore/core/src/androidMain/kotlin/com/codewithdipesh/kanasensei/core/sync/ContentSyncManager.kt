@@ -1,11 +1,14 @@
 package com.codewithdipesh.kanasensei.core.sync
 
+import com.codewithdipesh.kanasensei.core.firestore.FirestorePaths
 import com.codewithdipesh.kanasensei.core.local.dao.ProgressDao
 import com.codewithdipesh.kanasensei.core.local.entity.CachedChapterEntity
 import com.codewithdipesh.kanasensei.core.local.entity.CachedLessonEntity
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.tasks.await
+import kotlinx.datetime.Instant
 
 class ContentSyncManagerImpl(
     private val progressDao: ProgressDao,
@@ -13,11 +16,21 @@ class ContentSyncManagerImpl(
 ) : ContentSyncManager {
     private val TAG = "ContentSyncManager"
 
+    // Helper to parse ISO date string to epoch millis
+    private fun DocumentSnapshot.getDateAsLong(field: String): Long {
+        return try {
+            val dateString = getString(field) ?: return 0L
+            Instant.parse(dateString).toEpochMilliseconds()
+        } catch (e: Exception) {
+            0L
+        }
+    }
+
     override suspend fun syncChaptersAndLessons(): Boolean {
         return try {
             // Fetch chapters
-            val chaptersSnapshot = firestore.collection("chapters")
-                .orderBy("orderNumber")
+            val chaptersSnapshot = firestore.collection(FirestorePaths.CHAPTERS)
+                .orderBy(FirestorePaths.ChapterFields.ORDER_NUMBER)
                 .get()
                 .await()
 
@@ -25,11 +38,11 @@ class ContentSyncManagerImpl(
                 try {
                     CachedChapterEntity(
                         id = doc.id,
-                        name = doc.getString("name") ?: "",
-                        description = doc.getString("description") ?: "",
-                        orderNumber = doc.getLong("orderNumber")?.toInt() ?: 0,
-                        scriptType = doc.getString("scriptType") ?: "",
-                        createdAt = doc.getLong("createdAt") ?: 0,
+                        name = doc.getString(FirestorePaths.ChapterFields.NAME) ?: "",
+                        description = doc.getString(FirestorePaths.ChapterFields.DESCRIPTION) ?: "",
+                        orderNumber = doc.getLong(FirestorePaths.ChapterFields.ORDER_NUMBER)?.toInt() ?: 0,
+                        scriptType = doc.getString(FirestorePaths.ChapterFields.SCRIPT_TYPE) ?: "",
+                        createdAt = doc.getDateAsLong(FirestorePaths.ChapterFields.CREATED_AT),
                         lessonCount = 0
                     )
                 } catch (e: Exception) {
@@ -39,8 +52,8 @@ class ContentSyncManagerImpl(
             }
 
             // Fetch all lessons
-            val lessonsSnapshot = firestore.collection("lessons")
-                .orderBy("orderNumber")
+            val lessonsSnapshot = firestore.collection(FirestorePaths.LESSONS)
+                .orderBy(FirestorePaths.LessonFields.ORDER_NUMBER)
                 .get()
                 .await()
 
@@ -48,14 +61,16 @@ class ContentSyncManagerImpl(
                 try {
                     CachedLessonEntity(
                         id = doc.id,
-                        chapterId = doc.getString("chapterId") ?: "",
-                        title = doc.getString("title") ?: "",
-                        expandedTitle = doc.getString("expandedTitle") ?: "",
-                        shortDescription = doc.getString("shortDescription") ?: "",
-                        detailedDescription = doc.getString("detailedDescription") ?: "",
-                        orderNumber = doc.getLong("orderNumber")?.toInt() ?: 0,
-                        createdAt = doc.getLong("createdAt") ?: 0,
-                        updatedAt = doc.getLong("updatedAt") ?: 0
+                        chapterId = doc.getString(FirestorePaths.LessonFields.CHAPTER_ID) ?: "",
+                        title = doc.getString(FirestorePaths.LessonFields.TITLE) ?: "",
+                        expandedTitle = doc.getString(FirestorePaths.LessonFields.EXPANDED_TITLE) ?: "",
+                        shortDescription = doc.getString(FirestorePaths.LessonFields.SHORT_DESCRIPTION) ?: "",
+                        detailedDescription = doc.getString(FirestorePaths.LessonFields.DETAILED_DESCRIPTION) ?: "",
+                        orderNumber = doc.getLong(FirestorePaths.LessonFields.ORDER_NUMBER)?.toInt() ?: 0,
+                        teaserImage = doc.getString(FirestorePaths.LessonFields.TEASER_IMAGE) ?: "",
+                        teaserText = doc.getString(FirestorePaths.LessonFields.TEASER_TEXT) ?: "",
+                        createdAt = doc.getDateAsLong(FirestorePaths.LessonFields.CREATED_AT),
+                        updatedAt = doc.getDateAsLong(FirestorePaths.LessonFields.UPDATED_AT)
                     )
                 } catch (e: Exception) {
                     Napier.e("Error parsing lesson ${doc.id}", e, TAG)

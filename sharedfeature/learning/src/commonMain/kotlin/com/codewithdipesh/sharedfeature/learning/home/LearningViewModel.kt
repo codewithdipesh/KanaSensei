@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
 import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
 import com.codewithdipesh.kanasensei.core.model.progress.SyncResult
+import com.codewithdipesh.kanasensei.core.model.user.User
+import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
 import com.codewithdipesh.kanasensei.core.repository.ProgressRepository
 import com.codewithdipesh.kanasensei.core.sync.ContentSyncManager
 import io.github.aakira.napier.Napier
@@ -22,10 +24,16 @@ class LearningViewModel(
     private val progressRepository: ProgressRepository,
     private val contentSyncManager: ContentSyncManager,
     private val connectivityObserver: ConnectivityObserver,
-    private val userId: String
+    private val firebaseAuthRepository: FirebaseAuthRepository
 ) : ViewModel() {
 
     private val TAG = "LearningViewModel"
+
+    private val _user = MutableStateFlow<User?>(null)
+    val user = _user.asStateFlow()
+
+    private val _isUserLoaded = MutableStateFlow(false)
+    val isUserLoaded = _isUserLoaded.asStateFlow()
 
     private val _uiState = MutableStateFlow(LearningUiState())
     val uiState = _uiState.asStateFlow()
@@ -41,8 +49,14 @@ class LearningViewModel(
         )
 
     init {
-        initializeContent()
-        observeNetworkForSync()
+        viewModelScope.launch {
+            _user.value = firebaseAuthRepository.currentUser()
+            _isUserLoaded.value = true
+            if (_user.value != null) {
+                initializeContent()
+                observeNetworkForSync()
+            }
+        }
     }
 
     private fun initializeContent() {
@@ -50,6 +64,9 @@ class LearningViewModel(
             _uiState.update { it.copy(isLoading = true) }
 
             // Sync content from Firestore if needed
+
+            Napier.d("hasLocalContent: ${contentSyncManager.hasLocalContent()}", tag = "ProgressRepo")
+
             if (!contentSyncManager.hasLocalContent()) {
                 val synced = contentSyncManager.syncChaptersAndLessons()
                 if (!synced) {
@@ -64,70 +81,48 @@ class LearningViewModel(
             }
 
             // Initialize user progress
-            progressRepository.initializeProgress(userId)
+            progressRepository.initializeProgress(_user.value!!.uid)
 
             // Sync from cloud to get latest progress
-            progressRepository.syncFromCloud(userId)
+            val syncFromResult = progressRepository.syncFromCloud(_user.value!!.uid)
+            Napier.d("syncFromCloud result: $syncFromResult", tag = TAG)
 
-            // Start observing
-            loadProgress()
+            // Push any unsynced local progress to cloud
+            val syncToResult = progressRepository.syncToCloud(_user.value!!.uid)
+            Napier.d("syncToCloud result: $syncToResult", tag = TAG)
+
+            // Start observing chapters with lessons
+            observeChapters()
         }
     }
 
-    private fun loadProgress() {
+    private fun observeChapters() {
         viewModelScope.launch {
-            progressRepository.observeChaptersWithProgress(userId)
+            progressRepository.observeChaptersWithProgress(_user.value!!.uid)
                 .catch { e ->
                     Napier.e("Error loading chapters", e, TAG)
                     _uiState.update { it.copy(error = e.message, isLoading = false) }
                 }
                 .collect { chapters ->
-                    val currentChapter = chapters.find { it.isCurrent }
                     _uiState.update { state ->
                         state.copy(
                             chapters = chapters,
-                            currentChapterOrder = currentChapter?.chapter?.orderNumber ?: 1,
-                            selectedChapterId = state.selectedChapterId ?: currentChapter?.chapter?.id,
                             isLoading = false
                         )
                     }
-
-                    // Load lessons for selected/current chapter
-                    val chapterToLoad = _uiState.value.selectedChapterId
-                    if (chapterToLoad != null) {
-                        loadLessonsForChapter(chapterToLoad)
-                    }
                 }
         }
     }
 
-    private fun loadLessonsForChapter(chapterId: String) {
-        viewModelScope.launch {
-            progressRepository.observeLessonsWithProgress(userId, chapterId)
-                .catch { e ->
-                    Napier.e("Error loading lessons", e, TAG)
-                    _uiState.update { it.copy(error = e.message) }
-                }
-                .collect { lessons ->
-                    val currentLesson = lessons.find { it.isCurrent }
-                    _uiState.update { state ->
-                        state.copy(
-                            currentChapterLessons = lessons,
-                            currentLessonOrder = currentLesson?.lesson?.orderNumber ?: 1
-                        )
-                    }
-                }
-        }
-    }
-
-    fun selectChapter(chapterId: String) {
-        _uiState.update { it.copy(selectedChapterId = chapterId) }
-        loadLessonsForChapter(chapterId)
+    fun selectLesson(lessonId: String?) {
+       if(lessonId != null){
+           _uiState.update { it.copy(selectedLessonId = lessonId) }
+       }
     }
 
     fun completeCurrentLesson(lessonId: String, chapterId: String) {
         viewModelScope.launch {
-            when (val result = progressRepository.completeLesson(userId, lessonId, chapterId)) {
+            when (val result = progressRepository.completeLesson(_user.value!!.uid, lessonId, chapterId)) {
                 is ProgressUpdateResult.Success -> {
                     _events.emit(
                         LearningEvent.LessonCompleted(
@@ -137,13 +132,6 @@ class LearningViewModel(
                             newLessonOrder = result.newCurrentLesson
                         )
                     )
-
-                    // If advanced to new chapter, update selected chapter
-                    if (result.advancedToNextChapter) {
-                        val newChapter = _uiState.value.chapters
-                            .find { it.chapter.orderNumber == result.newCurrentChapter }
-                        newChapter?.let { selectChapter(it.chapter.id) }
-                    }
                 }
                 is ProgressUpdateResult.Error -> {
                     _events.emit(LearningEvent.Error(result.message))
@@ -154,7 +142,7 @@ class LearningViewModel(
 
     fun markKanaLearned(kanaId: String) {
         viewModelScope.launch {
-            progressRepository.markKanaLearned(userId, kanaId)
+            progressRepository.markKanaLearned(_user.value!!.uid, kanaId)
         }
     }
 
@@ -166,7 +154,7 @@ class LearningViewModel(
             contentSyncManager.syncChaptersAndLessons()
 
             // Refresh progress
-            when (progressRepository.syncFromCloud(userId)) {
+            when (progressRepository.syncFromCloud(_user.value!!.uid)) {
                 is SyncResult.Success -> {
                     _uiState.update { it.copy(syncStatus = SyncStatus.Success) }
                     _events.emit(LearningEvent.SyncCompleted)
@@ -185,7 +173,7 @@ class LearningViewModel(
         viewModelScope.launch {
             networkStatus.collect { status ->
                 if (status == ConnectivityObserver.Status.Available) {
-                    progressRepository.syncToCloud(userId)
+                    progressRepository.syncToCloud(_user.value!!.uid)
                 }
             }
         }
