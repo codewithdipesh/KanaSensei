@@ -17,6 +17,8 @@ import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTheme
 import com.codewithdipesh.sharedfeature.learning.di.learningModule
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonItem
 import com.google.firebase.FirebaseApp
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -35,32 +37,7 @@ class KanaSenseiApplication : Application() {
                 learningModule
             )
         }
+        Napier.base(DebugAntilog())
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun LessonPreview(){
-    KanaSenseiTheme(true){
-        Box(modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)) {
-            LessonItem(
-                lessonWithProgress = LessonWithProgress(
-                    lesson = Lesson(
-                        id = "1",
-                        title = "Lesson 1",
-                        shortDescription = "Learn the basics",
-                        expandedTitle = "Lesson 1: Learn the basics",
-                        detailedDescription = "This is a detailed description of lesson 1. It will help you understand the importance of this lesson.",
-                        teaserText = "か"
-                    ),
-                    isCompleted = false,
-                    isLocked = false,
-                    isCurrent = true
-                ),
-                isCurrent = true
-            )
-        }
-    }
-}
