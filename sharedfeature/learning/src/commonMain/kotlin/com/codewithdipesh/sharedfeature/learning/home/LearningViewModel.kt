@@ -61,13 +61,12 @@ class LearningViewModel(
 
     private fun initializeContent() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
             // Sync content from Firestore if needed
 
             Napier.d("hasLocalContent: ${contentSyncManager.hasLocalContent()}", tag = "ProgressRepo")
 
             if (!contentSyncManager.hasLocalContent()) {
+                _uiState.update { it.copy(isLoading = true) }
                 val synced = contentSyncManager.syncChaptersAndLessons()
                 if (!synced) {
                     _uiState.update {

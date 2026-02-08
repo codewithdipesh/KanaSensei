@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -113,45 +114,56 @@ fun LessonItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(60.dp)
-                    .clip(CircleShape)
-                    .border(
-                        width = 3.dp,
-                        color = if(lessonWithProgress.isCompleted) MaterialTheme.colorScheme.scrim
-                            else MaterialTheme.colorScheme.surface,
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Box(
-                    modifier = Modifier.size(46.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text = lesson.teaserText,
-                        style = KanaSenseiTypography.headlineLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        maxLines = 1
+                modifier = Modifier
+                    .size(
+                        60.dp,
+                        if(lessonWithProgress.isCompleted) 68.dp else 60.dp
                     )
+            ){
+                Box(
+                    modifier = Modifier.size(60.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 3.dp,
+                            color = if(lessonWithProgress.isCompleted) MaterialTheme.colorScheme.scrim
+                            else MaterialTheme.colorScheme.surface,
+                            shape = CircleShape
+                        )
+                        .align(Alignment.TopStart),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier.size(46.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surface),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = lesson.teaserText,
+                            style = KanaSenseiTypography.headlineLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            maxLines = 1
+                        )
+                    }
                 }
                 if(lessonWithProgress.isCompleted){
                     Box(
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier
+                            .size(20.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.scrim)
                             .border(
-                                width = 1.dp,
+                                width = 2.dp,
                                 color = MaterialTheme.colorScheme.background,
                                 shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.BottomCenter
+                            )
+                            .align(Alignment.BottomCenter),
+                        contentAlignment = Alignment.Center
                     ){
                         Icon(
                             painter = painterResource(Res.drawable.tick_icon),
                             contentDescription = "Completed",
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(10.dp),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -201,8 +213,8 @@ fun LessonItem(
                         .height(connectorHeight.value)
                         .clip(RoundedCornerShape(16.dp))
                         .background(
-                            if(lessonWithProgress.isCompleted) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.surfaceVariant
+                            if(lessonWithProgress.isCompleted) MaterialTheme.colorScheme.scrim
+                            else MaterialTheme.colorScheme.surface
                         )
                 )
             }
@@ -275,10 +287,10 @@ private fun LessonCard(
             labelSize = 14,
             clickable = !isLocked,
             onClick = onStartLesson,
-            modifier = Modifier.width(80.dp),
+            modifier = Modifier.widthIn(min = 80.dp,max = 140.dp),
             isRoundedCorner = true,
-            backgroundColor = MaterialTheme.colorScheme.onBackground,
-            labelColor = MaterialTheme.colorScheme.background
+            backgroundColor = if(isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+            labelColor = if(isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.background
         )
     }
 }

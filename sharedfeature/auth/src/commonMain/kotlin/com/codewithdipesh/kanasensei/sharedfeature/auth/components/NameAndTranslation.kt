@@ -49,6 +49,7 @@ fun NameAndTranslation(
             text = "What should we call You?",
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 22.sp,
                 textAlign = TextAlign.Start
             )

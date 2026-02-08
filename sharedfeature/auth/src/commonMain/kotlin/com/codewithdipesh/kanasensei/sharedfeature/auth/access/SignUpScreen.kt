@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,11 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
+import com.codewithdipesh.kanasensei.ui.components.progressbar.AppLoadingIndicator
 import com.codewithdipesh.kanasensei.ui.components.textfield.KanaBoxTextField
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.google_icon
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
@@ -182,16 +184,12 @@ fun SignUpScreen(
 
     }
 
-    if(authStatus == AuthResult.Loading){
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ){
-            CircularProgressIndicator(
+    if (authStatus == AuthResult.Loading) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AppLoadingIndicator(
                 modifier = Modifier
                     .size(40.dp)
-                    .align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 4.dp,
+                    .align(Alignment.Center)
             )
         }
     }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -16,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterVisibility
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
+import com.codewithdipesh.kanasensei.ui.components.progressbar.AppLoadingIndicator
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.sharedfeature.learning.home.components.ChapterHeader
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonItem
@@ -68,7 +67,7 @@ fun LearningHomeScreen(
                 modifier = Modifier.fillMaxSize().padding(padding),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator() //todo shrimmer
+                AppLoadingIndicator()
             }
         } else {
             LazyColumn(

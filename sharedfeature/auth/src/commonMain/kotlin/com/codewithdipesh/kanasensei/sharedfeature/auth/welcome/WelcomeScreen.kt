@@ -97,6 +97,7 @@ fun WelcomeScreen(
                     style = KanaSenseiTypography.bodyLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 30.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Start
                     )
                 )
@@ -104,6 +105,7 @@ fun WelcomeScreen(
                     text = "Bite-sized lessons, practice sessions, and stroke-tracking.",
                     style = KanaSenseiTypography.bodyLarge.copy(
                         fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 16.sp,
                     )
                 )

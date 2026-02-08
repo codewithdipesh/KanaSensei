@@ -4,7 +4,11 @@
       "Bash(xargs:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(cd:*)",
+      "Bash(./gradlew assembleDebug:*)",
+      "Bash(./gradlew:*)",
+      "WebSearch"
     ]
   }
 }

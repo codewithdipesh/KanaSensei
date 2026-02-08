@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
+import com.codewithdipesh.kanasensei.ui.components.progressbar.AppLoadingIndicator
 import com.codewithdipesh.kanasensei.ui.components.textfield.KanaBoxTextField
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.kanasensei.ui.resources.Res
@@ -185,12 +185,10 @@ fun LoginScreen(
         Box(
             modifier = Modifier.fillMaxSize()
         ){
-            CircularProgressIndicator(
+            AppLoadingIndicator(
                 modifier = Modifier
                     .size(40.dp)
                     .align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 4.dp,
             )
         }
     }
