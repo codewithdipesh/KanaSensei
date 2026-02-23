@@ -106,6 +106,9 @@ class LearningViewModel(
                     _uiState.update { state ->
                         state.copy(
                             chapters = chapters,
+                            selectedLessonId = chapters.map { //find in chapters
+                                it.lessons.find { it.isCurrent } //where lesson isCurrent is true
+                            }.first()?.lesson?.id,
                             isLoading = false
                         )
                     }

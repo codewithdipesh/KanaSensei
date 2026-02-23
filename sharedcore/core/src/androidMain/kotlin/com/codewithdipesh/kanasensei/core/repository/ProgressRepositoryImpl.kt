@@ -209,7 +209,7 @@ class ProgressRepositoryImpl(
         ) { chapters, allLessons, completedChapterIds, completedLessonIds, progressEntity ->
             Napier.d("Chapters: ${chapters.size}, Progress: $progressEntity", tag = "ProgressRepo")
             val currentChapterOrder = progressEntity?.currentChapterOrder ?: 1
-            val currentLessonOrder = progressEntity?.currentLessonOrder ?: 1
+            val currentLessonId = progressEntity?.currentLessonId
             val currentChapterId = progressEntity?.currentChapterId
 
             // Group lessons by chapter
@@ -220,7 +220,7 @@ class ProgressRepositoryImpl(
                 val isCurrent = chapterEntity.orderNumber == currentChapterOrder
 
                 // Determine visibility
-                val visibility = when {
+                val visibility = when {   
                     isCompleted || isCurrent -> ChapterVisibility.UNLOCKED
                     chapterEntity.orderNumber == currentChapterOrder + 1 -> ChapterVisibility.SEMI_VISIBLE
                     else -> ChapterVisibility.LOCKED
@@ -237,12 +237,15 @@ class ProgressRepositoryImpl(
                     chapterLessons.mapIndexed { index, lessonEntity ->
                         val lessonCompleted = completedLessonIds.contains(lessonEntity.id)
                         val lessonIsCurrent = currentChapterId == chapterEntity.id &&
-                                lessonEntity.orderNumber == currentLessonOrder
+                                lessonEntity.id == currentLessonId
+
+                        Napier.d("chapterId: ${chapterEntity.id}, lessonId: ${lessonEntity.id}", tag = "ProgressRepo")
+                        Napier.d("currentChapterId: $currentChapterId, currentlessonId: $currentLessonId", tag = "ProgressRepo")
 
                         val lessonIsLocked = if (index == 0) false else {
                             val previousLesson = chapterLessons.getOrNull(index - 1)
                             previousLesson != null && !completedLessonIds.contains(previousLesson.id)
-                        }
+                          }
 
                         LessonWithProgress(
                             lesson = lessonEntity.toLesson(),
