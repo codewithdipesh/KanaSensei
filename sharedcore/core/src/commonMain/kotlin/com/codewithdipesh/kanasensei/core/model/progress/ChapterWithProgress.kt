@@ -12,3 +12,7 @@ data class ChapterWithProgress(
     val totalLessonsCount: Int,
     val progressPercentage: Float
 )
+
+fun List<ChapterWithProgress>.flattenLessons() : List<LessonWithProgress> {
+    return flatMap { it.lessons }
+}

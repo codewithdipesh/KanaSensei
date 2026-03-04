@@ -184,4 +184,28 @@ class LearningViewModel(
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }
+
+    fun calculateOffset(index : Int) : Float {
+        val curveRight = listOf(
+            0.40f,
+            0.25f,
+            0.55f,
+            0.75f,
+            0.90f
+        )
+        val curveLeft = listOf(
+            0.85f,
+            0.65f,
+            0.45f,
+            0.25f,
+            0.10f
+        )
+        val segmentSize = 5
+
+        val segment = index / segmentSize
+        val pos = index % segmentSize
+
+        val pattern = if(segment % 2 == 0) curveRight else curveRight
+        return pattern[pos]
+    }
 }
