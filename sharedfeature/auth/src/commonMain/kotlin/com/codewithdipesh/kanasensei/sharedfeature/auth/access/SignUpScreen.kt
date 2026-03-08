@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,6 +28,7 @@ import com.codewithdipesh.kanasensei.ui.components.textfield.KanaBoxTextField
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.google_icon
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +56,7 @@ fun SignUpScreen(
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = KanaColors.onBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -76,7 +76,7 @@ fun SignUpScreen(
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = KanaColors.onBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -96,7 +96,7 @@ fun SignUpScreen(
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = KanaColors.onBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -117,8 +117,8 @@ fun SignUpScreen(
             label = "Sign Up",
             onClick = onSignUpClick,
             clickable = authStatus != AuthResult.Loading,
-            backgroundColor = MaterialTheme.colorScheme.onBackground,
-            labelColor = MaterialTheme.colorScheme.tertiary,
+            backgroundColor = KanaColors.onBackground,
+            labelColor = KanaColors.tertiary,
         )
         Spacer(Modifier.height(10.dp))
         //divider
@@ -129,19 +129,19 @@ fun SignUpScreen(
         ) {
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onBackground.copy(0.3f)
+                color = KanaColors.onBackground.copy(0.3f)
             )
             Text(
                 text = " Or ",
                 style = KanaSenseiTypography.bodyLarge.copy(
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(0.3f)
+                    color = KanaColors.onBackground.copy(0.3f)
                 )
             )
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onBackground.copy(0.3f)
+                color = KanaColors.onBackground.copy(0.3f)
             )
         }
         Spacer(Modifier.height(10.dp))
@@ -150,8 +150,8 @@ fun SignUpScreen(
             label = "Sign in with Google",
             onClick = onGoogleSignIn,
             clickable = authStatus != AuthResult.Loading,
-            backgroundColor = MaterialTheme.colorScheme.tertiary,
-            labelColor = MaterialTheme.colorScheme.onBackground,
+            backgroundColor = KanaColors.tertiary,
+            labelColor = KanaColors.onBackground,
             iconRes = Res.drawable.google_icon
         )
         Spacer(Modifier.height(80.dp))
@@ -165,7 +165,7 @@ fun SignUpScreen(
                 text = "Already a User? ",
                 style = KanaSenseiTypography.bodyLarge.copy(
                     fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
+                    color = KanaColors.onBackground.copy(0.5f),
                     fontSize = 15.sp,
                 )
             )
@@ -173,7 +173,7 @@ fun SignUpScreen(
                 text = "Log In",
                 style = KanaSenseiTypography.bodyLarge.copy(
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = KanaColors.onBackground,
                     fontSize = 15.sp,
                 ),
                 modifier = Modifier.clickable{

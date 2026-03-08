@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun OptionButton(
@@ -25,7 +25,7 @@ fun OptionButton(
     isSelected : Boolean,
     onClick: () -> Unit,
     textAlignment: Alignment = Alignment.CenterStart,
-    backgroundColor : Color = MaterialTheme.colorScheme.primary,
+    backgroundColor : Color = KanaColors.primary,
     isRoundedCorner : Boolean = true,
 ){
 
@@ -35,8 +35,8 @@ fun OptionButton(
     }
 
     val textColor: Color = when {
-        isSelected -> MaterialTheme.colorScheme.onPrimary
-        else -> MaterialTheme.colorScheme.onBackground
+        isSelected -> KanaColors.onPrimary
+        else -> KanaColors.onBackground
     }
 
     val cornerRadius = if (isRoundedCorner) 13.dp else 0.dp
@@ -46,7 +46,7 @@ fun OptionButton(
             .clip(RoundedCornerShape(cornerRadius))
             .border(
                 width = 1.5.dp,
-                color = if(isSelected) backgroundColor else MaterialTheme.colorScheme.secondary,
+                color = if(isSelected) backgroundColor else KanaColors.secondary,
                 shape = RoundedCornerShape(cornerRadius)
             )
             .background(backgroundColor)

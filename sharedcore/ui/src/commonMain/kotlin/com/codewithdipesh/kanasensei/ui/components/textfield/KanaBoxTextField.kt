@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun KanaBoxTextField(
@@ -45,7 +45,7 @@ fun KanaBoxTextField(
             .heightIn(min = 50.dp)
             .border(
                 width = 0.5.dp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
+                color = KanaColors.onBackground.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 16.dp, vertical = 4.dp)
@@ -55,7 +55,7 @@ fun KanaBoxTextField(
             onValueChange = onValueChange,
             textStyle = TextStyle(
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = KanaColors.onBackground,
                 fontWeight = FontWeight.Normal
             ),
             singleLine = true,
@@ -64,7 +64,7 @@ fun KanaBoxTextField(
                 PasswordVisualTransformation()
             else
                 VisualTransformation.None,
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground.copy(0.3f)),
+            cursorBrush = SolidColor(KanaColors.onBackground.copy(0.3f)),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,7 +79,7 @@ fun KanaBoxTextField(
                             text = label,
                             style = TextStyle(
                                 fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                                color = KanaColors.onBackground.copy(alpha = 0.4f)
                             )
                         )
                     }
@@ -101,7 +101,7 @@ fun KanaBoxTextField(
 //                    contentDescription = if (isPassword) {
 //                        if (passwordVisible) "Hide password" else "Show password"
 //                    } else "Trailing icon",
-//                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+//                    tint = KanaColors.onBackground.copy(alpha = 0.6f)
 //                )
 //            }
 //        }

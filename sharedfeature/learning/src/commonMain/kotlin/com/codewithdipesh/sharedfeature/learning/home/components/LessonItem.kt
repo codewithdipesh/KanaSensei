@@ -34,7 +34,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -57,6 +56,7 @@ import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.tick_icon
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import org.jetbrains.compose.resources.painterResource
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun LessonItem(
@@ -125,8 +125,8 @@ fun LessonItem(
                         .clip(CircleShape)
                         .border(
                             width = 3.dp,
-                            color = if(lessonWithProgress.isCompleted) MaterialTheme.colorScheme.scrim
-                            else MaterialTheme.colorScheme.surface,
+                            color = if(lessonWithProgress.isCompleted) KanaColors.success
+                            else KanaColors.surface,
                             shape = CircleShape
                         )
                         .align(Alignment.TopStart),
@@ -135,13 +135,13 @@ fun LessonItem(
                     Box(
                         modifier = Modifier.size(46.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surface),
+                            .background(KanaColors.surface),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = lesson.teaserText,
                             style = KanaSenseiTypography.headlineLarge,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = KanaColors.onBackground,
                             maxLines = 1
                         )
                     }
@@ -151,10 +151,10 @@ fun LessonItem(
                         modifier = Modifier
                             .size(20.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.scrim)
+                            .background(KanaColors.success)
                             .border(
                                 width = 2.dp,
-                                color = MaterialTheme.colorScheme.background,
+                                color = KanaColors.background,
                                 shape = CircleShape
                             )
                             .align(Alignment.BottomCenter),
@@ -164,7 +164,7 @@ fun LessonItem(
                             painter = painterResource(Res.drawable.tick_icon),
                             contentDescription = "Completed",
                             modifier = Modifier.size(10.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = KanaColors.onPrimary
                         )
                     }
                 }
@@ -179,17 +179,17 @@ fun LessonItem(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     ),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = KanaColors.onBackground,
                     maxLines = 1
                 )
                 Text(
                     text = lesson.shortDescription,
                     style = KanaSenseiTypography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
+                        color = KanaColors.onBackground.copy(0.5f),
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp
                     ),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = KanaColors.onBackground,
                     maxLines = 1
                 )
             }
@@ -213,8 +213,8 @@ fun LessonItem(
                         .height(connectorHeight.value)
                         .clip(RoundedCornerShape(16.dp))
                         .background(
-                            if(lessonWithProgress.isCompleted) MaterialTheme.colorScheme.scrim
-                            else MaterialTheme.colorScheme.surface
+                            if(lessonWithProgress.isCompleted) KanaColors.success
+                            else KanaColors.surface
                         )
                 )
             }
@@ -254,7 +254,7 @@ private fun LessonCard(
             .clip(RoundedCornerShape(12.dp))
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.surface,
+                color = KanaColors.surface,
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(16.dp),
@@ -266,7 +266,7 @@ private fun LessonCard(
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             ),
-            color = MaterialTheme.colorScheme.onBackground
+            color = KanaColors.onBackground
         )
 
         Text(
@@ -275,7 +275,7 @@ private fun LessonCard(
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp
             ),
-            color = MaterialTheme.colorScheme.onBackground.copy(0.7f),
+            color = KanaColors.onBackground.copy(0.7f),
             maxLines = 2
         )
 
@@ -289,8 +289,8 @@ private fun LessonCard(
             onClick = onStartLesson,
             modifier = Modifier.widthIn(min = 80.dp,max = 140.dp),
             isRoundedCorner = true,
-            backgroundColor = if(isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
-            labelColor = if(isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.background
+            backgroundColor = if(isCompleted) KanaColors.primary else KanaColors.onBackground,
+            labelColor = if(isCompleted) KanaColors.onPrimary else KanaColors.background
         )
     }
 }

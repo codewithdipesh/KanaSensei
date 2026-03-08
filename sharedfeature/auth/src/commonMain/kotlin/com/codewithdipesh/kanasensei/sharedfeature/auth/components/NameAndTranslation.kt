@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +30,7 @@ import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.icon_sound_on
 import kotlinx.coroutines.delay
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun NameAndTranslation(
@@ -49,7 +49,7 @@ fun NameAndTranslation(
             text = "What should we call You?",
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = KanaColors.onBackground,
                 fontSize = 22.sp,
                 textAlign = TextAlign.Start
             )
@@ -86,14 +86,14 @@ fun NameAndTranslation(
                     text = translatedValue.take(visibleChars),
                     style = TextStyle(
                         fontSize = 34.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = KanaColors.onBackground,
                         fontWeight = FontWeight.Bold
                     )
                 )
                 AnimatedVisibility(visible = isTranslating) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
-                        color = MaterialTheme.colorScheme.primary,
+                        color = KanaColors.primary,
                         strokeWidth = 1.5.dp
                     )
                 }
@@ -101,8 +101,8 @@ fun NameAndTranslation(
                     KanaIconButton(
                         iconRes = Res.drawable.icon_sound_on,
                         size = 36.dp,
-                        iconColor = MaterialTheme.colorScheme.onPrimary,
-                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        iconColor = KanaColors.onPrimary,
+                        backgroundColor = KanaColors.primary,
                         onClick = {
                             onPlayJapaneseName(translatedValue)
                         }

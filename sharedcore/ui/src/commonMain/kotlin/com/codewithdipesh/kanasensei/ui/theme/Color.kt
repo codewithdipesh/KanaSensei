@@ -29,3 +29,20 @@ val DarkCard = Color(0xFF4B4745)
 val Primary = LightBrown
 val Secondary = DarkGray1
 val ErrorColor = LightRed
+
+object KanaColors {
+    val primary = DarkBrown
+    val secondary = DarkGray2
+    val tertiary = DarkGray2
+    val background = DarkGray3
+    val surface = DarkCard
+    val error = DarkRed
+    val success = DarkGreen
+    val onPrimary = White
+    val onSecondary = DarkGray3
+    val onBackground = White
+    val onSurface = DarkGray1
+    val onError = White
+    val errorContainer = DarkRed
+    val onErrorContainer = White
+}

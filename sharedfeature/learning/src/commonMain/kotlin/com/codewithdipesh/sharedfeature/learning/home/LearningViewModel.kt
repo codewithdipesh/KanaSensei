@@ -3,6 +3,8 @@ package com.codewithdipesh.sharedfeature.learning.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
+import com.codewithdipesh.kanasensei.core.model.content.Lesson
+import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
 import com.codewithdipesh.kanasensei.core.model.progress.SyncResult
 import com.codewithdipesh.kanasensei.core.model.user.User
@@ -84,7 +86,7 @@ class LearningViewModel(
 
             // Sync from cloud to get latest progress
             val syncFromResult = progressRepository.syncFromCloud(_user.value!!.uid)
-            Napier.d("syncFromCloud result: $syncFromResult", tag = TAG)
+            Napier.d("  result: $syncFromResult", tag = TAG)
 
             // Push any unsynced local progress to cloud
             val syncToResult = progressRepository.syncToCloud(_user.value!!.uid)
@@ -106,9 +108,9 @@ class LearningViewModel(
                     _uiState.update { state ->
                         state.copy(
                             chapters = chapters,
-                            selectedLessonId = chapters.map { //find in chapters
+                            selectedLesson = chapters.map { //find in chapters
                                 it.lessons.find { it.isCurrent } //where lesson isCurrent is true
-                            }.first()?.lesson?.id,
+                            }.first(),
                             isLoading = false
                         )
                     }
@@ -116,9 +118,9 @@ class LearningViewModel(
         }
     }
 
-    fun selectLesson(lessonId: String?) {
-       if(lessonId != null){
-           _uiState.update { it.copy(selectedLessonId = lessonId) }
+    fun selectLesson(lesson: LessonWithProgress?) {
+       if(lesson != null){
+           _uiState.update { it.copy(selectedLesson = lesson) }
        }
     }
 
@@ -185,27 +187,4 @@ class LearningViewModel(
         _uiState.update { it.copy(error = null) }
     }
 
-    fun calculateOffset(index : Int) : Float {
-        val curveRight = listOf(
-            0.40f,
-            0.25f,
-            0.55f,
-            0.75f,
-            0.90f
-        )
-        val curveLeft = listOf(
-            0.85f,
-            0.65f,
-            0.45f,
-            0.25f,
-            0.10f
-        )
-        val segmentSize = 5
-
-        val segment = index / segmentSize
-        val pos = index % segmentSize
-
-        val pattern = if(segment % 2 == 0) curveRight else curveRight
-        return pattern[pos]
-    }
 }

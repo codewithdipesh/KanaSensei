@@ -1,11 +1,12 @@
 package com.codewithdipesh.sharedfeature.learning.home
 
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterWithProgress
+import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 
 data class LearningUiState(
     val isLoading: Boolean = true,
     val chapters: List<ChapterWithProgress> = emptyList(),
-    val selectedLessonId: String? = null,
+    val selectedLesson: LessonWithProgress? = null,
     val syncStatus: SyncStatus = SyncStatus.Idle,
     val error: String? = null
 )

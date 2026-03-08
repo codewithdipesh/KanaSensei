@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.user.MotivationSource
 import com.codewithdipesh.kanasensei.ui.components.buttons.OptionButton
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 @Composable
 fun MotivationSourceQuestion(
     modifier: Modifier = Modifier,
@@ -30,7 +30,7 @@ fun MotivationSourceQuestion(
             style = KanaSenseiTypography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = KanaColors.onBackground,
                 textAlign = TextAlign.Start
             )
         )

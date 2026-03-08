@@ -213,7 +213,9 @@ class ProgressRepositoryImpl(
             val currentChapterId = progressEntity?.currentChapterId
 
             // Group lessons by chapter
-            val lessonsByChapter = allLessons.groupBy { it.chapterId }
+            val lessonsByChapter = allLessons
+                .sortedBy { it.orderNumber }
+                .groupBy { it.chapterId }
 
             chapters.mapNotNull { chapterEntity ->
                 val isCompleted = completedChapterIds.contains(chapterEntity.id)
@@ -243,7 +245,7 @@ class ProgressRepositoryImpl(
                         Napier.d("currentChapterId: $currentChapterId, currentlessonId: $currentLessonId", tag = "ProgressRepo")
 
                         val lessonIsLocked = if (index == 0) false else {
-                            val previousLesson = chapterLessons.getOrNull(index - 1)
+                            val previousLesson = chapterLessons.getOrNull(index - 2)
                             previousLesson != null && !completedLessonIds.contains(previousLesson.id)
                           }
 

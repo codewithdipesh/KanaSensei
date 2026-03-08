@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codewithdipesh.kanasensei.ui.components.vibrator.rememberHapticManager
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun QuizChoiceButton(
@@ -37,14 +37,14 @@ fun QuizChoiceButton(
 
     val backgroundColor: Color = when {
         !isShowingAnswer -> Color.Transparent
-        clicked && isCorrect -> MaterialTheme.colorScheme.scrim
-        clicked && !isCorrect -> MaterialTheme.colorScheme.error
+        clicked && isCorrect -> KanaColors.success
+        clicked && !isCorrect -> KanaColors.error
         else -> Color.Transparent
     }
 
     val textColor: Color = when {
-        clicked -> MaterialTheme.colorScheme.onPrimary
-        else -> MaterialTheme.colorScheme.onBackground
+        clicked -> KanaColors.onPrimary
+        else -> KanaColors.onBackground
     }
 
     val cornerRadius = if (isRoundedCorner) 13.dp else 0.dp
@@ -54,7 +54,7 @@ fun QuizChoiceButton(
             .clip(RoundedCornerShape(cornerRadius))
             .border(
                 width = 1.5.dp,
-                color = if(clicked) backgroundColor else MaterialTheme.colorScheme.secondary,
+                color = if(clicked) backgroundColor else KanaColors.secondary,
                 shape = RoundedCornerShape(cornerRadius)
             )
             .background(backgroundColor)

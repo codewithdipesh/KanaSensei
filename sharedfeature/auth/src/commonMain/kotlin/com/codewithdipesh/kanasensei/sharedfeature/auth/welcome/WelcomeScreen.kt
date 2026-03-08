@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +27,7 @@ import com.codewithdipesh.kanasensei.ui.resources. a_japanese
 import com.codewithdipesh.kanasensei.ui.resources.candle_icon
 import com.codewithdipesh.kanasensei.ui.resources.fan_icon
 import com.codewithdipesh.kanasensei.ui.resources.sakura_icon
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun WelcomeScreen(
@@ -63,7 +63,7 @@ fun WelcomeScreen(
             Icon(
                 painter = painterResource(Res.drawable.a_japanese),
                 contentDescription = "japanese_letter",
-                tint = MaterialTheme.colorScheme.onBackground,
+                tint = KanaColors.onBackground,
                 modifier = Modifier
                     .width(200.dp)
                     .align(Alignment.Center)
@@ -97,7 +97,7 @@ fun WelcomeScreen(
                     style = KanaSenseiTypography.bodyLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 30.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = KanaColors.onBackground,
                         textAlign = TextAlign.Start
                     )
                 )
@@ -105,7 +105,7 @@ fun WelcomeScreen(
                     text = "Bite-sized lessons, practice sessions, and stroke-tracking.",
                     style = KanaSenseiTypography.bodyLarge.copy(
                         fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = KanaColors.onBackground,
                         fontSize = 16.sp,
                     )
                 )
@@ -122,15 +122,15 @@ fun WelcomeScreen(
                     label = "Get Started",
                     onClick = { onOnboard() },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = MaterialTheme.colorScheme.onBackground,
-                    labelColor = MaterialTheme.colorScheme.onSecondary
+                    backgroundColor = KanaColors.onBackground,
+                    labelColor = KanaColors.onSecondary
                 )
                 AppButton(
                     label = "Already a User?",
                     onClick = { onLogin() },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = MaterialTheme.colorScheme.tertiary,
-                    labelColor = MaterialTheme.colorScheme.onBackground
+                    backgroundColor = KanaColors.tertiary,
+                    labelColor = KanaColors.onBackground
                 )
             }
         }

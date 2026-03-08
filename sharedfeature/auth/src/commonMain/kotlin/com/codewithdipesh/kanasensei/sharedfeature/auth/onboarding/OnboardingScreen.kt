@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +29,7 @@ import com.codewithdipesh.kanasensei.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.kanasensei.ui.components.progressbar.HorizontalProgressBar
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.navigate_back_icon
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,8 +127,8 @@ fun OnboardingScreen(
                 //back button
                 KanaIconButton(
                     iconRes = Res.drawable.navigate_back_icon,
-                    backgroundColor = MaterialTheme.colorScheme.tertiary,
-                    iconColor = MaterialTheme.colorScheme.onBackground,
+                    backgroundColor = KanaColors.tertiary,
+                    iconColor = KanaColors.onBackground,
                     onClick = {
                         if(currentPage == 1){
                             onNavigateBack()

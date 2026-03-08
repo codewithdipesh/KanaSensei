@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -52,6 +51,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun NavApp(
@@ -85,7 +85,7 @@ fun NavApp(
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(KanaColors.background)
     ) {
         NavHost(
             navController = navController,
@@ -109,9 +109,9 @@ fun NavApp(
         ) { data ->
             Snackbar(
                 snackbarData = data,
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                actionColor = MaterialTheme.colorScheme.error
+                containerColor = KanaColors.errorContainer,
+                contentColor = KanaColors.onErrorContainer,
+                actionColor = KanaColors.error
             )
         }
     }
@@ -268,8 +268,8 @@ fun NavGraphBuilder.authGraph(
                    SnackbarHost(snackbarHostState) { data ->
                        Snackbar(
                            snackbarData = data,
-                           containerColor = MaterialTheme.colorScheme.errorContainer,
-                           contentColor = MaterialTheme.colorScheme.onErrorContainer
+                           containerColor = KanaColors.errorContainer,
+                           contentColor = KanaColors.onErrorContainer
                        )
                    }
                }
@@ -335,8 +335,8 @@ fun NavGraphBuilder.authGraph(
                    SnackbarHost(snackbarHostState) { data ->
                        Snackbar(
                            snackbarData = data,
-                           containerColor = MaterialTheme.colorScheme.errorContainer,
-                           contentColor = MaterialTheme.colorScheme.onErrorContainer
+                           containerColor = KanaColors.errorContainer,
+                           contentColor = KanaColors.onErrorContainer
                        )
                    }
                }
@@ -454,22 +454,23 @@ fun NavGraphBuilder.homeGraph(
             LearningHomeScreen(
                 isLoading = uiState.isLoading,
                 chapters = uiState.chapters,
-                selectedLessonId = uiState.selectedLessonId,
+                selectedLesson = uiState.selectedLesson,
                 onLessonStart = { lessonWithProgress ->
                     //navigate to lesson details screen
                 },
-                onLessonSelect = { lessonId ->
-                    viewModel.selectLesson(
-                        if (uiState.selectedLessonId == lessonId) null else lessonId
-                    )
+                onLessonSelect = { lesson ->
+                    if (uiState.selectedLesson != lesson){
+                        viewModel.selectLesson(lesson)
+                    }
+
                 },
                 snackBarHost = {
                     SnackbarHost(snackbarHostState) { data ->
                         Snackbar(
                             snackbarData = data,
-                            containerColor = MaterialTheme.colorScheme.errorContainer,
-                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                            actionColor = MaterialTheme.colorScheme.error
+                            containerColor = KanaColors.errorContainer,
+                            contentColor = KanaColors.onErrorContainer,
+                            actionColor = KanaColors.error
                         )
                     }
                 }

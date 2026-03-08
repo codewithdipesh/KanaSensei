@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun AppButton(
@@ -36,8 +36,8 @@ fun AppButton(
     onClick: () -> Unit,
     iconRes: DrawableResource? = null,
     iconSize: Dp = 26.dp,
-    backgroundColor : Color = MaterialTheme.colorScheme.onBackground,
-    labelColor: Color = MaterialTheme.colorScheme.onSecondary,
+    backgroundColor : Color = KanaColors.onBackground,
+    labelColor: Color = KanaColors.onSecondary,
     isRoundedCorner : Boolean = true,
 ){
     Box(
