@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.codewithdipesh.kanasensei.ui.components.vibrator.rememberHapticManager
+import com.codewithdipesh.kanasensei.ui.components.haptic.rememberHapticManager
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 

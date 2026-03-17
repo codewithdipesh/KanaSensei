@@ -3,6 +3,7 @@ package com.codewithdipesh.sharedfeature.learning.home
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -26,6 +27,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -43,6 +46,8 @@ import com.codewithdipesh.sharedfeature.learning.home.components.LessonItem
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonTile
 import com.codewithdipesh.sharedfeature.learning.home.components.calculateOffset
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
+import com.codewithdipesh.sharedfeature.learning.home.components.LessonBubble
+import com.codewithdipesh.sharedfeature.learning.home.components.SNAKE_CURVE_SIZE
 import com.codewithdipesh.sharedfeature.learning.home.components.SelectedLessonPanel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +78,17 @@ fun LearningHomeScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = KanaColors.onBackground
-                )
+                ),
+                modifier =  Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                Color.Black,
+                                KanaColors.background.copy(0.2f)
+                            )
+                        )
+                    )
+                    .blur(6.dp)
             )
         },
         snackbarHost = snackBarHost,
@@ -92,11 +107,14 @@ fun LearningHomeScreen(
                     .fillMaxSize()
                     .padding(padding)
             ) {
+
+                val screenWidth = maxWidth
                 val tileSize = 96.dp
                 val horizontalPadding = 30.dp
-                val availableWidth = maxWidth - tileSize - (horizontalPadding * 2)
+                val availableWidth = screenWidth - tileSize - (horizontalPadding * 2)
 
-                Box(modifier = Modifier.fillMaxSize()){
+                Box(modifier = Modifier.fillMaxSize()) {
+
                     LazyColumn(
                         reverseLayout = true,
                         modifier = Modifier
@@ -108,31 +126,50 @@ fun LearningHomeScreen(
                         itemsIndexed(lessons) { index, lesson ->
 
                             val offsetFraction = calculateOffset(index)
+                            val offset = availableWidth * offsetFraction
 
                             Box(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
+
                                 LessonTile(
                                     lessonWithProgress = lesson,
                                     isSelected = lesson == selectedLesson,
                                     onSelect = { onLessonSelect(lesson) },
-                                    modifier = Modifier.offset(
-                                        x = availableWidth * offsetFraction
-                                    )
+                                    modifier = Modifier
+                                        .offset(x = offset)
+                                        .align(Alignment.BottomStart)
                                 )
+
+                                if (lesson == selectedLesson) {
+                                    val bubbleOffset =
+                                        if(index % SNAKE_CURVE_SIZE == 0) offset - 40.dp
+                                        else if(index % SNAKE_CURVE_SIZE == SNAKE_CURVE_SIZE - 1) offset + 40.dp
+                                        else offset
+
+                                    val trianglePadding =
+                                        if(index % SNAKE_CURVE_SIZE == 0) 24.dp
+                                        else if(index % SNAKE_CURVE_SIZE == SNAKE_CURVE_SIZE - 1) (-24).dp
+                                        else 0.dp
+
+                                    LessonBubble(
+                                        title = lesson.lesson.title,
+                                        description = lesson.lesson.shortDescription,
+                                        trianglePadding = trianglePadding,
+                                        modifier = Modifier
+                                            .offset(x = bubbleOffset, y = (-40).dp)
+                                    )
+                                }
                             }
                         }
                     }
 
                     SelectedLessonPanel(
                         lesson = selectedLesson,
-                        onStart = { lesson ->
-                            onLessonStart(lesson)
-                        },
+                        onStart = { selectedLesson?.let { onLessonStart(it) } },
                         modifier = Modifier.align(Alignment.BottomCenter)
-                            .height(110.dp)
+                            .height(120.dp)
                     )
-
                 }
             }
         }

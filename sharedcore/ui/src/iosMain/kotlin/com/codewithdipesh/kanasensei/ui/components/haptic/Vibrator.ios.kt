@@ -1,4 +1,4 @@
-package com.codewithdipesh.kanasensei.ui.components.vibrator
+package com.codewithdipesh.kanasensei.ui.components.haptic
 
 import androidx.compose.runtime.Composable
 
@@ -7,6 +7,9 @@ actual class HapticManager {
     }
 
     actual fun wrongHaptic() {
+    }
+
+    actual fun softBounce() {
     }
 }
 

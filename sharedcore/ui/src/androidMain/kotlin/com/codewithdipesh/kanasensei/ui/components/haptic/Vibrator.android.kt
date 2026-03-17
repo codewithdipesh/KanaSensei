@@ -1,4 +1,4 @@
-package com.codewithdipesh.kanasensei.ui.components.vibrator
+package com.codewithdipesh.kanasensei.ui.components.haptic
 
 import android.Manifest
 import android.content.Context
@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -60,6 +61,24 @@ actual class HapticManager(
         } else {
             @Suppress("DEPRECATION")
             vibrator.vibrate(120)
+        }
+    }
+
+    @RequiresPermission(Manifest.permission.VIBRATE)
+    actual fun softBounce() {
+        vibrator ?: return
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //  timings: delay, hit, tail
+            //  amplitudes: silent, sharp impact, soft rumble
+            val timings    = longArrayOf(0,  40,  20,  30 )
+            val amplitudes = intArrayOf( 0, 5,   0,  1)
+            vibrator.vibrate(
+                VibrationEffect.createWaveform(timings, amplitudes, -1)
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(40)
         }
     }
 }

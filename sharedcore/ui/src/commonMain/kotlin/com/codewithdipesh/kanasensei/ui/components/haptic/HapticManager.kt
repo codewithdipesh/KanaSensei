@@ -1,4 +1,4 @@
-package com.codewithdipesh.kanasensei.ui.components.vibrator
+package com.codewithdipesh.kanasensei.ui.components.haptic
 
 import androidx.compose.runtime.Composable
 
@@ -10,4 +10,5 @@ expect fun rememberHapticManager(): HapticManager
 expect class HapticManager {
     fun correctHaptic()
     fun wrongHaptic()
+    fun softBounce()
 }

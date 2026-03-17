@@ -63,22 +63,25 @@ class LearningViewModel(
 
     private fun initializeContent() {
         viewModelScope.launch {
-            // Sync content from Firestore if needed
+            val hasLocal = contentSyncManager.hasLocalContent()
+            Napier.d("hasLocalContent: $hasLocal", tag = "ProgressRepo")
 
-            Napier.d("hasLocalContent: ${contentSyncManager.hasLocalContent()}", tag = "ProgressRepo")
-
-            if (!contentSyncManager.hasLocalContent()) {
+            // Show loading only on first launch (no cached data)
+            if (!hasLocal) {
                 _uiState.update { it.copy(isLoading = true) }
-                val synced = contentSyncManager.syncChaptersAndLessons()
-                if (!synced) {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = "Failed to load content. Please check your connection."
-                        )
-                    }
-                    return@launch
+            }
+
+            // Always sync from Firestore to pick up updated content
+            val synced = contentSyncManager.syncChaptersAndLessons()
+            if (!synced && !hasLocal) {
+                // Only block if we have no cached fallback
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Failed to load content. Please check your connection."
+                    )
                 }
+                return@launch
             }
 
             // Initialize user progress

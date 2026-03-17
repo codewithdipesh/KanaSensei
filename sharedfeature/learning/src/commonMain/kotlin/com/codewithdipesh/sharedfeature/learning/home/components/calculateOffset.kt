@@ -9,6 +9,8 @@ private val snakeCurve = listOf(
     1f
 )
 
+val SNAKE_CURVE_SIZE = 3
+
 fun calculateOffset(index: Int): Float {
     val pos = index % snakeCurve.size
     return snakeCurve[pos]

@@ -70,7 +70,8 @@ fun SelectedLessonPanel(
                 onClick = { } , //todo
                 backgroundColor = KanaColors.primary,
                 labelColor = KanaColors.onPrimary,
-                isRoundedCorner = true
+                isRoundedCorner = true,
+                clickable = lesson.isCurrent || lesson.isCompleted
             )
         }
     }
