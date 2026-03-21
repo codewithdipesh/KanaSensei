@@ -1,8 +1,14 @@
 package com.codewithdipesh.sharedfeature.learning.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -152,13 +158,29 @@ fun LearningHomeScreen(
                                         else if(index % SNAKE_CURVE_SIZE == SNAKE_CURVE_SIZE - 1) (-24).dp
                                         else 0.dp
 
-                                    LessonBubble(
-                                        title = lesson.lesson.title,
-                                        description = lesson.lesson.shortDescription,
-                                        trianglePadding = trianglePadding,
-                                        modifier = Modifier
-                                            .offset(x = bubbleOffset, y = (-40).dp)
-                                    )
+                                    AnimatedVisibility(
+                                        visible = lesson == selectedLesson,
+                                        enter = scaleIn(
+                                            animationSpec = spring(
+                                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                                stiffness = Spring.StiffnessLow
+                                            ),
+                                            initialScale = 0.6f
+                                        ) + fadeIn(animationSpec = tween(durationMillis = 200)),
+
+                                        exit = scaleOut(
+                                            animationSpec = tween(durationMillis = 300),
+                                            targetScale = 0.6f
+                                        ) + fadeOut(animationSpec = tween(durationMillis = 200))
+                                    ){
+                                        LessonBubble(
+                                            title = lesson.lesson.title,
+                                            description = lesson.lesson.shortDescription,
+                                            trianglePadding = trianglePadding,
+                                            modifier = Modifier
+                                                .offset(x = bubbleOffset, y = (-40).dp)
+                                        )
+                                    }
                                 }
                             }
                         }
