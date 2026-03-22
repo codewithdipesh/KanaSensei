@@ -72,7 +72,7 @@ actual class HapticManager(
             //  timings: delay, hit, tail
             //  amplitudes: silent, sharp impact, soft rumble
             val timings    = longArrayOf(0,  40,  20,  30 )
-            val amplitudes = intArrayOf( 0, 5,   0,  1)
+            val amplitudes = intArrayOf( 0, 2,   0,  1)
             vibrator.vibrate(
                 VibrationEffect.createWaveform(timings, amplitudes, -1)
             )

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,10 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.ui.components.haptic.rememberHapticManager
+import com.codewithdipesh.kanasensei.ui.components.soundPlayer.AudioManager
+import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioManager
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.lesson_locked_tile
 import com.codewithdipesh.kanasensei.ui.resources.lesson_tile
 import com.codewithdipesh.kanasensei.ui.resources.tick_icon
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
@@ -45,6 +49,7 @@ fun LessonTile(
 ) {
     val lesson = lessonWithProgress.lesson
     val hapticManager = rememberHapticManager()
+    val audioManager = rememberAudioManager()
     val isFirstComposition = rememberSaveable { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
 
@@ -70,8 +75,6 @@ fun LessonTile(
         //if selected by tap ..then
         //a smooth vibration bouncy effect in UI
         if (isSelected) {
-            hapticManager.softBounce()
-
             // Pop
             scaleXCo.animateTo(1.18f, tween(50))
             scaleYCo.animateTo(1.18f, tween(50))
@@ -103,17 +106,23 @@ fun LessonTile(
                 indication = null
             ){
                 if(lessonWithProgress.isLocked){
+                    //locked so show jiggle anim -> vibration and sound of lock
+                    audioManager.playLockDenied()
+                    hapticManager.softBounce()
                     scope.launch {
                         //tap animation squish
-                        scaleXCo.animateTo(0.96f, tween(80))
-                        scaleYCo.animateTo(0.92f, tween(80)) // slight Y squash
+                        scaleXCo.animateTo(0.96f, tween(100))
+                        scaleYCo.animateTo(0.92f, tween(100)) // slight Y squash
 
 
                         scaleXCo.animateTo(1f, spring())
                         scaleYCo.animateTo(1f, spring())
                     }
                 }else{
-                    onSelect()
+                   if(!isSelected){
+                       audioManager.playTap()
+                       onSelect()
+                   }
                 }
             }
     ) {
@@ -136,6 +145,7 @@ fun LessonTile(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(bottom = 20.dp)
+
             )
 
             if (lessonWithProgress.isCompleted) {

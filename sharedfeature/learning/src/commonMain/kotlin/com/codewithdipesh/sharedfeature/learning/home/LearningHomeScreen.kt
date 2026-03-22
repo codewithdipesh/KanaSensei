@@ -40,12 +40,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterVisibility
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.flattenLessons
 import com.codewithdipesh.kanasensei.ui.components.progressbar.AppLoadingIndicator
+import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioManager
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.sharedfeature.learning.home.components.ChapterHeader
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonItem
@@ -71,31 +73,36 @@ fun LearningHomeScreen(
     Scaffold(
         containerColor = KanaColors.background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Learning",
-                        style = KanaSenseiTypography.headlineLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 28.sp
-                        )
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = KanaColors.onBackground
-                ),
-                modifier =  Modifier
-                    .background(
-                        brush = Brush.verticalGradient(
-                            listOf(
-                                Color.Black,
-                                KanaColors.background.copy(0.2f)
+            Box {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                listOf(
+                                    Color.Black,
+                                    KanaColors.background.copy(0.2f)
+                                )
                             )
                         )
+                        .blur(6.dp)
+                )
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Learning",
+                            style = KanaSenseiTypography.headlineLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 28.sp
+                            )
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = KanaColors.onBackground
                     )
-                    .blur(6.dp)
-            )
+                )
+            }
         },
         snackbarHost = snackBarHost,
         modifier = Modifier.fillMaxSize()
@@ -135,7 +142,9 @@ fun LearningHomeScreen(
                             val offset = availableWidth * offsetFraction
 
                             Box(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .zIndex(if (lesson == selectedLesson) 10f else 0f)
                             ) {
 
                                 LessonTile(

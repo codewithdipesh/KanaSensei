@@ -32,7 +32,6 @@ fun LessonBubble(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .shadow(8.dp)
     ) {
 
         Box(
