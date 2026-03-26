@@ -1,6 +1,7 @@
 package com.codewithdipesh.kanasensei.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import com.codewithdipesh.kanasensei.ui.theme.DeepBrown
 
 
 // Light Colors
@@ -25,6 +26,8 @@ val DarkGreen = Color(0xFF60BA53)
 val DarkYellow = Color(0xFFF0B153)
 val DarkBrown = Color(0xFFC08D6B)
 val DarkCard = Color(0xFF4B4745)
+val DeepBrown = Color(0xFF36241C)
+val WhiteBrown = Color(0xFFECC8B6)
 
 val Primary = LightBrown
 val Secondary = DarkGray1
@@ -45,4 +48,7 @@ object KanaColors {
     val onError = White
     val errorContainer = DarkRed
     val onErrorContainer = White
+    val onOverlayedContainer = WhiteBrown
+    val overlayedContainer = DeepBrown
+    val shadowPrimary = Color(0xFF8A5631)
 }

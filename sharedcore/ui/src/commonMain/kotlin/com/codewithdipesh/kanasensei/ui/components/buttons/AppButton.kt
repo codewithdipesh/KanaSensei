@@ -32,6 +32,7 @@ fun AppButton(
     modifier: Modifier = Modifier,
     label: String,
     labelSize : Int = 18,
+    labelPadding : Int = 16,
     clickable: Boolean = true,
     onClick: () -> Unit,
     iconRes: DrawableResource? = null,
@@ -71,7 +72,7 @@ fun AppButton(
                     fontSize = labelSize.sp,
                     color = labelColor
                 ),
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(labelPadding.dp)
             )
         }
     }

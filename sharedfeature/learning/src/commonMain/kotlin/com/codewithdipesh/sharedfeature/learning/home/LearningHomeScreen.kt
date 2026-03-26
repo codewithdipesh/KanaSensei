@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
+import androidx.compose.runtime.remember
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +60,7 @@ import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonBubble
 import com.codewithdipesh.sharedfeature.learning.home.components.SNAKE_CURVE_SIZE
 import com.codewithdipesh.sharedfeature.learning.home.components.SelectedLessonPanel
+import com.codewithdipesh.sharedfeature.learning.home.components.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,41 +73,10 @@ fun LearningHomeScreen(
     snackBarHost : @Composable () -> Unit
 ) {
     val lessons = chapters.flattenLessons()
+    val hazeState = remember { HazeState() }
 
     Scaffold(
         containerColor = KanaColors.background,
-        topBar = {
-            Box {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                listOf(
-                                    Color.Black,
-                                    KanaColors.background.copy(0.2f)
-                                )
-                            )
-                        )
-                        .blur(6.dp)
-                )
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Learning",
-                            style = KanaSenseiTypography.headlineLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 28.sp
-                            )
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = KanaColors.onBackground
-                    )
-                )
-            }
-        },
         snackbarHost = snackBarHost,
         modifier = Modifier.fillMaxSize()
     ) { padding ->
@@ -132,8 +105,9 @@ fun LearningHomeScreen(
                         reverseLayout = true,
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = horizontalPadding),
-                        contentPadding = PaddingValues(bottom = 130.dp)
+                            .padding(horizontal = horizontalPadding)
+                            .hazeSource(hazeState),
+                        contentPadding = PaddingValues(bottom = 30.dp)
                     ) {
 
                         itemsIndexed(lessons) { index, lesson ->
@@ -187,6 +161,7 @@ fun LearningHomeScreen(
                                             description = lesson.lesson.shortDescription,
                                             trianglePadding = trianglePadding,
                                             modifier = Modifier
+                                                .offset(x = -20.dp) //little adjustment
                                                 .offset(x = bubbleOffset, y = (-40).dp)
                                         )
                                     }
@@ -198,8 +173,18 @@ fun LearningHomeScreen(
                     SelectedLessonPanel(
                         lesson = selectedLesson,
                         onStart = { selectedLesson?.let { onLessonStart(it) } },
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                            .height(120.dp)
+                        hazeState = hazeState,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 90.dp)
+                    )
+
+                    //topbar
+                    TopBar(
+                        hazeState = hazeState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopCenter)
                     )
                 }
             }

@@ -65,6 +65,8 @@ kotlin {
                 implementation(libs.bundles.kmp.ktor)
                 implementation(libs.koin.core)
                 implementation(libs.napier)
+                implementation(libs.haze)
+                implementation(libs.haze.materials)
             }
         }
 
