@@ -461,6 +461,8 @@ fun NavGraphBuilder.homeGraph(
                 onLessonSelect = { lesson ->
                     if (uiState.selectedLesson != lesson){
                         viewModel.selectLesson(lesson)
+                    }else{
+                        viewModel.selectLesson(null)
                     }
 
                 },

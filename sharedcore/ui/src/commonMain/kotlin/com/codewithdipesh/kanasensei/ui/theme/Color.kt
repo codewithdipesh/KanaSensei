@@ -51,4 +51,6 @@ object KanaColors {
     val onOverlayedContainer = WhiteBrown
     val overlayedContainer = DeepBrown
     val shadowPrimary = Color(0xFF8A5631)
+    val shadowSecondary = Color(0xFF8A5631)
+    val secondaryBackground = Color(0xFF2B2826)
 }
