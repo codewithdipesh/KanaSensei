@@ -122,9 +122,7 @@ class LearningViewModel(
     }
 
     fun selectLesson(lesson: LessonWithProgress?) {
-       if(lesson != null){
-           _uiState.update { it.copy(selectedLesson = lesson) }
-       }
+        _uiState.update { it.copy(selectedLesson = lesson) }
     }
 
     fun completeCurrentLesson(lessonId: String, chapterId: String) {

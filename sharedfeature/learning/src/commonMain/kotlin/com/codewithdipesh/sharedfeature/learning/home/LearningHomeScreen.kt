@@ -54,6 +54,8 @@ import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioMana
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.sharedfeature.learning.home.components.ChapterHeader
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonItem
+import com.codewithdipesh.kanasensei.ui.resources.Res
+import com.codewithdipesh.kanasensei.ui.resources.tile_shadow
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonTile
 import com.codewithdipesh.sharedfeature.learning.home.components.calculateOffset
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
@@ -120,6 +122,16 @@ fun LearningHomeScreen(
                                     .fillMaxWidth()
                                     .zIndex(if (lesson == selectedLesson) 10f else 0f)
                             ) {
+
+                                //tile shadow
+                                Icon(
+                                    painter = painterResource(Res.drawable.tile_shadow),
+                                    contentDescription = "tile shadow",
+                                    tint = if(lesson.isLocked) Color.Gray.copy(0.2f) else KanaColors.primary.copy(0.25f),
+                                    modifier = Modifier
+                                        .offset(x = offset,y = 20.dp)
+                                        .align(Alignment.BottomStart)
+                                )
 
                                 LessonTile(
                                     lessonWithProgress = lesson,

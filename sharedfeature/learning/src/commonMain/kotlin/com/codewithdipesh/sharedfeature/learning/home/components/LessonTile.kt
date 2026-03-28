@@ -32,6 +32,7 @@ import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.ui.components.haptic.rememberHapticManager
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.AudioManager
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioManager
+import com.codewithdipesh.kanasensei.ui.components.text.Text3D
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.lesson_locked_tile
 import com.codewithdipesh.kanasensei.ui.resources.lesson_tile
@@ -121,6 +122,8 @@ fun LessonTile(
                 }else{
                    if(!isSelected){
                        audioManager.playTap()
+                       onSelect()
+                   }else{
                        onSelect()
                    }
                 }
