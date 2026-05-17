@@ -23,7 +23,6 @@ fun calculateTileOffset(index: Int): Float {
 }
 
 private val props = listOf(
-    Res.drawable.prop_2,
     Res.drawable.prop__,
     Res.drawable.prop_3,
     Res.drawable.prop_4
@@ -44,5 +43,5 @@ fun getProp(index: Int): DrawableResource {
 
 fun getPropOffsetFix(index: Int): Int {
     val k = (index - 2) / 6
-    return if (k % 2 == 0) 40 else -16
+    return if (k % 2 == 0) -16 else 16
 }

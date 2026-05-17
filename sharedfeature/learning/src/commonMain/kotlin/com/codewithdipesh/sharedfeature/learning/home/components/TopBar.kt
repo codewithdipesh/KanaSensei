@@ -43,7 +43,7 @@ fun TopBar(
                     style = HazeStyle(
                         backgroundColor = KanaColors.background,
                         tints = listOf(
-                            HazeTint(Color.Black.copy(alpha = 0.6f))
+                            HazeTint(Color.Transparent)
                         ),
                         blurRadius = 20.dp
                     )
@@ -62,7 +62,8 @@ fun TopBar(
                 text = "Learning",
                 style = KanaSenseiTypography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
+                    fontSize = 28.sp,
+                    color = KanaColors.onSecondaryButton
                 ),
                 modifier = Modifier.padding(start = 30.dp)
             )

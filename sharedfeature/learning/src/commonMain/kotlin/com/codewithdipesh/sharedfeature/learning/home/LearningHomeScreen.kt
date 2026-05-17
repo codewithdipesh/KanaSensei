@@ -2,6 +2,7 @@ package com.codewithdipesh.sharedfeature.learning.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -25,12 +26,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.remember
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterWithProgress
@@ -38,6 +41,7 @@ import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.flattenLessons
 import com.codewithdipesh.kanasensei.ui.components.progressbar.AppLoadingIndicator
 import com.codewithdipesh.kanasensei.ui.resources.Res
+import com.codewithdipesh.kanasensei.ui.resources.grass
 import com.codewithdipesh.kanasensei.ui.resources.tile_shadow
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonTile
 import com.codewithdipesh.sharedfeature.learning.home.components.calculateTileOffset
@@ -64,6 +68,11 @@ fun LearningHomeScreen(
 ) {
     val lessons = chapters.flattenLessons()
     val hazeState = remember { HazeState() }
+
+    val lessonsPadding by animateIntAsState(
+        targetValue = if(selectedLesson != null) 220 else 30,
+        animationSpec = tween(400)
+    )
 
     Scaffold(
         containerColor = KanaColors.background,
@@ -97,7 +106,7 @@ fun LearningHomeScreen(
                             .fillMaxSize()
                             .padding(horizontal = horizontalPadding)
                             .hazeSource(hazeState),
-                        contentPadding = PaddingValues(bottom = 135.dp)
+                        contentPadding = PaddingValues( bottom = lessonsPadding.dp )
                     ) {
 
                         itemsIndexed(lessons) { index, lesson ->
@@ -115,9 +124,9 @@ fun LearningHomeScreen(
                                 Icon(
                                     painter = painterResource(Res.drawable.tile_shadow),
                                     contentDescription = "tile shadow",
-                                    tint = if(lesson.isLocked) Color.Gray.copy(0.2f) else KanaColors.primary.copy(0.25f),
+                                    tint = Color.Black.copy(0.8f),
                                     modifier = Modifier
-                                        .offset(x = offset,y = 20.dp)
+                                        .offset(x = offset,y = 28.dp)
                                         .align(Alignment.BottomStart)
                                 )
 
@@ -129,13 +138,40 @@ fun LearningHomeScreen(
                                         .offset(x = offset)
                                         .align(Alignment.BottomStart)
                                 )
+                                //grass
+                                if(index % 2 == 0){
+                                    val grassOffsetFraction = if((index/2) % 2 == 0) 0f else 1f
+                                    val grassOffset = availableWidth * grassOffsetFraction
+                                    val grassOffsetFix = if((index/2) % 2 == 0) -36.dp else 36.dp
+                                    val yRotation = if((index/2) % 2 == 0) 0f else 180f
 
+                                    Box(
+                                        modifier = Modifier
+                                            .matchParentSize()
+                                            .wrapContentSize(
+                                                align = Alignment.BottomStart,
+                                                unbounded = true
+                                            )
+                                    ){
+                                        Image(
+                                            painter = painterResource(Res.drawable.grass),
+                                            contentDescription = "grass",
+                                            modifier = Modifier
+                                                .offset(x = grassOffset + grassOffsetFix )
+                                                .graphicsLayer{
+                                                    rotationY = yRotation
+                                                }
+                                        )
+                                    }
+
+                                }
                                 //props - wrapped so it doesn't inflate row height
                                 if(index % 2 == 0){
                                     val propOffsetFraction = calculatePropOffset(index)
                                     if(propOffsetFraction != null){
                                         val propOffset = availableWidth * propOffsetFraction
-
+                                        val k = (index - 2) / 6
+                                        val yRotation = if(k % 2 == 0) 0f else 180f
                                         Box(
                                             modifier = Modifier
                                                 .matchParentSize()
@@ -148,7 +184,10 @@ fun LearningHomeScreen(
                                                 painter = painterResource(getProp(index)),
                                                 contentDescription = "prop",
                                                 modifier = Modifier
-                                                    .offset(x = propOffset + getPropOffsetFix(index).dp, y = 20.dp)
+                                                    .offset(x = propOffset + getPropOffsetFix(index).dp, y = 24.dp)
+                                                    .graphicsLayer{
+                                                        rotationY = yRotation
+                                                    }
                                             )
                                         }
                                     }
@@ -196,37 +235,22 @@ fun LearningHomeScreen(
 
                     AnimatedVisibility(
                         visible = selectedLesson != null,
-                        enter = slideInVertically(
-                            animationSpec = spring(
-                                dampingRatio = Spring.DampingRatioMediumBouncy,
-                                stiffness = Spring.StiffnessLow
-                            ),
-                            initialOffsetY = { -it + 40 }
-                        ),
-                        exit = slideOutVertically(
-                            animationSpec = spring(
-                                dampingRatio = Spring.DampingRatioMediumBouncy,
-                                stiffness = Spring.StiffnessLow
-                            ),
-                            targetOffsetY = { -it + 40}
-                        )
+                        enter = fadeIn(tween(600)),
+                        exit = fadeOut(tween(600)),
+                        modifier = Modifier.align(Alignment.BottomCenter)
                     ){
                         SelectedLessonPanel(
                             lesson = selectedLesson,
-                            onStart = { selectedLesson?.let { onLessonStart(it) } },
-                            hazeState = hazeState,
-                            modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .padding(top = 74.dp)
+                            onStart = { selectedLesson?.let { onLessonStart(it) } }
                         )
                     }
 
-                    //chapter details
-                    ChapterDetails(
-                        chapterWithProgress = chapters.first(), //todo :for now
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                    )
+//                    //chapter details
+//                    ChapterDetails(
+//                        chapterWithProgress = chapters.first(), //todo :for now
+//                        modifier = Modifier
+//                            .align(Alignment.BottomCenter)
+//                    )
 
 
                     //topbar

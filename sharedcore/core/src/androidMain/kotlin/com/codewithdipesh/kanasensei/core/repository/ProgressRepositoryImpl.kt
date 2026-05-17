@@ -222,7 +222,7 @@ class ProgressRepositoryImpl(
                 val isCurrent = chapterEntity.orderNumber == currentChapterOrder
 
                 // Determine visibility
-                val visibility = when {   
+                val visibility = when {
                     isCompleted || isCurrent -> ChapterVisibility.UNLOCKED
                     chapterEntity.orderNumber == currentChapterOrder + 1 -> ChapterVisibility.SEMI_VISIBLE
                     else -> ChapterVisibility.LOCKED

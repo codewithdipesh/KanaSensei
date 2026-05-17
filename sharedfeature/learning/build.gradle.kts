@@ -67,6 +67,9 @@ kotlin {
                 implementation(libs.napier)
                 implementation(libs.haze)
                 implementation(libs.haze.materials)
+
+                implementation(libs.compottie)
+                implementation(libs.compottie.resources)
             }
         }
 

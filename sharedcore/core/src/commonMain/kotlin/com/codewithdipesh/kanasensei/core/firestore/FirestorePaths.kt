@@ -6,6 +6,7 @@ object FirestorePaths {
     // Content collections (global)
     const val CHAPTERS = "chapters"
     const val LESSONS = "lessons"
+    const val LESSONPAGES = "pages"
     const val CHARACTERS = "characters"
 
     // Users collection
@@ -45,6 +46,13 @@ object FirestorePaths {
         const val TEASER_TEXT = "teaserText"
         const val CREATED_AT = "createdAt"
         const val UPDATED_AT = "updatedAt"
+    }
+
+    object LessonPageFields {
+       const val AUTO_PLAY = "autoPlay"
+       const val BADGE = "badge"
+       const val CONTENT = "content"
+       const val ORDER = "order"
     }
 
     // Field names for characters

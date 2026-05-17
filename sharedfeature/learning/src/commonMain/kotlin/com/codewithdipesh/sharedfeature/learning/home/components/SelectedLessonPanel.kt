@@ -35,14 +35,15 @@ import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton3D
+import com.codewithdipesh.kanasensei.ui.components.buttons.customClickable
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioManager
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
+import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 
 @Composable
 fun SelectedLessonPanel(
     lesson: LessonWithProgress?,
     onStart: (LessonWithProgress) -> Unit = {},
-    hazeState: HazeState,
     modifier: Modifier = Modifier
 ) {
     val player = rememberAudioManager()
@@ -51,79 +52,71 @@ fun SelectedLessonPanel(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .clip(RoundedCornerShape(22.dp))
-            .background(KanaColors.overlayedContainer.copy(0.94f))
-            .border(1.5.dp, KanaColors.primary.copy(0.22f), RoundedCornerShape(22.dp))
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null
-            ){
-                //nothing
-                //it will save form mistap to background element
-            }
+            .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+            .background(KanaColors.overlayedContainer)
     ) {
-        //background blur via haze
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .clip(RoundedCornerShape(22.dp))
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeStyle(
-                        backgroundColor = KanaColors.overlayedContainer,
-                        tints = listOf(
-                            HazeTint(KanaColors.overlayedContainer.copy(alpha = 0.7f))
-                        ),
-                        blurRadius = 20.dp
-                    )
-                )
-        )
         //content column
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(24.dp),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = "Lesson ${lesson.lesson.orderNumber}",
-                style = TextStyle(
-                    color = KanaColors.onOverlayedContainer,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-            Spacer(Modifier.height(6.dp))
             Text(
                 text = lesson.lesson.expandedTitle,
                 style = TextStyle(
                     color = KanaColors.onOverlayedContainer,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
             )
-            Spacer(Modifier.height(6.dp))
             Text(
                 text = lesson.lesson.detailedDescription,
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = KanaColors.onOverlayedContainer.copy(alpha = 0.75f)
-                )
+                    color = KanaColors.onSecondaryButton
+                ),
+
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
+
             AppButton3D(
-                modifier = Modifier.fillMaxWidth(),
-                label = if(lesson.isCompleted) "Revise" else if (lesson.isCurrent) "Start" else "Start",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp ),
+                label = "${if(lesson.isCompleted) "Revise" else if (lesson.isCurrent) "Start" else "Start"} Learning" ,
                 onClick = {
                     player.playTap()
                 } ,
-                labelSize = 18,
+                labelSize = 16,
                 labelPadding = 8,
                 clickable = lesson.isCurrent || lesson.isCompleted
             )
+
+//            Box(
+//                modifier = Modifier
+//                    .customClickable(
+//                       onClick = {
+//                           player.playTap()
+//                       }
+//                    )
+//                    .fillMaxWidth()
+//                    .height(50.dp )
+//                    .clip(RoundedCornerShape(16.dp))
+//                    .background(KanaColors.secondaryButton),
+//                contentAlignment = Alignment.Center
+//            ){
+//                Text(
+//                    text = "${if(lesson.isCompleted) "Revise" else if (lesson.isCurrent) "Start" else "Start"} Learning" ,
+//                    style = KanaSenseiTypography.bodyMedium.copy(
+//                        fontWeight = FontWeight.Medium,
+//                        fontSize = 16.sp,
+//                        color = KanaColors.onSecondaryButton
+//                    )
+//                )
+//            }
         }
     }
 }

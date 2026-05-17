@@ -40,6 +40,7 @@ androidx-viewmodel = "2.10.0"
 ksp = "2.1.10-1.0.29"
 composePreview = "1.10.0"
 runtime = "1.10.5"
+compottie = "2.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -122,6 +123,9 @@ jetbrains-compose-runtime = { group = "org.jetbrains.compose.runtime", name = "r
 jetbrains-compose-components = {group="org.jetbrains.compose.components",name="components-resources",version.ref = "compose"}
 jetbrains-compose-preview = { group = "org.jetbrains.compose.ui",name ="ui-tooling-preview", version.ref = "composePreview" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+
+compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
+compottie-resources = { group = "io.github.alexzhirkevich", name = "compottie-resources", version.ref = "compottie" }
 
 
 [bundles]

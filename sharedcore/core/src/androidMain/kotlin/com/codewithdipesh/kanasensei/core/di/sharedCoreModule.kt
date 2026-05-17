@@ -6,6 +6,8 @@ import com.codewithdipesh.kanasensei.core.connectivity.NetworkConnectivityObserv
 import com.codewithdipesh.kanasensei.core.local.KanaSenseiDatabase
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepositoryImpl
+import com.codewithdipesh.kanasensei.core.repository.LearningRepository
+import com.codewithdipesh.kanasensei.core.repository.LearningRepositoryImpl
 import com.codewithdipesh.kanasensei.core.repository.ProgressRepository
 import com.codewithdipesh.kanasensei.core.repository.ProgressRepositoryImpl
 import com.codewithdipesh.kanasensei.core.repository.TranslateRepository
@@ -49,6 +51,10 @@ val sharedCoreModule = module {
 
     single<FirebaseAuthRepository> {
         FirebaseAuthRepositoryImpl(get(), get())
+    }
+
+    single<LearningRepository> {
+        LearningRepositoryImpl(get())
     }
 
     single { JapaneseTtsManager(androidContext()) }

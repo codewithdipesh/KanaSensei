@@ -1,0 +1,146 @@
+package com.codewithdipesh.sharedfeature.learning.lesson.components
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.codewithdipesh.kanasensei.ui.resources.Res
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
+import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
+
+@Composable
+fun LoadingScreen(
+    modifier : Modifier = Modifier
+){
+    val composition by rememberLottieComposition {
+        LottieCompositionSpec.JsonString(
+            Res.readBytes("files/ramen.json").decodeToString()
+        )
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Text(
+            text = "Loading your lesson",
+            style = KanaSenseiTypography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                color = KanaColors.onLearningBackground
+            )
+        )
+        Spacer(Modifier.height(40.dp))
+        Image(
+            painter = rememberLottiePainter(
+                composition = composition,
+                iterations = Compottie.IterateForever
+            ),
+            contentDescription = null,
+            modifier = Modifier.size(120.dp)
+        )
+        Spacer(Modifier.height(80.dp))
+        Text(
+            text = "Fun Fact",
+            style = KanaSenseiTypography.bodyMedium.copy(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                color = KanaColors.learningSurface
+            )
+        )
+        Text(
+            text = funFacts.random(),
+            style = KanaSenseiTypography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                color = KanaColors.learningSurface
+            )
+        )
+
+
+    }
+}
+
+
+
+val funFacts = listOf(
+    "Hiragana was developed over 1,000 years ago from simplified Chinese characters.",
+    "Katakana was originally created by Buddhist monks as shorthand symbols.",
+    "Japanese children first learn Hiragana before Katakana and Kanji.",
+    "The kana 'ん' is the only Japanese kana without a vowel sound.",
+    "Japanese has fewer sounds than English, making pronunciation very rhythmic.",
+    "The word 'karaoke' means 'empty orchestra' in Japanese.",
+    "In Japanese, family names usually come before first names.",
+    "The kana 'あ' evolved from an ancient Chinese character.",
+    "Japanese writing can be written both vertically and horizontally.",
+    "Anime subtitles often use Hiragana to help beginners read Kanji.",
+    "There are 46 basic Hiragana characters.",
+    "There are 46 basic Katakana characters.",
+    "Japanese convenience stores are called 'konbini'.",
+    "Mount Fuji is the tallest mountain in Japan.",
+    "Ramen originally came from Chinese noodle dishes.",
+    "Sushi originally began as a way to preserve fish.",
+    "Japanese trains are famous for being extremely punctual.",
+    "The torii gate symbolizes the entrance to a sacred place.",
+    "Sakura blossoms only bloom for a short time each year.",
+    "In Japan, slurping noodles is considered polite.",
+    "Japanese has no spaces between words.",
+    "Manga is usually read from right to left.",
+    "Japanese people often bow while greeting each other.",
+    "The lucky cat statue is called 'Maneki-neko'.",
+    "The kana 'の' is often used in Japanese logos because of its beautiful shape.",
+    "Japanese calligraphy is known as 'Shodō'.",
+    "Some Japanese words have no direct English translation.",
+    "The Japanese alphabet sounds stay very consistent unlike English.",
+    "Bento boxes are designed to make meals visually beautiful.",
+    "The word 'emoji' originally comes from Japanese.",
+    "Japanese shrines often have fox statues as protectors.",
+    "Traditional Japanese paper is called 'washi'.",
+    "Japanese tea ceremonies focus on harmony and mindfulness.",
+    "Ninjas historically worked as spies more than fighters.",
+    "Japanese gardens are designed to create calm and balance.",
+    "The kana 'し' can be pronounced differently in some dialects.",
+    "Origami means folded paper.",
+    "Japanese vending machines can sell hot meals and umbrellas.",
+    "The sound 'R' in Japanese is between an English R and L.",
+    "Some Japanese festivals use giant illuminated lanterns.",
+    "The Japanese flag represents the rising sun.",
+    "Learning kana first makes Kanji much easier later.",
+    "The kana 'つ' is one of the hardest for beginners to pronounce correctly.",
+    "Japanese uses three writing systems together: Hiragana, Katakana, and Kanji.",
+    "Samurai followed a code called 'Bushidō'.",
+    "Many Japanese words are inspired by nature and seasons.",
+    "Japanese New Year is one of the country’s most important celebrations.",
+    "Matcha tea is made from finely ground green tea leaves.",
+    "In Japan, shoes are removed before entering many homes.",
+    "The famous Shinkansen trains are called bullet trains.",
+    "Japanese rhythm often follows equal-timed syllables called mora.",
+    "The kana 'へ' is pronounced differently when used as a particle.",
+    "Tokyo is one of the largest cities in the world.",
+    "Traditional Japanese lanterns are called 'chōchin'.",
+    "Japanese myths include magical creatures called 'yōkai'.",
+    "Japanese temples and shrines are different types of sacred places.",
+    "The word 'sensei' can mean teacher, doctor, or master.",
+    "Many Japanese signs mix Hiragana, Katakana, and Kanji together.",
+    "Japanese pronunciation is considered one of the most consistent languages to read aloud.",
+    "The kana 'を' is mainly used as a grammar particle in modern Japanese.",
+    "Writing kana repeatedly helps build muscle memory faster."
+)

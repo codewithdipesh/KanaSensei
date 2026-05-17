@@ -37,7 +37,7 @@ object KanaColors {
     val primary = DarkBrown
     val secondary = DarkGray2
     val tertiary = DarkGray2
-    val background = DarkGray3
+    val background = Color(0xFF13542C)
     val surface = DarkCard
     val error = DarkRed
     val success = DarkGreen
@@ -48,9 +48,16 @@ object KanaColors {
     val onError = White
     val errorContainer = DarkRed
     val onErrorContainer = White
-    val onOverlayedContainer = WhiteBrown
-    val overlayedContainer = DeepBrown
+    val onOverlayedContainer = Color(0xFFFFBB00)
+    val overlayedContainer = Color(0xFF196737)
+    val secondaryButton = Color(0xFF563003)
+    val onSecondaryButton = Color(0xFFF7E197)
     val shadowPrimary = Color(0xFF8A5631)
     val shadowSecondary = Color(0xFF8A5631)
     val secondaryBackground = Color(0xFF2B2826)
+
+    val learningBackground = Color(0XFFFAEEC3)
+    val onLearningBackground = Color(0XFF6F3318)
+    val learningSurface = Color(0xFFB4906D)
+    val learningDrawing = Color(0xFF062813)
 }
