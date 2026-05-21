@@ -18,16 +18,17 @@ class LessonViewModel(
     private val _state = MutableStateFlow(LessonUiState())
     val state = _state.asStateFlow()
 
-    fun init(lessonId : String){
+    fun load(lessonId : String){
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-
+            //pages and lesson detail
             val pages = async { repo.getLessonPages(lessonId) }
             val lesson = async { repo.getLesson(lessonId) }
 
             val pagesResult = pages.await()
             val lessonResult = lesson.await()
 
+            //load the kanas present there
             val kanaIds = pagesResult
                 .map { it.kanaId }
                 .distinct()

@@ -29,7 +29,9 @@ class LearningRepositoryImpl(
             .get()
             .await()
             .documents
-            .mapNotNull { it.toObject(LessonPage::class.java) }
+            .mapNotNull { doc ->
+                runCatching { doc.toObject(LessonPage::class.java) }.getOrNull()
+            }
 
     }
 

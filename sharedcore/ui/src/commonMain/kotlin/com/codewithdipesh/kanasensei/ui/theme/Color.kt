@@ -56,6 +56,7 @@ object KanaColors {
     val shadowSecondary = Color(0xFF8A5631)
     val secondaryBackground = Color(0xFF2B2826)
 
+    val learningSecondary = Color(0xFF789D87)
     val learningBackground = Color(0XFFFAEEC3)
     val onLearningBackground = Color(0XFF6F3318)
     val learningSurface = Color(0xFFB4906D)

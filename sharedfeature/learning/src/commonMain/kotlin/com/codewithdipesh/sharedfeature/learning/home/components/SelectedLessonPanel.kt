@@ -46,7 +46,6 @@ fun SelectedLessonPanel(
     onStart: (LessonWithProgress) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val player = rememberAudioManager()
     if (lesson == null) return
 
     Box(
@@ -84,13 +83,12 @@ fun SelectedLessonPanel(
 
             AppButton3D(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp ),
+                    .fillMaxWidth(),
                 label = "${if(lesson.isCompleted) "Revise" else if (lesson.isCurrent) "Start" else "Start"} Learning" ,
                 onClick = {
-                    player.playTap()
+                    onStart(lesson)
                 } ,
-                labelSize = 16,
+                labelSize = 20,
                 labelPadding = 8,
                 clickable = lesson.isCurrent || lesson.isCompleted
             )

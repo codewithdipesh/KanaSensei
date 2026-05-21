@@ -34,13 +34,14 @@ kotlinTest = "2.1.10"
 runner = "1.5.2"
 core = "1.5.0"
 moko = "0.23.0"  # For expect/actual patterns
-datetime = "0.6.0"  # For cross-platform date/time
 napier = "2.7.1"  # For KMP logging
 androidx-viewmodel = "2.10.0"
 ksp = "2.1.10-1.0.29"
 composePreview = "1.10.0"
 runtime = "1.10.5"
 compottie = "2.0.0"
+desugarJdkLibs = "2.1.5"
+kotlinxDatetime = "0.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,7 +65,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-viewmodel" }
 
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
@@ -97,6 +98,7 @@ coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -152,7 +154,6 @@ kmp-common = [
     "ktor-client-content-negotiation",
     "ktor-serialization-kotlinx-json",
     "koin-core",
-    "kotlinx-datetime",
     "napier"
 ]
 ktor = [

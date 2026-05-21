@@ -11,6 +11,6 @@ data class UserProgressEntity(
     val currentLessonId: String,
     val currentChapterOrder: Int,
     val currentLessonOrder: Int,
-    val lastSyncedAt: Long,
+    val lastSyncedAt: String,
     val needsSync: Boolean = false
 )

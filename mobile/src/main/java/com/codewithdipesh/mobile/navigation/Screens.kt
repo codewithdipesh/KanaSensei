@@ -12,5 +12,11 @@ sealed class Screen(val route: String) {
 
     object HomeGraph : Screen("home_graph") {
         object Learning : Screen("home_graph/learning_home")
+        object Lesson : Screen("home_graph/lesson/{lessonId}") {
+            const val ARG_LESSON_ID = "lessonId"
+            fun createRoute(lessonId: String) = "home_graph/lesson/$lessonId"
+        }
+
     }
+
 }

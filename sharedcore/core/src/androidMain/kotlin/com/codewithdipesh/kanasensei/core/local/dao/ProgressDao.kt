@@ -34,7 +34,7 @@ interface ProgressDao {
     suspend fun getUnsyncedProgress(): List<UserProgressEntity>
 
     @Query("UPDATE user_progress SET needsSync = 0, lastSyncedAt = :syncTime WHERE userId = :userId")
-    suspend fun markProgressSynced(userId: String, syncTime: Long)
+    suspend fun markProgressSynced(userId: String, syncTime: String)
 
     //completed lessons
     @Query("SELECT lessonId FROM completed_lessons WHERE userId = :userId")

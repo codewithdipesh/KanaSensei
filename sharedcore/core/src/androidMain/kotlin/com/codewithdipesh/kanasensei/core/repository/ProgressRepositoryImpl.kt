@@ -27,8 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import com.codewithdipesh.kanasensei.core.util.nowIso
 
 class ProgressRepositoryImpl(
     private val progressDao: ProgressDao,
@@ -86,7 +85,7 @@ class ProgressRepositoryImpl(
         chapterId: String
     ): ProgressUpdateResult {
         return try {
-            val now = Clock.System.now().toEpochMilliseconds()
+            val now = nowIso()
 
             // 1. Mark lesson as completed
             progressDao.insertCompletedLesson(
@@ -161,7 +160,7 @@ class ProgressRepositoryImpl(
                 currentLessonId = newLessonId,
                 currentChapterOrder = newChapterOrder,
                 currentLessonOrder = newLessonOrder,
-                lastSyncedAt = currentProgress?.lastSyncedAt ?: 0,
+                lastSyncedAt = currentProgress?.lastSyncedAt ?: "",
                 needsSync = true
             )
             progressDao.upsertUserProgress(newProgressEntity)
@@ -188,7 +187,7 @@ class ProgressRepositoryImpl(
             LearnedKanaEntity(
                 userId = userId,
                 kanaId = kanaId,
-                learnedAt = Clock.System.now().toEpochMilliseconds(),
+                learnedAt = nowIso(),
                 needsSync = true
             )
         )
@@ -300,7 +299,7 @@ class ProgressRepositoryImpl(
                         FirestorePaths.ProgressFields.CURRENT_LESSON to progress.currentLessonOrder,
                         FirestorePaths.ProgressFields.CURRENT_CHAPTER_ID to progress.currentChapterId,
                         FirestorePaths.ProgressFields.CURRENT_LESSON_ID to progress.currentLessonId,
-                        FirestorePaths.ProgressFields.LAST_UPDATED to Clock.System.now().toEpochMilliseconds()
+                        FirestorePaths.ProgressFields.LAST_UPDATED to nowIso()
                     )
                     Napier.d("Syncing progress to Firestore: $progressMap", tag = TAG)
                     firestore.collection(FirestorePaths.USERS)
@@ -309,7 +308,7 @@ class ProgressRepositoryImpl(
                         .document(FirestorePaths.Documents.CURRENT_PROGRESS)
                         .set(progressMap)
                         .await()
-                    progressDao.markProgressSynced(userId, Clock.System.now().toEpochMilliseconds())
+                    progressDao.markProgressSynced(userId, nowIso())
                     Napier.d("Progress synced successfully", tag = TAG)
                 } catch (e: Exception) {
                     Napier.e("Progress sync failed", e, TAG)
@@ -434,7 +433,7 @@ class ProgressRepositoryImpl(
                             currentLessonId = cloudLessonId,
                             currentChapterOrder = cloudChapter,
                             currentLessonOrder = cloudLesson,
-                            lastSyncedAt = Clock.System.now().toEpochMilliseconds(),
+                            lastSyncedAt = nowIso(),
                             needsSync = false
                         )
                     )
@@ -451,7 +450,7 @@ class ProgressRepositoryImpl(
             completedLessonsSnapshot.documents.forEach { doc ->
                 val lessonId = doc.getString(FirestorePaths.CompletedLessonFields.LESSON_ID) ?: return@forEach
                 val chapterId = doc.getString(FirestorePaths.CompletedLessonFields.CHAPTER_ID) ?: return@forEach
-                val completedAt = doc.getLong(FirestorePaths.CompletedLessonFields.COMPLETED_AT) ?: Clock.System.now().toEpochMilliseconds()
+                val completedAt = doc.getString(FirestorePaths.CompletedLessonFields.COMPLETED_AT) ?: nowIso()
 
                 progressDao.insertCompletedLesson(
                     CompletedLessonEntity(
@@ -473,7 +472,7 @@ class ProgressRepositoryImpl(
 
             completedChaptersSnapshot.documents.forEach { doc ->
                 val chapterId = doc.getString(FirestorePaths.CompletedChapterFields.CHAPTER_ID) ?: return@forEach
-                val completedAt = doc.getLong(FirestorePaths.CompletedChapterFields.COMPLETED_AT) ?: Clock.System.now().toEpochMilliseconds()
+                val completedAt = doc.getString(FirestorePaths.CompletedChapterFields.COMPLETED_AT) ?: nowIso()
 
                 progressDao.insertCompletedChapter(
                     CompletedChapterEntity(
@@ -494,7 +493,7 @@ class ProgressRepositoryImpl(
 
             learnedKanaSnapshot.documents.forEach { doc ->
                 val kanaId = doc.getString(FirestorePaths.LearnedKanaFields.KANA_ID) ?: return@forEach
-                val learnedAt = doc.getLong(FirestorePaths.LearnedKanaFields.LEARNED_AT) ?: Clock.System.now().toEpochMilliseconds()
+                val learnedAt = doc.getString(FirestorePaths.LearnedKanaFields.LEARNED_AT) ?: nowIso()
 
                 progressDao.insertLearnedKana(
                     LearnedKanaEntity(
@@ -528,7 +527,7 @@ class ProgressRepositoryImpl(
                     currentLessonId = firstLesson?.id ?: "",
                     currentChapterOrder = 1,
                     currentLessonOrder = 1,
-                    lastSyncedAt = 0,
+                    lastSyncedAt = "",
                     needsSync = true
                 )
             )
@@ -558,7 +557,7 @@ class ProgressRepositoryImpl(
         description = description,
         orderNumber = orderNumber,
         scriptType = scriptType,
-        createdAt = Instant.fromEpochMilliseconds(createdAt)
+        createdAt = createdAt
     )
 
     private fun CachedLessonEntity.toLesson() = Lesson(
@@ -571,7 +570,7 @@ class ProgressRepositoryImpl(
         orderNumber = orderNumber,
         teaserImage = teaserImage,
         teaserText = teaserText,
-        createdAt = Instant.fromEpochMilliseconds(createdAt),
-        updatedAt = Instant.fromEpochMilliseconds(updatedAt)
+        createdAt = createdAt,
+        updatedAt = updatedAt
     )
 }

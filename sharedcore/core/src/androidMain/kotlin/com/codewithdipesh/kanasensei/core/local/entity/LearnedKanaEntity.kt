@@ -9,6 +9,6 @@ import androidx.room.Entity
 data class LearnedKanaEntity(
     val userId: String,
     val kanaId: String,
-    val learnedAt: Long,
+    val learnedAt: String,
     val needsSync: Boolean = false
 )

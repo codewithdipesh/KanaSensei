@@ -9,6 +9,6 @@ import androidx.room.Entity
 data class CompletedChapterEntity(
     val userId: String,
     val chapterId: String,
-    val completedAt: Long,
+    val completedAt: String,
     val needsSync: Boolean = false
 )

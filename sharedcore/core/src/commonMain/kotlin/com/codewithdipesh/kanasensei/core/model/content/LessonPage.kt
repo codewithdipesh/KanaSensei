@@ -1,7 +1,5 @@
 package com.codewithdipesh.kanasensei.core.model.content
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,6 +17,15 @@ data class LessonPage(
     val question: String = "",
     val showGuide: Boolean = false,
     val title: String = "",
-    val type: String = "",
+    val type: LessonPageType = LessonPageType.LISTEN, //firebase auto convert to enum if the name is in bold letter
     val updatedAt: String = ""
 )
+
+
+enum class LessonPageType(val value: String) {
+    LISTEN("LISTEN"),
+    STROKE("STROKE"),
+    TRACE("TRACE"),
+    WRITE("WRITE"),
+    QUIZ("QUIZ")
+}

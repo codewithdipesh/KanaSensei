@@ -11,6 +11,6 @@ data class CachedChapterEntity(
     val description: String,
     val orderNumber: Int,
     val scriptType: String,
-    val createdAt: Long,
+    val createdAt: String,
     val lessonCount: Int
 )

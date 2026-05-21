@@ -55,7 +55,6 @@ kotlin {
                 // Coroutines & Serialization for data models & business logic
                 implementation(libs.coroutines.core)
                 implementation(libs.serialization.json)
-                implementation(libs.kotlinx.datetime)
 
                 // Ktor for API calls
                 implementation(libs.bundles.kmp.ktor)

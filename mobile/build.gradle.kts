@@ -54,6 +54,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -111,8 +112,8 @@ dependencies {
     implementation(libs.androidx.credential.credentials)
     implementation(libs.google.identity)
 
-    implementation(libs.kotlinx.datetime)
-
     implementation(libs.napier)
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
 }

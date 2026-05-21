@@ -15,6 +15,6 @@ data class CachedLessonEntity(
     val orderNumber: Int,
     val teaserImage: String,
     val teaserText: String,
-    val createdAt: Long,
-    val updatedAt: Long
+    val createdAt: String,
+    val updatedAt: String
 )

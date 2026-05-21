@@ -2,6 +2,8 @@ package com.codewithdipesh.kanasensei.core.repository
 
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.core.model.user.User
+import com.codewithdipesh.kanasensei.core.util.epochMillisToIso
+import com.codewithdipesh.kanasensei.core.util.nowIso
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,7 +34,7 @@ class FirebaseAuthRepositoryImpl(
 
             // Update lastLogin
             val updatedProfile = userProfile.copy(
-                lastLogin = System.currentTimeMillis()
+                lastLogin = nowIso()
             )
 
             db.collection("users").document(uid).update(
@@ -59,8 +61,8 @@ class FirebaseAuthRepositoryImpl(
                 uid = firebaseUser.uid,
                 name = name,
                 motivationSource = motivationSource,
-                createdAt = System.currentTimeMillis(),
-                lastLogin = System.currentTimeMillis()
+                createdAt = nowIso(),
+                lastLogin = nowIso()
             )
 
             db.collection("users")
@@ -95,7 +97,7 @@ class FirebaseAuthRepositoryImpl(
                     ?: return AuthResult.Error("User profile corrupted")
 
                 val updatedUser = existingUser.copy(
-                    lastLogin = System.currentTimeMillis()
+                    lastLogin = nowIso()
                 )
 
                 db.collection("users")
@@ -110,8 +112,8 @@ class FirebaseAuthRepositoryImpl(
                     uid = uid,
                     name = name,
                     motivationSource = motivationSource,
-                    createdAt = System.currentTimeMillis(),
-                    lastLogin = System.currentTimeMillis()
+                    createdAt = nowIso(),
+                    lastLogin = nowIso()
                 )
 
                 db.collection("users")
@@ -163,8 +165,8 @@ class FirebaseAuthRepositoryImpl(
                 uid = firebaseUser.uid,
                 name = firebaseUser.displayName ?: "",
                 motivationSource = "",
-                createdAt = firebaseUser.metadata?.creationTimestamp ?: 0L,
-                lastLogin = firebaseUser.metadata?.lastSignInTimestamp ?: 0L
+                createdAt = firebaseUser.metadata?.creationTimestamp?.epochMillisToIso() ?: "",
+                lastLogin = firebaseUser.metadata?.lastSignInTimestamp?.epochMillisToIso() ?: ""
             )
         }
     }

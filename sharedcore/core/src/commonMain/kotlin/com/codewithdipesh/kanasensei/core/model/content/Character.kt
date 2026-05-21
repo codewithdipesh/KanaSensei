@@ -1,7 +1,5 @@
 package com.codewithdipesh.kanasensei.core.model.content
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,6 +12,6 @@ data class Character(
     val audioUrl: String = "",
     val example_word: String = "",
     val notes: String = "",
-    val createdAt : Instant = Clock.System.now(),
-    val updatedAt : Instant = Clock.System.now()
+    val createdAt : String = "",
+    val updatedAt : String = ""
 )

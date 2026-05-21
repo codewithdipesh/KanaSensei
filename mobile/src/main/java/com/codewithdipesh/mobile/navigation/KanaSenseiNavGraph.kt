@@ -31,11 +31,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
+import com.codewithdipesh.kanasensei.navigation.Screen.HomeGraph.Lesson.ARG_LESSON_ID
 import com.codewithdipesh.kanasensei.sharedfeature.auth.AuthViewModel
 import com.codewithdipesh.kanasensei.sharedfeature.auth.access.LoginScreen
 import com.codewithdipesh.kanasensei.sharedfeature.auth.access.SignUpScreen
@@ -52,6 +55,9 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
+import com.codewithdipesh.sharedfeature.learning.lesson.LessonScreen
+import com.codewithdipesh.sharedfeature.learning.lesson.LessonViewModel
+import com.codewithdipesh.sharedfeature.learning.lesson.components.LoadingScreen
 
 @Composable
 fun NavApp(
@@ -457,6 +463,9 @@ fun NavGraphBuilder.homeGraph(
                 selectedLesson = uiState.selectedLesson,
                 onLessonStart = { lessonWithProgress ->
                     //navigate to lesson details screen
+                    navController.navigate(
+                        Screen.HomeGraph.Lesson.createRoute(lessonWithProgress.lesson.id)
+                    )
                 },
                 onLessonSelect = { lesson ->
                     if (uiState.selectedLesson != lesson){
@@ -477,6 +486,29 @@ fun NavGraphBuilder.homeGraph(
                     }
                 }
             )
+        }
+
+        composable(
+            route =Screen.HomeGraph.Lesson.route,
+            arguments = listOf(
+                navArgument(ARG_LESSON_ID) { type = NavType.StringType }
+            )
+        ){backstackEntry ->
+            val lessonId = if(backstackEntry.arguments != null) backstackEntry.arguments!!.getString(ARG_LESSON_ID) else ""
+            val parentEntry = remember {
+                navController.getBackStackEntry(Screen.HomeGraph.route)
+            }
+            val viewModel: LessonViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
+
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+
+            LaunchedEffect(Unit) {
+                viewModel.load(lessonId!!)
+            }
+
+            LoadingScreen()
+
         }
     }
 }

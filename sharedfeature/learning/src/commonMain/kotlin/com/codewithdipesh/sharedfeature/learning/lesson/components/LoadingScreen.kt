@@ -1,7 +1,12 @@
 package com.codewithdipesh.sharedfeature.learning.lesson.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,21 +14,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton3D
 import com.codewithdipesh.kanasensei.ui.resources.Res
+import com.codewithdipesh.kanasensei.ui.resources.lesson_loading
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LoadingScreen(
@@ -35,43 +50,57 @@ fun LoadingScreen(
         )
     }
 
+    var funFact by remember { mutableStateOf(funFacts.random()) }
+
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(KanaColors.background)
+            .padding(24.dp)
+            .padding(top = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ){
-        Text(
-            text = "Loading your lesson",
-            style = KanaSenseiTypography.bodyMedium.copy(
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = KanaColors.onLearningBackground
-            )
+        Image(
+            painter = painterResource(Res.drawable.lesson_loading),
+            contentDescription = null,
+            modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(40.dp))
+        val lottieAlpha by animateFloatAsState(
+            targetValue = if (composition != null) 1f else 0f,
+            animationSpec = tween(durationMillis = 250)
+        )
         Image(
             painter = rememberLottiePainter(
                 composition = composition,
                 iterations = Compottie.IterateForever
             ),
             contentDescription = null,
-            modifier = Modifier.size(120.dp)
+            modifier = Modifier
+                .size(280.dp)
+                .alpha(lottieAlpha)
         )
-        Spacer(Modifier.height(80.dp))
-        Text(
-            text = "Fun Fact",
-            style = KanaSenseiTypography.bodyMedium.copy(
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                color = KanaColors.learningSurface
-            )
+        Spacer(Modifier.height(50.dp))
+        AppButton3D(
+            modifier = Modifier
+                .width(150.dp),
+            label = "Tap for FunFact" ,
+            labelSize = 16,
+            onClick = {
+                funFact = funFacts.random()
+            },
+            backgroundColor = KanaColors.learningSecondary,
+            shadowColor = KanaColors.learningSecondary.copy(0.7f),
+            cornerRadius = 20
         )
+        Spacer( Modifier.height(30.dp))
         Text(
-            text = funFacts.random(),
+            text = funFact,
             style = KanaSenseiTypography.bodyMedium.copy(
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = KanaColors.learningSurface
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                color = KanaColors.onOverlayedContainer,
+                textAlign = TextAlign.Center
             )
         )
 

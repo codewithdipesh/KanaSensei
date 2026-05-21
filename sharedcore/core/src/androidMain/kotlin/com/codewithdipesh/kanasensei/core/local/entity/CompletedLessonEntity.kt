@@ -10,6 +10,6 @@ data class CompletedLessonEntity(
     val userId: String,
     val lessonId: String,
     val chapterId: String,
-    val completedAt: Long,
+    val completedAt: String,
     val needsSync: Boolean = false
 )
