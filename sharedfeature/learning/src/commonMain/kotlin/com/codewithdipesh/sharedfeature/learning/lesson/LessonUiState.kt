@@ -9,7 +9,9 @@ data class LessonUiState(
     val pages : List<LessonPage> = emptyList(),
     val lesson : Lesson? = null,
     val kanas : List<Character?> = emptyList(),
+    val selectedPage : LessonPage? = null,
     val isLoading : Boolean = true,
+    val error : String? = null,
     val totalPage : Int= 0,
     val currPage : Int= 0
 )

@@ -1,5 +1,7 @@
 package com.codewithdipesh.sharedfeature.learning.lesson.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,15 +23,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,11 +51,18 @@ import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+
+private const val MIN_DISPLAY_MILLIS = 4000
 
 @Composable
 fun LoadingScreen(
-    modifier : Modifier = Modifier
+    modifier : Modifier = Modifier,
+    isDataLoaded : Boolean = false,
+    onFinished : () -> Unit = {}
 ){
     val composition by rememberLottieComposition {
         LottieCompositionSpec.JsonString(
@@ -57,6 +71,25 @@ fun LoadingScreen(
     }
 
     var funFact by remember { mutableStateOf(funFacts.random()) }
+
+    // Hybrid progress: ease toward 90% over the minimum window, hold there until
+    val progress = remember { Animatable(0f) }
+    val dataLoaded = rememberUpdatedState(isDataLoaded)
+    LaunchedEffect(Unit) {
+        launch {
+            progress.animateTo(
+                targetValue = 0.9f,
+                animationSpec = tween(
+                    durationMillis = MIN_DISPLAY_MILLIS,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+        }
+        delay(MIN_DISPLAY_MILLIS.toLong())
+        snapshotFlow { dataLoaded.value }.first { it }
+        progress.animateTo(1f, tween(300))
+        onFinished()
+    }
 
     Column(
         modifier = Modifier
@@ -100,10 +133,18 @@ fun LoadingScreen(
         Box(
             modifier = Modifier.fillMaxWidth()
                 .offset(y = (-100).dp)
-                .height(12.dp)
+                .height(14.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(Color.White.copy(0.3f))
-        )
+        ){
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(progress.value)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(KanaColors.onOverlayedContainer)
+            )
+        }
         AppButton3D(
             modifier = Modifier
                 .width(150.dp),

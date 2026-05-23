@@ -507,7 +507,16 @@ fun NavGraphBuilder.homeGraph(
                 viewModel.load(lessonId!!)
             }
 
-            LoadingScreen()
+            LessonScreen(
+                isLoading = state.isLoading,
+                error = state.error,
+                lessonPages = state.pages,
+                kanas = state.kanas,
+                selectedPage = state.selectedPage,
+                lessonTitle = state.lesson?.title?: "",
+                totalPage = state.totalPage,
+                currentPageNumber = state.currPage
+            )
 
         }
     }

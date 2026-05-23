@@ -1,13 +1,24 @@
 package com.codewithdipesh.sharedfeature.learning.lesson
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.codewithdipesh.kanasensei.core.model.content.Character
 import com.codewithdipesh.kanasensei.core.model.content.Lesson
@@ -19,18 +30,41 @@ import com.codewithdipesh.sharedfeature.learning.lesson.components.LoadingScreen
 fun LessonScreen(
     modifier : Modifier = Modifier,
     isLoading : Boolean = true,
-    lessonPage: LessonPage,
-    kana : Character,
-    lessonTitle : String
+    error : String? = null,
+    lessonPages: List<LessonPage>,
+    kanas : List<Character?>,
+    selectedPage : LessonPage?,
+    lessonTitle : String,
+    totalPage : Int,
+    currentPageNumber : Int
 ){
-    AnimatedVisibility(
-        isLoading,
-        enter = fadeIn(tween(500)),
-        exit = fadeOut(tween(200))
-    ){
-        LoadingScreen()
+    // Stays true until LoadingScreen signals it's done (enforces the s minimum),
+    var showLoading by rememberSaveable { mutableStateOf(true) }
+
+    AnimatedContent(
+        targetState = showLoading,
+        transitionSpec = {
+            fadeIn(tween(500)).togetherWith(
+                fadeOut(tween(200))
+            )
+        }
+    ){ loading ->
+        when {
+            loading -> LoadingScreen(
+                isDataLoaded = !isLoading,
+                onFinished = { showLoading = false }
+            )
+            selectedPage == null -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(error ?: "No lesson content available")
+                }
+            }
+            else -> {
+                Column(Modifier.fillMaxSize()){
+                    Text(selectedPage.kanaId)
+                }
+            }
+        }
     }
-    if(!isLoading){
-        Box(Modifier.fillMaxSize())
-    }
+
 }
