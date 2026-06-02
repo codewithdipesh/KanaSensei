@@ -64,8 +64,6 @@ fun KanaStage(
                 modifier = glyphModifier
             )
 
-            LessonPageType.TRACE -> guide()
-
             // Faint guide + the strokes drawn on, one at a time, in order.
             LessonPageType.STROKE -> {
                 guide()

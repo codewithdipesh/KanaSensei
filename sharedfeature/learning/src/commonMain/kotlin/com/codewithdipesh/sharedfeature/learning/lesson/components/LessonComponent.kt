@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -40,13 +39,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigationevent.NavigationEventHandler
 import com.codewithdipesh.kanasensei.core.model.content.Character
 import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType
-import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.LISTEN
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.STROKE
-import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.TRACE
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.customClickable
 import com.codewithdipesh.sharedfeature.learning.lesson.components.kana.KanaStage
@@ -83,7 +79,7 @@ fun LessonComponent(
 
     var showCancelDialog by remember { mutableStateOf(false) }
 
-  
+
 
     Scaffold(
         containerColor = KanaColors.learningBackground,
@@ -136,17 +132,19 @@ fun LessonComponent(
                     modifier = Modifier.fillMaxWidth()
                         .height(200.dp)
                         .align(Alignment.BottomCenter)
-                        .background(KanaColors.success),
-                    contentAlignment = Alignment.TopStart
+                        .background(KanaColors.success.copy(0.3f)),
+                    contentAlignment = Alignment.BottomStart
                 ){
                     Text(
                         text = "Nice Work!",
                         style = TextStyle(
-                            color = Color.Black.copy(0.4f),
-                            fontSize = 22.sp,
+                            color = KanaColors.background,
+                            fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         ),
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(bottom = 50.dp)
                     )
                 }
             }
@@ -180,10 +178,12 @@ fun LessonComponent(
                 type = type,
                 onRepeat = {
                     // Replay the stroke animation from the start.
+                    audioManager.playTap()
                     replayKey++
                 },
                 onShowTrace = {
                     // Toggle the faint guide on the write page.
+                    audioManager.playTap()
                     showGuide = !showGuide
                 }
             )
@@ -194,7 +194,10 @@ fun LessonComponent(
                 modifier = Modifier.fillMaxWidth(),
                 label = "Continue",
                 clickable = continueEnabled,
-                onClick = onContinue,
+                onClick = {
+                    audioManager.playTap()
+                    onContinue()
+                },
                 backgroundColor = KanaColors.onLearningBackground,
                 labelColor = Color.White
             )
@@ -290,7 +293,7 @@ fun BottomElement(
         verticalAlignment = Alignment.CenterVertically
     ){
         when(type){
-            LISTEN, STROKE, TRACE -> {
+            STROKE -> {
                 //replay
                 Box(
                     modifier = Modifier

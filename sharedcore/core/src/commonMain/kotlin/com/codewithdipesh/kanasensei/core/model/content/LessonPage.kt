@@ -25,7 +25,6 @@ data class LessonPage(
 enum class LessonPageType(val value: String) {
     LISTEN("LISTEN"),
     STROKE("STROKE"),
-    TRACE("TRACE"),
     WRITE("WRITE"),
     QUIZ("QUIZ")
 }
