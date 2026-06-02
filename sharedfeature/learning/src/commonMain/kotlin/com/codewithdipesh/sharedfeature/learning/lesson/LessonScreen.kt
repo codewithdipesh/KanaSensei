@@ -21,9 +21,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.codewithdipesh.kanasensei.core.model.content.Character
+import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
 import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.content.LessonPage
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.*
+import com.codewithdipesh.sharedfeature.learning.lesson.components.LessonComponent
 import com.codewithdipesh.sharedfeature.learning.lesson.components.LoadingScreen
 
 @Composable
@@ -33,10 +35,14 @@ fun LessonScreen(
     error : String? = null,
     lessonPages: List<LessonPage>,
     kanas : List<Character?>,
+    kanaById : Map<String, Character> = emptyMap(),
+    strokesById : Map<String, KanaStrokes> = emptyMap(),
     selectedPage : LessonPage?,
     lessonTitle : String,
     totalPage : Int,
-    currentPageNumber : Int
+    currentPageNumber : Int,
+    onClose : () -> Unit = {},
+    onContinue : () -> Unit = {}
 ){
     // Stays true until LoadingScreen signals it's done (enforces the s minimum),
     var showLoading by rememberSaveable { mutableStateOf(true) }
@@ -60,9 +66,16 @@ fun LessonScreen(
                 }
             }
             else -> {
-                Column(Modifier.fillMaxSize()){
-                    Text(selectedPage.kanaId)
-                }
+                val kana = kanaById[selectedPage.kanaId] ?: Character()
+                val strokes = strokesById[selectedPage.kanaId] ?: KanaStrokes()
+                LessonComponent(
+                    kana = kana,
+                    strokes = strokes,
+                    title = lessonTitle,
+                    type = selectedPage.type,
+                    onCancel = onClose,
+                    onContinue = onContinue
+                )
             }
         }
     }

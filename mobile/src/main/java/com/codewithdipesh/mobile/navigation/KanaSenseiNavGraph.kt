@@ -512,10 +512,14 @@ fun NavGraphBuilder.homeGraph(
                 error = state.error,
                 lessonPages = state.pages,
                 kanas = state.kanas,
+                kanaById = state.kanaById,
+                strokesById = state.strokesById,
                 selectedPage = state.selectedPage,
                 lessonTitle = state.lesson?.title?: "",
                 totalPage = state.totalPage,
-                currentPageNumber = state.currPage
+                currentPageNumber = state.currPage,
+                onClose = { navController.popBackStack() },
+                onContinue = { if (!viewModel.next()) navController.popBackStack() }
             )
 
         }

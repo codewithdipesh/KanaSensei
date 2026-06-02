@@ -6,13 +6,20 @@ import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.content.LessonPage
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class LearningRepositoryImpl(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val httpClient: HttpClient
 ): LearningRepository {
+
+    // Session cache
+    private val svgCache = mutableMapOf<String, String>()
 
     override suspend fun getLessonPages(
         lessonId: String 
@@ -55,6 +62,19 @@ class LearningRepositoryImpl(
             .get()
             .await()
             .toObject(Character::class.java)
+    }
+
+    override suspend fun getKanaSvg(
+        svgUrl: String
+    ): String? = withContext(Dispatchers.IO) {
+        if (svgUrl.isBlank()) return@withContext null
+        svgCache[svgUrl]?.let { return@withContext it }
+
+        runCatching {
+            httpClient.get(svgUrl).bodyAsText()
+        }.getOrNull()?.also { svg ->
+            svgCache[svgUrl] = svg
+        }
     }
 
 }

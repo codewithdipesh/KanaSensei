@@ -90,7 +90,8 @@ fun SelectedLessonPanel(
                 } ,
                 labelSize = 20,
                 labelPadding = 8,
-                clickable = lesson.isCurrent || lesson.isCompleted
+                clickable = true
+//                clickable = lesson.isCurrent || lesson.isCompleted
             )
 
 //            Box(

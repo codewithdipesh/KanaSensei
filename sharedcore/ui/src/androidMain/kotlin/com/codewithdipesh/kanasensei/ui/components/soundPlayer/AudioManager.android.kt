@@ -2,6 +2,7 @@ package com.codewithdipesh.kanasensei.ui.components.soundPlayer
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.media.SoundPool
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -44,6 +45,9 @@ actual class AudioManager(context: Context) {
         .build()
     private val soundMap: MutableMap<String, Int> = mutableMapOf()
 
+    // Separate player for streamed remote audio (kana mp3s). SoundPool is only for short bundled SFX.
+    private var mediaPlayer: MediaPlayer? = null
+
     init {
         loadSound(context, "files/tap_sound.ogg", TAP_SOUND)
         loadSound(context, "files/denied_sound.ogg", DENIED_SOUND)
@@ -77,7 +81,44 @@ actual class AudioManager(context: Context) {
         }
     }
 
+    actual fun playUrl(url: String, speed: Float) {
+        try {
+            // Release any previous stream so taps don't overlap.
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build()
+                )
+                setDataSource(url)
+                setOnPreparedListener { mp ->
+                    if (speed != 1f) {
+                        mp.playbackParams = mp.playbackParams.setSpeed(speed)
+                    }
+                    mp.start()
+                }
+                setOnCompletionListener { mp ->
+                    mp.release()
+                    if (mediaPlayer === mp) mediaPlayer = null
+                }
+                setOnErrorListener { mp, _, _ ->
+                    mp.release()
+                    if (mediaPlayer === mp) mediaPlayer = null
+                    true
+                }
+                // Network fetch happens off the main thread; playback starts in onPrepared.
+                prepareAsync()
+            }
+        } catch (e: Exception) {
+            println("Error playing audio url $url: ${e.message}")
+        }
+    }
+
     actual fun release() {
         soundPool.release()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }

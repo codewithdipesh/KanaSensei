@@ -244,7 +244,7 @@ class ProgressRepositoryImpl(
                         Napier.d("currentChapterId: $currentChapterId, currentlessonId: $currentLessonId", tag = "ProgressRepo")
 
                         val lessonIsLocked = if (index == 0) false else {
-                            val previousLesson = chapterLessons.getOrNull(index - 2)
+                            val previousLesson = chapterLessons.getOrNull(index - 3)
                             previousLesson != null && !completedLessonIds.contains(previousLesson.id)
                           }
 

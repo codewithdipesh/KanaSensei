@@ -54,7 +54,7 @@ val sharedCoreModule = module {
     }
 
     single<LearningRepository> {
-        LearningRepositoryImpl(get())
+        LearningRepositoryImpl(get(), get())
     }
 
     single { JapaneseTtsManager(androidContext()) }

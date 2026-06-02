@@ -2,7 +2,9 @@ package com.codewithdipesh.sharedfeature.learning.lesson
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
 import com.codewithdipesh.kanasensei.core.repository.LearningRepository
+import com.codewithdipesh.kanasensei.core.svg.KanjiVgParser
 import com.codewithdipesh.sharedfeature.learning.home.LearningUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -36,11 +38,28 @@ class LessonViewModel(
                     .map { it.kanaId }
                     .distinct()
 
-                val kanaDeferreds = kanaIds
-                    .map {
-                        async { repo.getKana(it) }
+                val kanaList = kanaIds
+                    .map { id -> async { repo.getKana(id) } }
+                    .awaitAll()
+
+                // Key characters by the kanaId each page references (Character.id may be blank).
+                val kanaById = kanaIds.zip(kanaList)
+                    .mapNotNull { (id, kana) -> kana?.let { id to it } }
+                    .toMap()
+
+                // Fetch + parse each kana's KanjiVG SVG into stroke geometry, in parallel.
+                val strokesById = kanaById
+                    .filterValues { it.svgUrl.isNotBlank() }
+                    .map { (id, kana) ->
+                        async {
+                            val strokes = repo.getKanaSvg(kana.svgUrl)
+                                ?.let { KanjiVgParser.parse(it) }
+                                ?: KanaStrokes()
+                            id to strokes
+                        }
                     }
-                val kanaList = kanaDeferreds.awaitAll()
+                    .awaitAll()
+                    .toMap()
 
                 _state.update {
                     it.copy(
@@ -49,6 +68,8 @@ class LessonViewModel(
                        pages = pagesResult,
                        lesson = lessonResult,
                        kanas = kanaList,
+                       kanaById = kanaById,
+                       strokesById = strokesById,
                        selectedPage = pagesResult.firstOrNull(),
                        currPage = if(pagesResult.isNotEmpty()) 1 else 0,
                        totalPage = pagesResult.size
@@ -64,6 +85,16 @@ class LessonViewModel(
                 }
             }
         }
+    }
+
+    /** Advances to the next lesson page. Returns false (and stays put) if already on the last page. */
+    fun next(): Boolean {
+        val current = _state.value
+        val index = current.pages.indexOf(current.selectedPage)
+        if (index < 0 || index >= current.pages.lastIndex) return false
+        val nextPage = current.pages[index + 1]
+        _state.update { it.copy(selectedPage = nextPage, currPage = index + 2) }
+        return true
     }
 
 }
