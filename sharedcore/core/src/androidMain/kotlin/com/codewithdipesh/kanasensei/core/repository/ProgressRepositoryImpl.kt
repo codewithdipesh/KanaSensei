@@ -79,6 +79,13 @@ class ProgressRepositoryImpl(
         )
     }
 
+    override suspend fun isCompleted(
+        userId: String,
+        lessonId: String
+    ): Boolean {
+        return progressDao.getCompletionStatus(userId, lessonId)
+    }
+
     override suspend fun completeLesson(
         userId: String,
         lessonId: String,

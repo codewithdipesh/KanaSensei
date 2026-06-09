@@ -1,17 +1,21 @@
 package com.codewithdipesh.kanasensei.core.repository
 
+import com.codewithdipesh.kanasensei.core.local.dao.ProgressDao
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.core.model.user.User
 import com.codewithdipesh.kanasensei.core.util.epochMillisToIso
 import com.codewithdipesh.kanasensei.core.util.nowIso
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthRepositoryImpl(
     private val auth: FirebaseAuth,
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore,
+    private val progressDao : ProgressDao
 ) : FirebaseAuthRepository {
 
     override suspend fun login(
@@ -140,14 +144,20 @@ class FirebaseAuthRepositoryImpl(
         val firebaseUser = auth.currentUser ?: return null
 
         return try {
-            // Use Firestore's offline cache - no need for reload()
+            // Throws FirebaseAuthInvalidUserException if the account was deleted/disabled.
+            firebaseUser.reload().await()
+
+            // Read the profile from the SERVER (not the offline cache) so a stale cache
+            // can never produce a false "not found" that drives a destructive decision.
             val userDoc = db.collection("users")
                 .document(firebaseUser.uid)
-                .get()
+                .get(Source.SERVER)
                 .await()
 
             if (!userDoc.exists()) {
-                // Server confirmed user doesn't exist - sign out
+                // Profile doc missing but the auth account is valid (e.g. a failed
+                // registration write or a race). Sign out, but DO NOT wipe local
+                // progress - it may contain unsynced lessons that are only stored locally.
                 auth.signOut()
                 return null
             }
@@ -159,8 +169,14 @@ class FirebaseAuthRepositoryImpl(
             }
 
             user
+        } catch (e: FirebaseAuthInvalidUserException) {
+            // Auth itself confirms the account is gone (deleted/disabled). This is the
+            // only case where wiping local data is correct.
+            auth.signOut()
+            progressDao.clearAllUserData(firebaseUser.uid)
+            null
         } catch (e: Exception) {
-            // Network error - don't sign out, return basic user from cached FirebaseAuth
+            // Network/other error - don't sign out, return basic user from cached FirebaseAuth
             User(
                 uid = firebaseUser.uid,
                 name = firebaseUser.displayName ?: "",

@@ -1,5 +1,9 @@
 package com.codewithdipesh.sharedfeature.learning.lesson.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -26,12 +29,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import com.codewithdipesh.kanasensei.ui.components.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -52,11 +59,12 @@ import com.codewithdipesh.kanasensei.ui.resources.close_icon
 import com.codewithdipesh.kanasensei.ui.resources.eye
 import com.codewithdipesh.kanasensei.ui.resources.replay
 import com.codewithdipesh.kanasensei.ui.resources.sound_icon
+import com.codewithdipesh.kanasensei.ui.resources.tick_icon
 import com.codewithdipesh.kanasensei.ui.resources.turtle_sound
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LessonComponent(
     kana : Character,
@@ -79,7 +87,13 @@ fun LessonComponent(
 
     var showCancelDialog by remember { mutableStateOf(false) }
 
+    BackHandler {
+        showCancelDialog = true
+    }
 
+    LaunchedEffect(writeComplete){
+        if(writeComplete) audioManager.playFinished()
+    }
 
     Scaffold(
         containerColor = KanaColors.learningBackground,
@@ -127,25 +141,40 @@ fun LessonComponent(
         Box(
             modifier = Modifier.fillMaxSize()
         ){
-            if (type == LessonPageType.WRITE && writeComplete) {
+            AnimatedVisibility(
+                visible = type == LessonPageType.WRITE && writeComplete,
+                enter = slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(durationMillis = 300)
+                ),
+                modifier = Modifier.align(Alignment.BottomCenter)
+            ){
                 Box(
                     modifier = Modifier.fillMaxWidth()
                         .height(200.dp)
-                        .align(Alignment.BottomCenter)
-                        .background(KanaColors.success.copy(0.3f)),
+                        .background(KanaColors.success.copy(0.5f)),
                     contentAlignment = Alignment.BottomStart
                 ){
-                    Text(
-                        text = "Nice Work!",
-                        style = TextStyle(
-                            color = KanaColors.background,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
+                    Row(
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
-                            .padding(bottom = 50.dp)
-                    )
+                            .padding(bottom = 50.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Image(
+                            painter = painterResource(Res.drawable.tick_icon),
+                            contentDescription = null,
+                        )
+                        Text(
+                            text = "Nice Work!",
+                            style = TextStyle(
+                                color = KanaColors.background,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
                 }
             }
         }

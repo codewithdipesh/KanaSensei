@@ -1,5 +1,6 @@
 package com.codewithdipesh.kanasensei.navigation
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,6 +50,7 @@ import com.codewithdipesh.kanasensei.sharedfeature.auth.welcome.WelcomeScreen
 import com.codewithdipesh.sharedfeature.learning.home.LearningEvent
 import com.codewithdipesh.sharedfeature.learning.home.LearningHomeScreen
 import com.codewithdipesh.sharedfeature.learning.home.LearningViewModel
+import com.codewithdipesh.sharedfeature.learning.home.components.LessonCompleteDialog
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,6 +61,13 @@ import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import com.codewithdipesh.sharedfeature.learning.lesson.LessonScreen
 import com.codewithdipesh.sharedfeature.learning.lesson.LessonViewModel
 import com.codewithdipesh.sharedfeature.learning.lesson.components.LoadingScreen
+import com.codewithdipesh.sharedfeature.learning.lesson.model.LessonCompletionResult
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
+
+const val LESSON_COMPLETION_RESULT = "lessonCompletion"
 
 @Composable
 fun NavApp(
@@ -381,7 +391,7 @@ fun NavGraphBuilder.homeGraph(
         route = Screen.HomeGraph.route,
         startDestination = Screen.HomeGraph.Learning.route
     ) {
-        composable(Screen.HomeGraph.Learning.route) {
+        composable(Screen.HomeGraph.Learning.route) { entry ->
             val parentEntry = remember {
                 navController.getBackStackEntry(Screen.HomeGraph.route)
             }
@@ -405,8 +415,7 @@ fun NavGraphBuilder.homeGraph(
                 return@composable
             }
 
-
-
+            val user by viewModel.user.collectAsStateWithLifecycle()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val snackbarHostState = remember { SnackbarHostState() }
             val scope = rememberCoroutineScope()
@@ -457,6 +466,16 @@ fun NavGraphBuilder.homeGraph(
                 }
             }
 
+            // Lesson-completion popup, delivered as a nav result from the lesson screen.
+            // Read + remove synchronously in the initializer so there's no frame where the tile's
+            // tick flashes before the popup gates it, and so it doesn't re-trigger on later returns.
+            var pendingCompletion by remember {
+                mutableStateOf(
+                    entry.savedStateHandle.remove<String>(LESSON_COMPLETION_RESULT)
+                        ?.let { Json.decodeFromString<LessonCompletionResult>(it) }
+                )
+            }
+
             LearningHomeScreen(
                 isLoading = uiState.isLoading,
                 chapters = uiState.chapters,
@@ -475,6 +494,7 @@ fun NavGraphBuilder.homeGraph(
                     }
 
                 },
+                pendingCompletion = pendingCompletion,
                 snackBarHost = {
                     SnackbarHost(snackbarHostState) { data ->
                         Snackbar(
@@ -486,6 +506,17 @@ fun NavGraphBuilder.homeGraph(
                     }
                 }
             )
+
+            // Completion popup. Dismissing it clears pendingCompletion, which un-gates the
+            // tile's tick on the home screen so it animates in.
+            pendingCompletion?.let { result ->
+                LessonCompleteDialog(
+                    isFirstLesson = result.newChapterOrder == 1 && result.newLessonOrder == 1,
+                    username = user?.name,
+                    lessonDetails = result.shortDescription,
+                    onContinue = { pendingCompletion = null }
+                )
+            }
         }
 
         composable(
@@ -502,10 +533,32 @@ fun NavGraphBuilder.homeGraph(
 
             val state by viewModel.state.collectAsStateWithLifecycle()
 
+            // Guards against firing completion more than once
+            var completing by remember { mutableStateOf(false) }
 
             LaunchedEffect(Unit) {
                 viewModel.load(lessonId!!)
             }
+
+            // Lesson finished + progress persisted: hand the result back to home as a nav
+            // result (JSON, so it's Bundle-safe and survives process death), then pop.
+            LaunchedEffect(Unit) {
+                viewModel.completionEvent.collect { result ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(LESSON_COMPLETION_RESULT, Json.encodeToString(result))
+                    navController.popBackStack()
+                }
+            }
+
+            // Completion failed: let the user retry by tapping Continue again.
+            LaunchedEffect(Unit) {
+                viewModel.error.collect { message ->
+                    completing = false
+                    println("LessonScreen: completion error -> $message")
+                }
+            }
+
 
             LessonScreen(
                 isLoading = state.isLoading,
@@ -519,7 +572,19 @@ fun NavGraphBuilder.homeGraph(
                 totalPage = state.totalPage,
                 currentPageNumber = state.currPage,
                 onClose = { navController.popBackStack() },
-                onContinue = { if (!viewModel.next()) navController.popBackStack() }
+                onContinue = {
+                    if (!viewModel.next() && !completing) {
+                        if(state.isCompleted){
+                            navController.popBackStack()
+                        }else{
+                            completing = true
+                            viewModel.completeCurrentLesson(
+                                lessonId = lessonId!!,
+                                chapterId = state.lesson?.chapterId ?: ""
+                            )
+                        }
+                    }
+                }
             )
 
         }

@@ -54,7 +54,14 @@ import com.codewithdipesh.sharedfeature.learning.home.components.TopBar
 import com.codewithdipesh.sharedfeature.learning.home.components.calculatePropOffset
 import com.codewithdipesh.sharedfeature.learning.home.components.getProp
 import com.codewithdipesh.sharedfeature.learning.home.components.getPropOffsetFix
+import com.codewithdipesh.sharedfeature.learning.lesson.model.LessonCompletionResult
 import org.jetbrains.compose.resources.painterResource
+
+//tile shadow
+//tile
+//grass
+//props
+//bubble selected
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,6 +71,7 @@ fun LearningHomeScreen(
     selectedLesson: LessonWithProgress?,
     onLessonStart: (LessonWithProgress) -> Unit,
     onLessonSelect: (LessonWithProgress) -> Unit,
+    pendingCompletion : LessonCompletionResult?,
     snackBarHost : @Composable () -> Unit
 ) {
     val lessons = chapters.flattenLessons()
@@ -129,11 +137,12 @@ fun LearningHomeScreen(
                                         .offset(x = offset,y = 28.dp)
                                         .align(Alignment.BottomStart)
                                 )
-
+                                //tile
                                 LessonTile(
                                     lessonWithProgress = lesson,
                                     isSelected = lesson == selectedLesson,
                                     onSelect = { onLessonSelect(lesson) },
+                                    showTickIcon = lesson.isCompleted  && pendingCompletion?.lessonId != lesson.lesson.id,
                                     modifier = Modifier
                                         .offset(x = offset)
                                         .align(Alignment.BottomStart)
@@ -192,7 +201,7 @@ fun LearningHomeScreen(
                                         }
                                     }
                                 }
-
+                                //selected bubble on top
                                 if (lesson == selectedLesson) {
                                     val bubbleOffset =
                                         if(index % SNAKE_CURVE_SIZE == 0) offset - 40.dp

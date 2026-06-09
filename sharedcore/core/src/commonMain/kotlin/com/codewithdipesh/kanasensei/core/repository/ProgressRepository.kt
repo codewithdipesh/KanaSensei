@@ -16,6 +16,8 @@ interface ProgressRepository {
 
     //Lesson Completion
 
+    suspend fun isCompleted(userId: String, lessonId: String): Boolean
+
     suspend fun completeLesson(
         userId: String,
         lessonId: String,

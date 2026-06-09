@@ -17,7 +17,9 @@ val learningModule = module {
 
     viewModel {
         LessonViewModel(
-            repo = get()
+            repo = get(),
+            progressRepository = get(),
+            firebaseAuthRepository = get()
         )
     }
 }

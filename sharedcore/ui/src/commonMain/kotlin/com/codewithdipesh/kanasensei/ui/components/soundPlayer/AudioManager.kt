@@ -8,6 +8,8 @@ expect fun rememberAudioManager(): AudioManager
 expect class AudioManager {
     fun playTap()
     fun playLockDenied()
+    fun playFinished()
+    fun playTick() //tick sound when shoing tick in lesson tile
 
     /**
      * Streams and plays an audio file from a remote URL (e.g. a kana's [audioUrl]).

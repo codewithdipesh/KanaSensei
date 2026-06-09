@@ -3,22 +3,48 @@ package com.codewithdipesh.sharedfeature.learning.lesson
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
+import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
+import com.codewithdipesh.kanasensei.core.model.user.User
+import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
 import com.codewithdipesh.kanasensei.core.repository.LearningRepository
+import com.codewithdipesh.kanasensei.core.repository.ProgressRepository
 import com.codewithdipesh.kanasensei.core.svg.KanjiVgParser
-import com.codewithdipesh.sharedfeature.learning.home.LearningUiState
+import com.codewithdipesh.sharedfeature.learning.lesson.model.LessonCompletionResult
+import com.codewithdipesh.sharedfeature.learning.lesson.model.LessonUiState
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LessonViewModel(
-    private val repo : LearningRepository
+    private val repo : LearningRepository,
+    private val progressRepository : ProgressRepository,
+    private val firebaseAuthRepository: FirebaseAuthRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LessonUiState())
     val state = _state.asStateFlow()
+
+    private val _user = MutableStateFlow<User?>(null)
+    val user = _user.asStateFlow()
+
+    // forwards this back to the home screen (as a nav result) to drive the completion popup.
+    private val _completionEvent = MutableSharedFlow<LessonCompletionResult>()
+    val completionEvent = _completionEvent.asSharedFlow()
+
+    private val _error = MutableSharedFlow<String>()
+    val error = _error.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            _user.value = firebaseAuthRepository.currentUser()
+        }
+    }
 
     fun load(lessonId : String){
         viewModelScope.launch {
@@ -61,6 +87,9 @@ class LessonViewModel(
                     .awaitAll()
                     .toMap()
 
+                //complete status
+                val complete = progressRepository.isCompleted(_user.value!!.uid, lessonId)
+
                 _state.update {
                     it.copy(
                        isLoading = false,
@@ -70,6 +99,7 @@ class LessonViewModel(
                        kanas = kanaList,
                        kanaById = kanaById,
                        strokesById = strokesById,
+                       isCompleted =  complete,
                        selectedPage = pagesResult.firstOrNull(),
                        currPage = if(pagesResult.isNotEmpty()) 1 else 0,
                        totalPage = pagesResult.size
@@ -95,6 +125,44 @@ class LessonViewModel(
         val nextPage = current.pages[index + 1]
         _state.update { it.copy(selectedPage = nextPage, currPage = index + 2) }
         return true
+    }
+
+    fun completeCurrentLesson(lessonId: String, chapterId: String) {
+        val uid = _user.value?.uid
+        if(uid == null){
+            viewModelScope.launch { _error.emit("Not signed in") }
+            return
+        }
+        viewModelScope.launch {
+            if(!_state.value.isCompleted ){
+                when (val result = progressRepository.completeLesson(_user.value!!.uid, lessonId, chapterId)) {
+                    is ProgressUpdateResult.Success -> {
+                        _completionEvent.emit(
+                            LessonCompletionResult(
+                                lessonId = lessonId,
+                                chapterCompleted = result.chapterCompleted,
+                                advancedToNextChapter = result.advancedToNextChapter,
+                                shortDescription = _state.value.lesson?.shortDescription ?: "",
+                                newChapterOrder = result.newCurrentChapter,
+                                newLessonOrder = result.newCurrentLesson
+                            )
+                        )
+                    }
+                    else -> {
+                        _error.emit("Failed to complete lesson")
+                    }
+
+                }
+            }
+        }
+
+    }
+    fun markKanaLearned(kanaId: String) {
+        _user.value?.let {
+            viewModelScope.launch {
+                progressRepository.markKanaLearned(_user.value!!.uid, kanaId)
+            }
+        }
     }
 
 }

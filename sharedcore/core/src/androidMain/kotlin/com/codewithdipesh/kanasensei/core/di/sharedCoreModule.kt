@@ -50,7 +50,7 @@ val sharedCoreModule = module {
     single { TranslateRepository() }
 
     single<FirebaseAuthRepository> {
-        FirebaseAuthRepositoryImpl(get(), get())
+        FirebaseAuthRepositoryImpl(get(), get(),get())
     }
 
     single<LearningRepository> {

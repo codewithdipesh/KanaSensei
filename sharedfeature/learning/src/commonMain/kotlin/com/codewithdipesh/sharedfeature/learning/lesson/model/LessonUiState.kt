@@ -1,8 +1,7 @@
-package com.codewithdipesh.sharedfeature.learning.lesson
+package com.codewithdipesh.sharedfeature.learning.lesson.model
 
 import com.codewithdipesh.kanasensei.core.model.content.Character
 import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
-import com.codewithdipesh.kanasensei.core.model.content.KanaType
 import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.content.LessonPage
 
@@ -16,6 +15,7 @@ data class LessonUiState(
     val selectedPage : LessonPage? = null,
     val isLoading : Boolean = true,
     val error : String? = null,
+    val isCompleted : Boolean = false,
     val totalPage : Int= 0,
     val currPage : Int= 0
 )

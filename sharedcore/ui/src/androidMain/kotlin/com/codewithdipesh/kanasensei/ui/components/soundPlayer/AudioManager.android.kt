@@ -9,7 +9,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.Constants.DENIED_SOUND
+import com.codewithdipesh.kanasensei.ui.components.soundPlayer.Constants.FINISHED_SOUND
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.Constants.TAP_SOUND
+import com.codewithdipesh.kanasensei.ui.components.soundPlayer.Constants.TICK_SOUND
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import kotlin.collections.set
 
@@ -30,6 +32,8 @@ actual fun rememberAudioManager(): AudioManager {
 object Constants {
     const val TAP_SOUND = "tap"
     const val DENIED_SOUND = "denied"
+    const val FINISHED_SOUND = "finished"
+    const val TICK_SOUND = "tick"
 }
 
 actual class AudioManager(context: Context) {
@@ -51,6 +55,8 @@ actual class AudioManager(context: Context) {
     init {
         loadSound(context, "files/tap_sound.ogg", TAP_SOUND)
         loadSound(context, "files/denied_sound.ogg", DENIED_SOUND)
+        loadSound(context, "files/finished_sound.ogg", FINISHED_SOUND)
+        loadSound(context, "files/tick_sound.ogg", TICK_SOUND)
     }
 
     private fun loadSound(context: Context, resPath: String, key: String) {
@@ -78,6 +84,18 @@ actual class AudioManager(context: Context) {
     actual fun playLockDenied() {
         soundMap[DENIED_SOUND]?.let {
             soundPool.play(it, 1f, 1f, 1, 0, 1f)
+        }
+    }
+
+    actual fun playFinished() {
+        soundMap[FINISHED_SOUND]?.let {
+            soundPool.play(it,1f,1f,1,0,1f)
+        }
+    }
+
+    actual fun playTick() {
+        soundMap[TICK_SOUND]?.let {
+            soundPool.play(it,1.2f,1.2f,1,0,1f)
         }
     }
 

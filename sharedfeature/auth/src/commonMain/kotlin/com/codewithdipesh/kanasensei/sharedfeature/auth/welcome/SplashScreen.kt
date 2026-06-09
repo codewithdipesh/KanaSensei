@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import com.codewithdipesh.kanasensei.ui.resources.Res
+import com.codewithdipesh.kanasensei.ui.resources.app_logo
 import com.codewithdipesh.kanasensei.ui.resources.splash_icon_dark
 import com.codewithdipesh.kanasensei.ui.resources.splash_icon_light
 
@@ -25,7 +26,6 @@ import com.codewithdipesh.kanasensei.ui.resources.splash_icon_light
 fun SplashScreen(
     modifier: Modifier = Modifier
 ) {
-    val isDark = isSystemInDarkTheme()
 
     Box(
         modifier = modifier
@@ -33,8 +33,7 @@ fun SplashScreen(
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = if(isDark) painterResource(Res.drawable.splash_icon_dark)
-            else painterResource(Res.drawable.splash_icon_light),
+            painter = painterResource(Res.drawable.app_logo),
             contentDescription = "splash Screen",
             modifier = Modifier.width(100.dp)
         )

@@ -125,31 +125,6 @@ class LearningViewModel(
         _uiState.update { it.copy(selectedLesson = lesson) }
     }
 
-    fun completeCurrentLesson(lessonId: String, chapterId: String) {
-        viewModelScope.launch {
-            when (val result = progressRepository.completeLesson(_user.value!!.uid, lessonId, chapterId)) {
-                is ProgressUpdateResult.Success -> {
-                    _events.emit(
-                        LearningEvent.LessonCompleted(
-                            chapterCompleted = result.chapterCompleted,
-                            advancedToNextChapter = result.advancedToNextChapter,
-                            newChapterOrder = result.newCurrentChapter,
-                            newLessonOrder = result.newCurrentLesson
-                        )
-                    )
-                }
-                is ProgressUpdateResult.Error -> {
-                    _events.emit(LearningEvent.Error(result.message))
-                }
-            }
-        }
-    }
-
-    fun markKanaLearned(kanaId: String) {
-        viewModelScope.launch {
-            progressRepository.markKanaLearned(_user.value!!.uid, kanaId)
-        }
-    }
 
     fun refreshFromCloud() {
         viewModelScope.launch {

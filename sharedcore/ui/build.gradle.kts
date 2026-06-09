@@ -116,6 +116,7 @@ kotlin {
                 implementation(libs.material)
                 implementation(libs.androidx.material3)
                 implementation(libs.androidx.compose.runtime)
+                implementation(libs.androidx.activity.compose)
             }
         }
 

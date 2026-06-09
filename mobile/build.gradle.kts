@@ -114,6 +114,8 @@ dependencies {
 
     implementation(libs.napier)
 
+    implementation(libs.serialization.json)
+
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
 }

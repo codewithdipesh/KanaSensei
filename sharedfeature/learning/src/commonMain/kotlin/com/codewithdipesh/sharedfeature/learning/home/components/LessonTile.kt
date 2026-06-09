@@ -46,6 +46,7 @@ fun LessonTile(
     lessonWithProgress: LessonWithProgress,
     isSelected: Boolean,
     onSelect: () -> Unit,
+    showTickIcon : Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val lesson = lessonWithProgress.lesson
@@ -61,6 +62,26 @@ fun LessonTile(
 
     val scaleXCo = remember { Animatable(1f) }
     val scaleYCo = remember { Animatable(1f) }
+
+    // pops in with a bounce when the tick is revealed after the completion popup is dismissed.
+    val tickScale = remember { Animatable(if (showTickIcon) 1f else 0f) }
+    LaunchedEffect(showTickIcon) {
+        if (showTickIcon) {
+            if (tickScale.value < 1f) {
+                audioManager.playTick()
+                hapticManager.softBounce()
+                //pop
+                tickScale.animateTo(1.8f,tween(200))
+                //settle
+                tickScale.animateTo(
+                    1f,
+                    spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
+                )
+            }
+        } else {
+            tickScale.snapTo(0f)
+        }
+    }
 
 
     LaunchedEffect(isSelected) {
@@ -151,13 +172,17 @@ fun LessonTile(
 
             )
 
-            if (lessonWithProgress.isCompleted) {
+            if (tickScale.value > 0f) {
                 Image(
                     painter = painterResource(Res.drawable.tick_icon),
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 12.dp)
+                        .graphicsLayer {
+                            scaleX = tickScale.value
+                            scaleY = tickScale.value
+                        }
                 )
             }
         }

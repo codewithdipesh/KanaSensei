@@ -37,6 +37,9 @@ interface ProgressDao {
     suspend fun markProgressSynced(userId: String, syncTime: String)
 
     //completed lessons
+    @Query("SELECT EXISTS(SELECT 1 FROM completed_lessons WHERE userId = :userId AND lessonId = :lessonId)")
+    suspend fun getCompletionStatus(userId: String, lessonId: String): Boolean
+
     @Query("SELECT lessonId FROM completed_lessons WHERE userId = :userId")
     fun observeCompletedLessonIds(userId: String): Flow<List<String>>
 
