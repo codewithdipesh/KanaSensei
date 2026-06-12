@@ -1,6 +1,7 @@
 package com.codewithdipesh.sharedfeature.learning.home.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseInOutSine
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -63,6 +64,26 @@ fun LessonTile(
     val scaleXCo = remember { Animatable(1f) }
     val scaleYCo = remember { Animatable(1f) }
 
+    val floatOffset = remember { Animatable(0f) }
+
+    //little floating effect
+    LaunchedEffect(isSelected) {
+        if (isSelected) {
+            while (true) {
+                floatOffset.animateTo(
+                    -8f,
+                    tween(1000, easing = EaseInOutSine)
+                )
+                floatOffset.animateTo(
+                    0f,
+                    tween(1000, easing = EaseInOutSine)
+                )
+            }
+        } else {
+            floatOffset.snapTo(0f)
+        }
+    }
+
     // pops in with a bounce when the tick is revealed after the completion popup is dismissed.
     val tickScale = remember { Animatable(if (showTickIcon) 1f else 0f) }
     LaunchedEffect(showTickIcon) {
@@ -122,6 +143,7 @@ fun LessonTile(
             .graphicsLayer {
                 scaleX = scaleXCo.value
                 scaleY = scaleYCo.value
+                translationY = floatOffset.value
             }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
