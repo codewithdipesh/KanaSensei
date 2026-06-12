@@ -250,16 +250,13 @@ fun LearningHomeScreen(
                     ){
                         SelectedLessonPanel(
                             lesson = selectedLesson,
-                            onStart = { selectedLesson?.let { onLessonStart(it) } }
+                            //startable when its completed or its current
+                            isStartable = if(selectedLesson?.isCompleted == true) true else selectedLesson?.isCurrent == true,
+                            onStart = {
+                                selectedLesson?.let { onLessonStart(it) }
+                            }
                         )
                     }
-
-//                    //chapter details
-//                    ChapterDetails(
-//                        chapterWithProgress = chapters.first(), //todo :for now
-//                        modifier = Modifier
-//                            .align(Alignment.BottomCenter)
-//                    )
 
 
                     //topbar

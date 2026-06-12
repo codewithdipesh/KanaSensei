@@ -91,6 +91,8 @@ fun KanaStage(
             }
 
             LessonPageType.QUIZ -> Unit
+
+            LessonPageType.INFO -> Unit
         }
     }
 }

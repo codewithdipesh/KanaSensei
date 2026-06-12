@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,11 +26,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,12 +41,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.content.Character
 import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType
+import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.*
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.STROKE
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.customClickable
@@ -71,9 +70,10 @@ fun LessonComponent(
     strokes : KanaStrokes,
     title : String,
     type : LessonPageType,
+    infoContent : String = "",
     onCancel : ()-> Unit,
     onContinue : () -> Unit
-){
+) {
     val audioManager = rememberAudioManager()
 
     // STROKE: replay the animation. WRITE: reset progress. Reset when the page/kana changes.
@@ -91,8 +91,8 @@ fun LessonComponent(
         showCancelDialog = true
     }
 
-    LaunchedEffect(writeComplete){
-        if(writeComplete) audioManager.playFinished()
+    LaunchedEffect(writeComplete) {
+        if (writeComplete) audioManager.playFinished()
     }
 
     Scaffold(
@@ -123,7 +123,7 @@ fun LessonComponent(
                                 RoundedCornerShape(50.dp)
                             ),
                         contentAlignment = Alignment.Center
-                    ){
+                    ) {
                         Text(
                             text = title,
                             style = TextStyle(
@@ -137,114 +137,167 @@ fun LessonComponent(
                 }
             )
         }
-    ){ innerPadding ->
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ){
-            AnimatedVisibility(
-                visible = type == LessonPageType.WRITE && writeComplete,
-                enter = slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = tween(durationMillis = 300)
-                ),
-                modifier = Modifier.align(Alignment.BottomCenter)
-            ){
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .height(200.dp)
-                        .background(KanaColors.success.copy(0.5f)),
-                    contentAlignment = Alignment.BottomStart
-                ){
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 50.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Image(
-                            painter = painterResource(Res.drawable.tick_icon),
-                            contentDescription = null,
-                        )
-                        Text(
-                            text = "Nice Work!",
-                            style = TextStyle(
-                                color = KanaColors.background,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
+    ) { innerPadding ->
+        when (type) {
+            INFO -> {
+                print("LessonComponent : $infoContent")
+                InfoView(
+                    content = infoContent,
+                    modifier = Modifier.padding(innerPadding),
+                    onContinue = {
+                        audioManager.playTap()
+                        onContinue()
                     }
+                )
+            }
+            else -> {
+                Box(modifier = Modifier.fillMaxSize()){
+                    //correct draw confirmation box
+                    AnimatedVisibility(
+                        visible = type == LessonPageType.WRITE && writeComplete,
+                        enter = slideInVertically(
+                            initialOffsetY = { it },
+                            animationSpec = tween(durationMillis = 300)
+                        ),
+                        modifier = Modifier.align(Alignment.BottomCenter)
+                    ){
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .height(200.dp)
+                                .background(KanaColors.success.copy(0.5f)),
+                            contentAlignment = Alignment.BottomStart
+                        ){
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 24.dp)
+                                    .padding(bottom = 50.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                Image(
+                                    painter = painterResource(Res.drawable.tick_icon),
+                                    contentDescription = null,
+                                )
+                                Text(
+                                    text = "Nice Work!",
+                                    style = TextStyle(
+                                        color = KanaColors.background,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    //practice
+                    LessonView(
+                        type = type,
+                        kana = kana,
+                        strokes = strokes,
+                        continueEnabled = continueEnabled,
+                        replayKey = replayKey,
+                        showGuide = showGuide,
+                        modifier = Modifier.padding(innerPadding),
+                        onPlay = {
+                            if (kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 1f)
+                        },
+                        onTirtlePlay = {
+                            if (kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 0.6f)
+                        },
+                        onRepeat = {
+                            // Replay the stroke animation from the start.
+                            audioManager.playTap()
+                            replayKey++
+                        },
+                        onShowTrace = {
+                            // Toggle the faint guide on the write page.
+                            audioManager.playTap()
+                            showGuide = !showGuide
+                        },
+                        onWriteComplete = { writeComplete = true },
+                        onContinue = {
+                            audioManager.playTap()
+                            onContinue()
+                        }
+                    )
                 }
             }
         }
-        Column(
-            modifier = Modifier.fillMaxSize()
-                .padding(innerPadding)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
-        ){
-            TopElement(
-                kana = kana.romaji,
-                onPlay = { if(kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 1f) },
-                onTirtlePlay = { if(kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 0.6f) }
-            )
-            Spacer(Modifier.height(16.dp))
 
-            KanaStage(
-                strokes = strokes,
-                type = type,
-                replayKey = replayKey,
-                showGuide = showGuide,
-                onWriteComplete = { writeComplete = true },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            BottomElement(
-                type = type,
-                onRepeat = {
-                    // Replay the stroke animation from the start.
-                    audioManager.playTap()
-                    replayKey++
+        if (showCancelDialog) {
+            CancelAlertDialog(
+                onConfirm = {
+                    showCancelDialog = false
+                    onCancel()
                 },
-                onShowTrace = {
-                    // Toggle the faint guide on the write page.
-                    audioManager.playTap()
-                    showGuide = !showGuide
-                }
-            )
-
-            Spacer(Modifier.height(64.dp))
-
-            AppButton(
-                modifier = Modifier.fillMaxWidth(),
-                label = "Continue",
-                clickable = continueEnabled,
-                onClick = {
-                    audioManager.playTap()
-                    onContinue()
-                },
-                backgroundColor = KanaColors.onLearningBackground,
-                labelColor = Color.White
+                onDismiss = { showCancelDialog = false }
             )
         }
-    }
 
-    if (showCancelDialog) {
-        CancelAlertDialog(
-            onConfirm = {
-                showCancelDialog = false
-                onCancel()
-            },
-            onDismiss = { showCancelDialog = false }
+    }
+}
+@Composable
+fun LessonView(
+    type : LessonPageType,
+    kana : Character,
+    strokes : KanaStrokes,
+    continueEnabled : Boolean,
+    replayKey : Int,
+    showGuide : Boolean,
+    onPlay: () -> Unit,
+    onTirtlePlay: () -> Unit,
+    onRepeat : () -> Unit,
+    onShowTrace : () -> Unit,
+    onWriteComplete : () -> Unit,
+    onContinue : () -> Unit,
+    modifier : Modifier = Modifier
+){
+    Column(
+        modifier = modifier.fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ){
+        TopElement(
+            kana = kana.romaji,
+            onPlay = onPlay,
+            onTirtlePlay = onTirtlePlay
+        )
+        Spacer(Modifier.height(16.dp))
+
+        KanaStage(
+            strokes = strokes,
+            type = type,
+            replayKey = replayKey,
+            showGuide = showGuide,
+            onWriteComplete = onWriteComplete,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        BottomElement(
+            type = type,
+            onRepeat = onRepeat,
+            onShowTrace = onShowTrace
+        )
+
+        Spacer(Modifier.height(64.dp))
+
+        AppButton(
+            modifier = Modifier.fillMaxWidth(),
+            label = "Continue",
+            clickable = continueEnabled,
+            onClick = onContinue,
+            backgroundColor = KanaColors.onLearningBackground,
+            labelColor = Color.White
         )
     }
-
 }
 
+
+
+//sound and turtle sound
 @Composable
 fun TopElement(
     kana: String,
@@ -309,7 +362,7 @@ fun TopElement(
         )
     }
 }
-
+//redraw and show button
 @Composable
 fun BottomElement(
     type : LessonPageType,

@@ -43,6 +43,7 @@ import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 @Composable
 fun SelectedLessonPanel(
     lesson: LessonWithProgress?,
+    isStartable : Boolean,
     onStart: (LessonWithProgress) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -78,44 +79,22 @@ fun SelectedLessonPanel(
                     color = KanaColors.onSecondaryButton
                 ),
 
-            )
+                )
             Spacer(Modifier.height(12.dp))
 
             AppButton3D(
                 modifier = Modifier
                     .fillMaxWidth(),
-                label = "${if(lesson.isCompleted) "Revise" else if (lesson.isCurrent) "Start" else "Start"} Learning" ,
+                label = "${ if (lesson.isCompleted) "Revise" else if (lesson.isCurrent) "Start" else "Finish Previous"} Learning",
                 onClick = {
                     onStart(lesson)
-                } ,
+                },
+                backgroundColor = KanaColors.primary,
+                contentColor = Color.White.copy(if(isStartable) 1f else 0.35f),
+                clickable = isStartable,
                 labelSize = 20,
                 labelPadding = 8,
-                clickable = true
-//                clickable = lesson.isCurrent || lesson.isCompleted
             )
-
-//            Box(
-//                modifier = Modifier
-//                    .customClickable(
-//                       onClick = {
-//                           player.playTap()
-//                       }
-//                    )
-//                    .fillMaxWidth()
-//                    .height(50.dp )
-//                    .clip(RoundedCornerShape(16.dp))
-//                    .background(KanaColors.secondaryButton),
-//                contentAlignment = Alignment.Center
-//            ){
-//                Text(
-//                    text = "${if(lesson.isCompleted) "Revise" else if (lesson.isCurrent) "Start" else "Start"} Learning" ,
-//                    style = KanaSenseiTypography.bodyMedium.copy(
-//                        fontWeight = FontWeight.Medium,
-//                        fontSize = 16.sp,
-//                        color = KanaColors.onSecondaryButton
-//                    )
-//                )
-//            }
         }
     }
 }

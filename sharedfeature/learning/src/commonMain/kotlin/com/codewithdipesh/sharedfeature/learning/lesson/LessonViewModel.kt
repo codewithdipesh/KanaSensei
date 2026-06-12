@@ -60,8 +60,11 @@ class LessonViewModel(
                 println("LessonViewModel: loaded lessonId=$lessonId pages=${pagesResult.size} lesson=${lessonResult != null}")
 
                 //load the kanas present there
+                // INFO pages (and any non-kana page) carry a blank kanaId — skip them so we never
+                // ask Firestore for an empty document path.
                 val kanaIds = pagesResult
                     .map { it.kanaId }
+                    .filter { it.isNotBlank() }
                     .distinct()
 
                 val kanaList = kanaIds
@@ -88,7 +91,11 @@ class LessonViewModel(
                     .toMap()
 
                 //complete status
-                val complete = progressRepository.isCompleted(_user.value!!.uid, lessonId)
+                val complete = if (_user.value?.uid != null) {
+                    progressRepository.isCompleted(_user.value!!.uid , lessonId)
+                } else {
+                    false
+                }
 
                 _state.update {
                     it.copy(
@@ -105,8 +112,12 @@ class LessonViewModel(
                        totalPage = pagesResult.size
                     )
                 }
-            } catch (e: Exception) {
-                println("LessonViewModel: failed to load lessonId=$lessonId -> ${e.message}")
+            }catch (e: Exception) {
+                e.printStackTrace()
+
+                println("ERROR TYPE = ${e::class.qualifiedName}")
+                println("ERROR MSG = ${e.message}")
+
                 _state.update {
                     it.copy(
                         isLoading = false,
@@ -140,9 +151,9 @@ class LessonViewModel(
                         _completionEvent.emit(
                             LessonCompletionResult(
                                 lessonId = lessonId,
+                                shortDescription = _state.value.lesson?.shortDescription ?: "",
                                 chapterCompleted = result.chapterCompleted,
                                 advancedToNextChapter = result.advancedToNextChapter,
-                                shortDescription = _state.value.lesson?.shortDescription ?: "",
                                 newChapterOrder = result.newCurrentChapter,
                                 newLessonOrder = result.newCurrentLesson
                             )

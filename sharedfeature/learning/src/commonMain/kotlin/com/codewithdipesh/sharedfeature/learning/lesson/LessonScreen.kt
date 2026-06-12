@@ -73,6 +73,7 @@ fun LessonScreen(
                     strokes = strokes,
                     title = lessonTitle,
                     type = selectedPage.type,
+                    infoContent = selectedPage.content,
                     onCancel = onClose,
                     onContinue = onContinue
                 )

@@ -56,9 +56,10 @@ class LearningRepositoryImpl(
     override suspend fun getKana(
         kanaId: String
     ): Character? = withContext(Dispatchers.IO){
+        if (kanaId.isBlank()) return@withContext null
         firestore
             .collection(FirestorePaths.CHARACTERS)
-            .document(kanaId)
+             .document(kanaId)
             .get()
             .await()
             .toObject(Character::class.java)
