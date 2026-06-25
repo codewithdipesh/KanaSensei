@@ -1,11 +1,13 @@
 package com.codewithdipesh.kanasensei.core.repository
 
+import android.util.Log
 import com.codewithdipesh.kanasensei.core.firestore.FirestorePaths
 import com.codewithdipesh.kanasensei.core.model.content.Character
 import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.content.LessonPage
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -37,7 +39,10 @@ class LearningRepositoryImpl(
             .await()
             .documents
             .mapNotNull { doc ->
-                runCatching { doc.toObject(LessonPage::class.java) }.getOrNull()
+                runCatching { doc.toObject(LessonPage::class.java) }.getOrElse {
+                    Log.d("Failed to parse lesson page", it.toString())
+                    null
+                }
             }
 
     }

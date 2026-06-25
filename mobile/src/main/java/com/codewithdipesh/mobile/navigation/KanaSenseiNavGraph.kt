@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -536,8 +537,28 @@ fun NavGraphBuilder.homeGraph(
             // Guards against firing completion more than once
             var completing by remember { mutableStateOf(false) }
 
+            val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
+            val snackbarHostState = remember { SnackbarHostState() }
+            val scope = rememberCoroutineScope()
+
             LaunchedEffect(Unit) {
                 viewModel.load(lessonId!!)
+            }
+            //ISLOADING AND NO INTERNET then navigate back
+            LaunchedEffect(networkStatus, state.isLoading) {
+                if (
+                    (networkStatus != ConnectivityObserver.Status.Available && state.isLoading) ||
+                    (!state.isLoading && networkStatus != ConnectivityObserver.Status.Available && state.kanas.isEmpty()) //screen is lesson but kana is empty and
+                ) {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Please turn your Internet on to load lesson content",
+                            duration = SnackbarDuration.Short,
+                            withDismissAction = true
+                        )
+                        navController.popBackStack()
+                    }
+                }
             }
 
             // Lesson finished + progress persisted: hand the result back to home as a nav
@@ -583,6 +604,16 @@ fun NavGraphBuilder.homeGraph(
                                 chapterId = state.lesson?.chapterId ?: ""
                             )
                         }
+                    }
+                },
+                snackBarHost = {
+                    SnackbarHost(snackbarHostState) { data ->
+                        Snackbar(
+                            snackbarData = data,
+                            containerColor = KanaColors.errorContainer,
+                            contentColor = KanaColors.onErrorContainer,
+                            actionColor = KanaColors.error
+                        )
                     }
                 }
             )

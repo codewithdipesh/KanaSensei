@@ -9,7 +9,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,7 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.content.Character
@@ -49,6 +47,7 @@ import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.*
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.STROKE
+import com.codewithdipesh.kanasensei.core.model.content.QuizDetail
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.customClickable
 import com.codewithdipesh.sharedfeature.learning.lesson.components.kana.KanaStage
@@ -68,22 +67,15 @@ import org.jetbrains.compose.resources.painterResource
 fun LessonComponent(
     kana : Character,
     strokes : KanaStrokes,
+    quizDetail: QuizDetail?,
     title : String,
     type : LessonPageType,
     infoContent : String = "",
     onCancel : ()-> Unit,
-    onContinue : () -> Unit
+    onContinue : () -> Unit,
+    snackBarHost : @Composable ()-> Unit
 ) {
     val audioManager = rememberAudioManager()
-
-    // STROKE: replay the animation. WRITE: reset progress. Reset when the page/kana changes.
-    var replayKey by remember(strokes, type) { mutableStateOf(0) }
-    // WRITE: faint guide visible behind the user's ink (toggled by the eye button).
-    var showGuide by remember(strokes, type) { mutableStateOf(false) }
-    // WRITE: becomes true once every stroke has been written correctly.
-    var writeComplete by remember(strokes, type) { mutableStateOf(false) }
-
-    val continueEnabled = type != LessonPageType.WRITE || writeComplete
 
     var showCancelDialog by remember { mutableStateOf(false) }
 
@@ -91,12 +83,9 @@ fun LessonComponent(
         showCancelDialog = true
     }
 
-    LaunchedEffect(writeComplete) {
-        if (writeComplete) audioManager.playFinished()
-    }
-
     Scaffold(
         containerColor = KanaColors.learningBackground,
+        snackbarHost = snackBarHost,
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -150,7 +139,81 @@ fun LessonComponent(
                     }
                 )
             }
+            QUIZ -> {
+                //quiz submitted
+                var quizSubmittedCorrect by remember( type,quizDetail) { mutableStateOf(false) }
+
+                Box(modifier = Modifier.fillMaxSize()){
+                    AnimatedVisibility(
+                        visible = quizSubmittedCorrect,
+                        enter = slideInVertically(
+                            initialOffsetY = { it },
+                            animationSpec = tween(durationMillis = 300)
+                        ),
+                        modifier = Modifier.align(Alignment.BottomCenter)
+                    ){
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .height(200.dp)
+                                .background(KanaColors.success.copy(0.5f)),
+                            contentAlignment = Alignment.BottomStart
+                        ){
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 24.dp)
+                                    .padding(bottom = 50.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                Image(
+                                    painter = painterResource(Res.drawable.tick_icon),
+                                    contentDescription = null,
+                                )
+                                Text(
+                                    text = "Nice Work!",
+                                    style = TextStyle(
+                                        color = KanaColors.background,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    QuizView(
+                        details = quizDetail!!,
+                        kana = kana,
+                        strokes = strokes,
+                        onContinue = {
+                            onContinue()
+                        },
+                        onPlay = {
+                            if (kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 1f)
+                        },
+                        onTirtlePlay = {
+                            if (kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 0.6f)
+                        },
+                        onQuizComplete = {
+                            quizSubmittedCorrect = it
+                        }
+                    )
+                }
+            }
             else -> {
+                // STROKE: replay the animation. WRITE: reset progress. Reset when the page/kana changes.
+                var replayKey by remember(strokes, type) { mutableStateOf(0) }
+                // WRITE: faint guide visible behind the user's ink (toggled by the eye button).
+                var showGuide by remember(strokes, type) { mutableStateOf(false) }
+                // WRITE: becomes true once every stroke has been written correctly.
+                var writeComplete by remember(strokes, type) { mutableStateOf(false) }
+
+                val continueEnabled = type != LessonPageType.WRITE || writeComplete
+
+                LaunchedEffect(writeComplete) {
+                    if (writeComplete) audioManager.playFinished()
+                }
+
                 Box(modifier = Modifier.fillMaxSize()){
                     //correct draw confirmation box
                     AnimatedVisibility(
@@ -300,7 +363,8 @@ fun LessonView(
 //sound and turtle sound
 @Composable
 fun TopElement(
-    kana: String,
+    kana: String = "",
+    showRomaji : Boolean = true,
     onPlay : () -> Unit,
     onTirtlePlay : () -> Unit
 ){
@@ -351,15 +415,17 @@ fun TopElement(
         }
 
         //title
-        Text(
-            text = kana,
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.align(Alignment.Center)
-        )
+        if(showRomaji){
+            Text(
+                text = kana,
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
     }
 }
 //redraw and show button

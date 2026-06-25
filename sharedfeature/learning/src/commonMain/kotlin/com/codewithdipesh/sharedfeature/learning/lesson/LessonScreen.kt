@@ -11,10 +11,12 @@ import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -42,7 +44,8 @@ fun LessonScreen(
     totalPage : Int,
     currentPageNumber : Int,
     onClose : () -> Unit = {},
-    onContinue : () -> Unit = {}
+    onContinue : () -> Unit = {},
+    snackBarHost : @Composable () -> Unit
 ){
     // Stays true until LoadingScreen signals it's done (enforces the s minimum),
     var showLoading by rememberSaveable { mutableStateOf(true) }
@@ -58,7 +61,8 @@ fun LessonScreen(
         when {
             loading -> LoadingScreen(
                 isDataLoaded = !isLoading,
-                onFinished = { showLoading = false }
+                onFinished = { showLoading = false },
+                snackBarHost = snackBarHost
             )
             selectedPage == null -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -66,17 +70,22 @@ fun LessonScreen(
                 }
             }
             else -> {
-                val kana = kanaById[selectedPage.kanaId] ?: Character()
-                val strokes = strokesById[selectedPage.kanaId] ?: KanaStrokes()
-                LessonComponent(
-                    kana = kana,
-                    strokes = strokes,
-                    title = lessonTitle,
-                    type = selectedPage.type,
-                    infoContent = selectedPage.content,
-                    onCancel = onClose,
-                    onContinue = onContinue
-                )
+                key(selectedPage.id){ //for recomposition
+                    val kana = kanaById[selectedPage.kanaId] ?: Character()
+                    val strokes = strokesById[selectedPage.kanaId] ?: KanaStrokes()
+                    val quizDetail = selectedPage.toQuizDetails()
+                    LessonComponent(
+                        kana = kana,
+                        strokes = strokes,
+                        quizDetail = quizDetail,
+                        title = lessonTitle,
+                        type = selectedPage.type,
+                        infoContent = selectedPage.content,
+                        onCancel = onClose,
+                        onContinue = onContinue,
+                        snackBarHost = snackBarHost
+                    )
+                }
             }
         }
     }

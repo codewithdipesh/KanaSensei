@@ -2,6 +2,7 @@ package com.codewithdipesh.sharedfeature.learning.lesson
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
 import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
 import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
 import com.codewithdipesh.kanasensei.core.model.user.User
@@ -16,15 +17,18 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LessonViewModel(
     private val repo : LearningRepository,
     private val progressRepository : ProgressRepository,
-    private val firebaseAuthRepository: FirebaseAuthRepository
+    private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LessonUiState())
@@ -39,6 +43,13 @@ class LessonViewModel(
 
     private val _error = MutableSharedFlow<String>()
     val error = _error.asSharedFlow()
+
+    val networkStatus = connectivityObserver.observe()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Companion.Eagerly,
+            initialValue = ConnectivityObserver.Status.Unavailable
+        )
 
     init {
         viewModelScope.launch {
@@ -57,14 +68,19 @@ class LessonViewModel(
                 val pagesResult = pages.await()
                 val lessonResult = lesson.await()
 
-                println("LessonViewModel: loaded lessonId=$lessonId pages=${pagesResult.size} lesson=${lessonResult != null}")
+                print("LessonViewModel: loaded lessonId=$lessonId pages=${pagesResult.size} lesson=${lessonResult != null}")
 
                 //load the kanas present there
                 // INFO pages (and any non-kana page) carry a blank kanaId — skip them so we never
                 // ask Firestore for an empty document path.
                 val kanaIds = pagesResult
-                    .map { it.kanaId }
-                    .filter { it.isNotBlank() }
+                    .mapNotNull { page ->
+                        if (page.kanaId.isNotBlank()) {
+                            page.kanaId
+                        } else {
+                            page.quizConfig?.source?.refIds?.firstOrNull()
+                        }
+                    }
                     .distinct()
 
                 val kanaList = kanaIds

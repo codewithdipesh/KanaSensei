@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,7 +63,8 @@ private const val MIN_DISPLAY_MILLIS = 4000
 fun LoadingScreen(
     modifier : Modifier = Modifier,
     isDataLoaded : Boolean = false,
-    onFinished : () -> Unit = {}
+    onFinished : () -> Unit = {},
+    snackBarHost : @Composable () -> Unit
 ){
     val composition by rememberLottieComposition {
         LottieCompositionSpec.JsonString(
@@ -90,86 +92,90 @@ fun LoadingScreen(
         progress.animateTo(1f, tween(300))
         onFinished()
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(KanaColors.background)
-            .padding(24.dp)
-            .padding(top = 30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+    Scaffold(
+        snackbarHost = snackBarHost
     ){
-        Icon(
-            painter = painterResource(Res.drawable.lesson_loading),
-            contentDescription = null,
-            tint = Color(0xFF00280F),
-            modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        )
-        val lottieAlpha by animateFloatAsState(
-            targetValue = if (composition != null) 1f else 0f,
-            animationSpec = tween(durationMillis = 250)
-        )
-        Icon(
-            painter = painterResource(Res.drawable.ramenbowl_shadow),
-            contentDescription = null,
+        Column(
             modifier = Modifier
-                .alpha(lottieAlpha)
-                .offset(x = 18.dp,y = 160.dp)
-                .scale(0.7f)
-        )
-        Image(
-            painter = rememberLottiePainter(
-                composition = composition,
-                iterations = Compottie.IterateForever
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .size(300.dp)
-                .offset(y = (-130).dp )
-                .alpha(lottieAlpha)
-        )
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .offset(y = (-100).dp)
-                .height(14.dp)
-                .clip(RoundedCornerShape(50.dp))
-                .background(Color.White.copy(0.3f))
+                .fillMaxSize()
+                .background(KanaColors.background)
+                .padding(24.dp)
+                .padding(top = 30.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ){
-            Box(
+            Icon(
+                painter = painterResource(Res.drawable.lesson_loading),
+                contentDescription = null,
+                tint = Color(0xFF00280F),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+            val lottieAlpha by animateFloatAsState(
+                targetValue = if (composition != null) 1f else 0f,
+                animationSpec = tween(durationMillis = 250)
+            )
+            Icon(
+                painter = painterResource(Res.drawable.ramenbowl_shadow),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth(progress.value)
-                    .fillMaxHeight()
+                    .alpha(lottieAlpha)
+                    .offset(x = 18.dp,y = 160.dp)
+                    .scale(0.7f)
+            )
+            Image(
+                painter = rememberLottiePainter(
+                    composition = composition,
+                    iterations = Compottie.IterateForever
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(300.dp)
+                    .offset(y = (-130).dp )
+                    .alpha(lottieAlpha)
+            )
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .offset(y = (-100).dp)
+                    .height(14.dp)
                     .clip(RoundedCornerShape(50.dp))
-                    .background(KanaColors.onOverlayedContainer)
+                    .background(Color.White.copy(0.3f))
+            ){
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress.value)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(50.dp))
+                        .background(KanaColors.onOverlayedContainer)
+                )
+            }
+            AppButton3D(
+                modifier = Modifier
+                    .width(150.dp),
+                label = "Tap for FunFact" ,
+                labelSize = 16,
+                onClick = {
+                    funFact = funFacts.random()
+                },
+                backgroundColor = Color.White,
+                shadowColor = KanaColors.learningSecondary.copy(0.6f),
+                contentColor = KanaColors.onOverlayedContainer,
+                cornerRadius = 20
             )
-        }
-        AppButton3D(
-            modifier = Modifier
-                .width(150.dp),
-            label = "Tap for FunFact" ,
-            labelSize = 16,
-            onClick = {
-                funFact = funFacts.random()
-            },
-            backgroundColor = Color.White,
-            shadowColor = KanaColors.learningSecondary.copy(0.6f),
-            contentColor = KanaColors.onOverlayedContainer,
-            cornerRadius = 20
-        )
-        Spacer( Modifier.height(30.dp))
-        Text(
-            text = funFact,
-            style = KanaSenseiTypography.bodyMedium.copy(
-                fontWeight = FontWeight.Normal,
-                fontSize = 20.sp,
-                color = Color.White.copy(0.6f),
-                textAlign = TextAlign.Center
+            Spacer( Modifier.height(30.dp))
+            Text(
+                text = funFact,
+                style = KanaSenseiTypography.bodyMedium.copy(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White.copy(0.6f),
+                    textAlign = TextAlign.Center
+                )
             )
-        )
 
+        }
     }
+
 }
 
 
