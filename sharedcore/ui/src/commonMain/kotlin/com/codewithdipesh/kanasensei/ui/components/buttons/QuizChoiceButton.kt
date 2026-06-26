@@ -83,7 +83,7 @@ fun QuizChoiceButton(
 
     Box(
         modifier = modifier
-            .pointerInput(true) {
+            .pointerInput(clickable) {
                 detectTapGestures(
                     onPress = {
                        if(clickable){ //diff behavoior ..first clicked anim liek press off then show result ( show sound and vibration )

@@ -22,6 +22,7 @@ data class LessonPage(
     fun toQuizDetails() : QuizDetail {
         val quizDetail = QuizDetail(
             question = this.quizConfig?.metadata?.title ?:  "Issue fetching the quiz",
+            hint = this.quizConfig?.metadata?.hint,
             options = this.quizConfig?.legacy?.options ?: emptyList(),
             correctOption = this.quizConfig?.legacy?.correctOption ?: 1,
             kanaId = this.kanaId,
@@ -222,6 +223,7 @@ data class LegacyQuiz(
 @Serializable
 data class QuizDetail(
     val question: String = "",
+    val hint: String? = null,
     val options: List<String> = emptyList(),
     val correctOption: Int = 0 , //between 1-4
     val kanaId: String? = null,

@@ -1,9 +1,11 @@
 package com.codewithdipesh.sharedfeature.learning.lesson.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,7 +32,10 @@ import com.codewithdipesh.kanasensei.core.model.content.QuizQuestionType.*
 import com.codewithdipesh.kanasensei.core.model.content.QuizResponseMode.*
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.QuizChoiceButton
+import com.codewithdipesh.kanasensei.ui.components.textfield.KanaTextField
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
+import com.codewithdipesh.sharedfeature.learning.lesson.components.kana.QuizDrawingPad
+import com.codewithdipesh.sharedfeature.learning.lesson.components.kana.rememberKanaPaths
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -65,33 +70,40 @@ fun QuizView(
             text = details.question,
             style = TextStyle(
                 color = KanaColors.onLearningBackground,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(10.dp))
+        details.hint.let {
+            Text(
+                text = details.hint!!,
+                style = TextStyle(
+                    color = KanaColors.onLearningBackground.copy(0.85f),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+        Spacer(Modifier.height(12.dp))
         when(details.questionType){
-            audio -> {
+            audio , romaji -> {
                 TopElement(
                     onPlay = onPlay,
                     onTirtlePlay = onTirtlePlay
                 )
-                Spacer(Modifier.height(210.dp))
-            }
-            romaji -> {
-                //nothing to show
-                Spacer(Modifier.height(270.dp))
             }
             svg -> TODO()
             word -> TODO()
             QuizQuestionType.kana -> {
                 //nothing to show
-                Spacer(Modifier.height(270.dp))
+                Spacer(Modifier.height(32.dp))
             }
         }
 
         when(details.answerType){
             mcq -> {
+                Spacer(Modifier.height(210.dp))
                 MCQView(
                     options = details.options,
                     correctOption = details.correctOption,
@@ -101,14 +113,42 @@ fun QuizView(
                         answered = true
                     }
                 )
+                Spacer(Modifier.height(150.dp))
             }
-            typing -> TODO()
-            drawing -> TODO()
+            typing -> {
+                Spacer(Modifier.height(210.dp))
+                //todo
+                Spacer(Modifier.height(150.dp))
+            }
+            drawing -> {
+                val paths = rememberKanaPaths(strokes)
+                Spacer(Modifier.height(100.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp),
+                    contentAlignment = Alignment.Center
+                ){
+                    QuizDrawingPad(
+                        strokes = strokes,
+                        paths = paths,
+                        clickable = !answered,
+                        onComplete = { isCorrect ->
+                            onQuizComplete(isCorrect)
+                            if (isCorrect) answered = true
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                    )
+                }
+                Spacer(Modifier.height(100.dp))
+            }
             ordering -> TODO()
             matching -> TODO()
         }
 
-        Spacer(Modifier.height(150.dp))
+
 
         AppButton(
             modifier = Modifier.fillMaxWidth(),
