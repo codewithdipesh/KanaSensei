@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,6 +43,7 @@ import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
+@Stable
 @Composable
 fun LessonTile(
     lessonWithProgress: LessonWithProgress,

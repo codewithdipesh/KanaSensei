@@ -138,7 +138,7 @@ class ProgressRepositoryImpl(
                 )
 
                 // 4b. Try to advance to next chapter
-                val nextChapter = progressDao.getChapterByOrder(currentChapter.orderNumber + 1)
+                val nextChapter = progressDao.getNextChapter(currentChapter.orderNumber)
                 if (nextChapter != null) {
                     newChapterOrder = nextChapter.orderNumber
                     newChapterId = nextChapter.id
@@ -152,7 +152,7 @@ class ProgressRepositoryImpl(
                 }
             } else {
                 // 4c. Advance to next lesson in same chapter
-                val nextLesson = progressDao.getLessonByOrder(chapterId, currentLesson.orderNumber + 1)
+                val nextLesson = progressDao.getNextLesson(chapterId, currentLesson.orderNumber)
                 if (nextLesson != null) {
                     newLessonOrder = nextLesson.orderNumber
                     newLessonId = nextLesson.id

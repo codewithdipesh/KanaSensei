@@ -111,9 +111,11 @@ class LearningViewModel(
                     _uiState.update { state ->
                         state.copy(
                             chapters = chapters,
-                            selectedLesson = chapters.map { //find in chapters
-                                it.lessons.find { it.isCurrent } //where lesson isCurrent is true
-                            }.first(),
+                            selectedLesson = chapters.flatMap{
+                                it.lessons
+                            }.find {
+                                it.isCurrent
+                            },
                             isLoading = false
                         )
                     }

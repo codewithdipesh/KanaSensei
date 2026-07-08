@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -101,7 +104,8 @@ fun NavApp(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(KanaColors.background)
     ) {
         NavHost(
@@ -141,7 +145,10 @@ fun NavGraphBuilder.authGraph(
        route = Screen.AuthGraph.route,
        startDestination = Screen.AuthGraph.SplashScreen.route
    ) {
-       composable(Screen.AuthGraph.SplashScreen.route) {
+       composable(
+           route = Screen.AuthGraph.SplashScreen.route,
+           exitTransition = { fadeOut(tween(500)) }
+       ) {
            val parentEntry = remember {
                navController.getBackStackEntry(Screen.AuthGraph.route)
            }
@@ -168,7 +175,12 @@ fun NavGraphBuilder.authGraph(
            SplashScreen()
        }
 
-       composable(Screen.AuthGraph.WelcomeScreen.route) {
+       composable(
+           route = Screen.AuthGraph.WelcomeScreen.route,
+           enterTransition = {
+               fadeIn(animationSpec = tween(700))
+           }
+       ) {
 
            WelcomeScreen(
                onOnboard = { navController.navigate(Screen.AuthGraph.OnboardingScreen.route) },
@@ -223,7 +235,11 @@ fun NavGraphBuilder.authGraph(
                }
            }
 
-           Box(modifier = Modifier.fillMaxSize()) {
+           Box(
+               modifier = Modifier
+                   .fillMaxSize()
+                   .background(KanaColors.learningBackground)
+           ) {
                OnboardingScreen(
                    onNavigateBack = { navController.popBackStack() },
                    onNavigateNext = { navController.navigate(Screen.AuthGraph.SignUpScreen.route) },
@@ -291,7 +307,10 @@ fun NavGraphBuilder.authGraph(
                    }
                }
            ) { paddingValues ->
-               Box(modifier = Modifier.padding(paddingValues)) {
+               Box(modifier = Modifier
+                   .background(KanaColors.learningBackground)
+                   .padding(paddingValues)
+               ) {
                    SignUpScreen(
                        email = email,
                        password = password,
@@ -358,7 +377,10 @@ fun NavGraphBuilder.authGraph(
                    }
                }
            ) { paddingValues ->
-               Box(modifier = Modifier.padding(paddingValues)) {
+               Box(modifier = Modifier
+                   .padding(paddingValues)
+                   .background(KanaColors.learningBackground)
+               ) {
                    LoginScreen(
                        email = email,
                        password = password,

@@ -58,6 +58,12 @@ interface ProgressDao {
     @Query("UPDATE completed_lessons SET needsSync = 0 WHERE userId = :userId AND lessonId = :lessonId")
     suspend fun markLessonSynced(userId: String, lessonId: String)
 
+    @Query("SELECT * FROM cached_lessons WHERE chapterId = :chapterId AND orderNumber > :currentOrder ORDER BY orderNumber ASC LIMIT 1")
+    suspend fun getNextLesson(chapterId: String, currentOrder: Int): CachedLessonEntity?
+
+    @Query("SELECT * FROM cached_chapters WHERE orderNumber > :currentOrder ORDER BY orderNumber ASC LIMIT 1")
+    suspend fun getNextChapter(currentOrder: Int): CachedChapterEntity?
+
     //chapter
     @Query("SELECT chapterId FROM completed_chapters WHERE userId = :userId")
     fun observeCompletedChapterIds(userId: String): Flow<List<String>>

@@ -52,14 +52,6 @@ fun QuizView(
 ){
     var answered by remember(details){ mutableStateOf(false) }
 
-    //first time play by default if its audio
-    LaunchedEffect(details){
-        if(details.questionType == audio){
-            delay(800.milliseconds)
-            onPlay()
-        }
-    }
-
     Column(
         modifier = modifier.fillMaxSize()
             .padding(24.dp),

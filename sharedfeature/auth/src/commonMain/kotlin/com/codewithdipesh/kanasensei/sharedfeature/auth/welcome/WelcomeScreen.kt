@@ -1,6 +1,7 @@
 package com.codewithdipesh.kanasensei.sharedfeature.auth.welcome
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ fun WelcomeScreen(
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
+            .background(KanaColors.learningBackground)
     ){
         Box(
             modifier = Modifier.fillMaxSize()

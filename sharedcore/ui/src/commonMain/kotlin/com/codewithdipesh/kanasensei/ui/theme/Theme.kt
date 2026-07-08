@@ -2,6 +2,7 @@ package com.codewithdipesh.kanasensei.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
@@ -19,12 +20,28 @@ private val DarkColorScheme = darkColorScheme(
     onError = White
 )
 
+private val LightColorScheme = lightColorScheme(
+    primary = Primary,
+    secondary = LightGray2,
+    tertiary = LightGray1,
+    background = White,
+    surface = LightCard,
+    error = LightRed,
+    scrim = LightGreen,
+    onPrimary = White,
+    onSecondary = White,
+    onBackground = Black,
+    onSurface = LightGray3,
+    onError = White
+)
+
+
 @Composable
 fun KanaSenseiTheme(
     content: @Composable () -> Unit = {}
 ) {
     MaterialTheme(
-        colorScheme = DarkColorScheme,
+        colorScheme = LightColorScheme,
         typography = KanaSenseiTypography,
         content = content
     )

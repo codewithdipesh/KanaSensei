@@ -74,7 +74,7 @@ fun LearningHomeScreen(
     pendingCompletion : LessonCompletionResult?,
     snackBarHost : @Composable () -> Unit
 ) {
-    val lessons = chapters.flattenLessons()
+    val lessons = remember(chapters){ chapters.flattenLessons() }
     val hazeState = remember { HazeState() }
 
     val lessonsPadding by animateIntAsState(
@@ -117,7 +117,11 @@ fun LearningHomeScreen(
                         contentPadding = PaddingValues( bottom = lessonsPadding.dp )
                     ) {
 
-                        itemsIndexed(lessons) { index, lesson ->
+                        itemsIndexed(
+                            items = lessons,
+                            key = { _, lesson -> lesson.lesson.id },
+                            contentType = { _, _ -> "lesson" }
+                        ) { index, lesson ->
 
                             val offsetFraction = calculateTileOffset(index)
                             val offset = availableWidth * offsetFraction
@@ -203,15 +207,23 @@ fun LearningHomeScreen(
                                 }
                                 //selected bubble on top
                                 if (lesson == selectedLesson) {
-                                    val bubbleOffset =
-                                        if(index % SNAKE_CURVE_SIZE == 0) offset - 40.dp
-                                        else if(index % SNAKE_CURVE_SIZE == SNAKE_CURVE_SIZE - 1) offset + 40.dp
-                                        else offset
 
-                                    val trianglePadding =
-                                        if(index % SNAKE_CURVE_SIZE == 0) 24.dp
-                                        else if(index % SNAKE_CURVE_SIZE == SNAKE_CURVE_SIZE - 1) (-24).dp
-                                        else 0.dp
+                                    val (bubbleX, trianglePadding) = when {
+                                        offsetFraction > 0.9f -> {
+                                            // Right-most tile: align bubble right edge to the screen bounds,
+                                            // and shift triangle pointer to the right to hit tile center
+                                            Pair(availableWidth - 54.dp, 27.dp)
+                                        }
+                                        offsetFraction < 0.1f -> {
+                                            // Left-most tile: align bubble left edge to the screen bounds,
+                                            // and shift triangle pointer to the left to hit tile center
+                                            Pair(0.dp, (-27).dp)
+                                        }
+                                        else -> {
+                                            // Center tile: center bubble perfectly over the tile
+                                            Pair(offset - 27.dp, 0.dp)
+                                        }
+                                    }
 
                                     AnimatedVisibility(
                                         visible = lesson == selectedLesson,
@@ -233,8 +245,7 @@ fun LearningHomeScreen(
                                             description = lesson.lesson.shortDescription,
                                             trianglePadding = trianglePadding,
                                             modifier = Modifier
-                                                .offset(x = -20.dp) //little adjustment
-                                                .offset(x = bubbleOffset, y = (-40).dp)
+                                                .offset(x = bubbleX, y = (-40).dp)
                                         )
                                     }
                                 }

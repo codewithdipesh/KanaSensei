@@ -48,6 +48,8 @@ import com.codewithdipesh.kanasensei.core.model.content.LessonPageType
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.*
 import com.codewithdipesh.kanasensei.core.model.content.LessonPageType.STROKE
 import com.codewithdipesh.kanasensei.core.model.content.QuizDetail
+import com.codewithdipesh.kanasensei.core.model.content.QuizQuestionType
+import com.codewithdipesh.kanasensei.core.model.content.QuizQuestionType.audio
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.customClickable
 import com.codewithdipesh.sharedfeature.learning.lesson.components.kana.KanaStage
@@ -143,6 +145,14 @@ fun LessonComponent(
                 //quiz submitted
                 var quizSubmittedCorrect by remember( type,quizDetail) { mutableStateOf(false) }
 
+                //first time play by default if its audio
+                LaunchedEffect(quizDetail){
+                    if(quizDetail != null &&  quizDetail.questionType == audio &&  quizDetail.questionType == QuizQuestionType.kana){
+                        if (kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 1f)
+                    }
+                }
+
+
                 Box(modifier = Modifier.fillMaxSize()){
                     AnimatedVisibility(
                         visible = quizSubmittedCorrect,
@@ -212,6 +222,13 @@ fun LessonComponent(
 
                 LaunchedEffect(writeComplete) {
                     if (writeComplete) audioManager.playFinished()
+                }
+
+                //auto play for listen and stroke page
+                LaunchedEffect(type){
+                    if(type == LISTEN || type == STROKE){
+                        if (kana.audioUrl.isNotEmpty()) audioManager.playUrl(kana.audioUrl, speed = 1f)
+                    }
                 }
 
                 Box(modifier = Modifier.fillMaxSize()){
