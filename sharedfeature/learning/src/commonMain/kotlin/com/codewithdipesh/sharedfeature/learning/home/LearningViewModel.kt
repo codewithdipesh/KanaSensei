@@ -3,14 +3,15 @@ package com.codewithdipesh.sharedfeature.learning.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
-import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
-import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
 import com.codewithdipesh.kanasensei.core.model.progress.SyncResult
 import com.codewithdipesh.kanasensei.core.model.user.User
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
 import com.codewithdipesh.kanasensei.core.repository.ProgressRepository
 import com.codewithdipesh.kanasensei.core.sync.ContentSyncManager
+import com.codewithdipesh.sharedfeature.learning.home.uistates.LearningEvent
+import com.codewithdipesh.sharedfeature.learning.home.uistates.LearningUiState
+import com.codewithdipesh.sharedfeature.learning.home.uistates.SyncStatus
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -22,18 +22,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterWithProgress
@@ -76,11 +82,31 @@ fun LearningHomeScreen(
 ) {
     val lessons = remember(chapters){ chapters.flattenLessons() }
     val hazeState = remember { HazeState() }
+    val listState = rememberLazyListState()
+    val density = LocalDensity.current
 
     val lessonsPadding by animateIntAsState(
         targetValue = if(selectedLesson != null) 220 else 30,
         animationSpec = tween(400)
     )
+
+    //focused and scrolled to the selected lesson ( for the first time )
+    LaunchedEffect(isLoading,lessons) {
+        if (!isLoading && selectedLesson != null && lessons.isNotEmpty()) {
+            val index = lessons.indexOfFirst { it.lesson.id == selectedLesson.lesson.id }
+            if (index != -1) {
+                val viewportHeight = listState.layoutInfo.viewportSize.height
+                if (viewportHeight > 0) {
+                    val itemHeightPx = with(density) { 96.dp.toPx() }
+                    val centerOffset = (viewportHeight / 2 - itemHeightPx / 2).toInt()
+                    listState.animateScrollToItem(index, -centerOffset)
+                } else {
+                    listState.animateScrollToItem(index)
+                }
+            }
+        }
+    }
+
 
     Scaffold(
         containerColor = KanaColors.background,
@@ -109,6 +135,7 @@ fun LearningHomeScreen(
                 Box(modifier = Modifier.fillMaxSize()) {
 
                     LazyColumn(
+                        state = listState,
                         reverseLayout = true,
                         modifier = Modifier
                             .fillMaxSize()
@@ -123,13 +150,16 @@ fun LearningHomeScreen(
                             contentType = { _, _ -> "lesson" }
                         ) { index, lesson ->
 
+                            val isLessonSelected = selectedLesson?.lesson?.id == lesson.lesson.id
+                            val isCompletedGated = lesson.isCompleted && pendingCompletion?.lessonId != lesson.lesson.id
+
                             val offsetFraction = calculateTileOffset(index)
                             val offset = availableWidth * offsetFraction
 
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .zIndex(if (lesson == selectedLesson) 10f else 0f)
+                                    .zIndex(if (isLessonSelected) 10f else 0f)
                             ) {
 
                                 //tile shadow
@@ -144,9 +174,9 @@ fun LearningHomeScreen(
                                 //tile
                                 LessonTile(
                                     lessonWithProgress = lesson,
-                                    isSelected = lesson == selectedLesson,
+                                    isSelected = isLessonSelected,
                                     onSelect = { onLessonSelect(lesson) },
-                                    showTickIcon = lesson.isCompleted  && pendingCompletion?.lessonId != lesson.lesson.id,
+                                    showTickIcon = isCompletedGated,
                                     modifier = Modifier
                                         .offset(x = offset)
                                         .align(Alignment.BottomStart)
@@ -155,7 +185,7 @@ fun LearningHomeScreen(
                                 if(index % 2 == 0){
                                     val grassOffsetFraction = if((index/2) % 2 == 0) 0f else 1f
                                     val grassOffset = availableWidth * grassOffsetFraction
-                                    val grassOffsetFix = if((index/2) % 2 == 0) -36.dp else 36.dp
+                                    val grassOffsetFix = if((index/2) % 2 == 0) (-36).dp else 36.dp
                                     val yRotation = if((index/2) % 2 == 0) 0f else 180f
 
                                     Box(
@@ -206,7 +236,7 @@ fun LearningHomeScreen(
                                     }
                                 }
                                 //selected bubble on top
-                                if (lesson == selectedLesson) {
+                                if (isLessonSelected) {
 
                                     val (bubbleX, trianglePadding) = when {
                                         offsetFraction > 0.9f -> {
@@ -226,7 +256,7 @@ fun LearningHomeScreen(
                                     }
 
                                     AnimatedVisibility(
-                                        visible = lesson == selectedLesson,
+                                        visible = isLessonSelected,
                                         enter = scaleIn(
                                             animationSpec = spring(
                                                 dampingRatio = Spring.DampingRatioMediumBouncy,

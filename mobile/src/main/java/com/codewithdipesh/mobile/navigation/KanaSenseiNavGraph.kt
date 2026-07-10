@@ -1,6 +1,5 @@
 package com.codewithdipesh.kanasensei.navigation
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -51,22 +50,18 @@ import com.codewithdipesh.kanasensei.sharedfeature.auth.access.SignUpScreen
 import com.codewithdipesh.kanasensei.sharedfeature.auth.onboarding.OnboardingScreen
 import com.codewithdipesh.kanasensei.sharedfeature.auth.welcome.SplashScreen
 import com.codewithdipesh.kanasensei.sharedfeature.auth.welcome.WelcomeScreen
-import com.codewithdipesh.sharedfeature.learning.home.LearningEvent
+import com.codewithdipesh.sharedfeature.learning.home.uistates.LearningEvent
 import com.codewithdipesh.sharedfeature.learning.home.LearningHomeScreen
 import com.codewithdipesh.sharedfeature.learning.home.LearningViewModel
 import com.codewithdipesh.sharedfeature.learning.home.components.LessonCompleteDialog
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import com.codewithdipesh.sharedfeature.learning.lesson.LessonScreen
 import com.codewithdipesh.sharedfeature.learning.lesson.LessonViewModel
-import com.codewithdipesh.sharedfeature.learning.lesson.components.LoadingScreen
 import com.codewithdipesh.sharedfeature.learning.lesson.model.LessonCompletionResult
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -378,8 +373,8 @@ fun NavGraphBuilder.authGraph(
                }
            ) { paddingValues ->
                Box(modifier = Modifier
-                   .padding(paddingValues)
                    .background(KanaColors.learningBackground)
+                   .padding(paddingValues)
                ) {
                    LoginScreen(
                        email = email,
@@ -490,13 +485,17 @@ fun NavGraphBuilder.homeGraph(
             }
 
             // Lesson-completion popup, delivered as a nav result from the lesson screen.
-            // Read + remove synchronously in the initializer so there's no frame where the tile's
-            // tick flashes before the popup gates it, and so it doesn't re-trigger on later returns.
-            var pendingCompletion by remember {
-                mutableStateOf(
-                    entry.savedStateHandle.remove<String>(LESSON_COMPLETION_RESULT)
-                        ?.let { Json.decodeFromString<LessonCompletionResult>(it) }
-                )
+            val savedStateHandle = entry.savedStateHandle
+            val pendingCompletionJson by savedStateHandle.getStateFlow<String?>(LESSON_COMPLETION_RESULT, null)
+                .collectAsStateWithLifecycle()
+
+            var activeCompletion by remember { mutableStateOf<LessonCompletionResult?>(null) }
+
+            LaunchedEffect(pendingCompletionJson) {
+                pendingCompletionJson?.let {
+                    activeCompletion = Json.decodeFromString<LessonCompletionResult>(it)
+                    savedStateHandle.remove<String>(LESSON_COMPLETION_RESULT)
+                }
             }
 
             LearningHomeScreen(
@@ -517,7 +516,7 @@ fun NavGraphBuilder.homeGraph(
                     }
 
                 },
-                pendingCompletion = pendingCompletion,
+                pendingCompletion = activeCompletion,
                 snackBarHost = {
                     SnackbarHost(snackbarHostState) { data ->
                         Snackbar(
@@ -530,14 +529,14 @@ fun NavGraphBuilder.homeGraph(
                 }
             )
 
-            // Completion popup. Dismissing it clears pendingCompletion, which un-gates the
+            // Completion popup. Dismissing it clears activeCompletion, which un-gates the
             // tile's tick on the home screen so it animates in.
-            pendingCompletion?.let { result ->
+            activeCompletion?.let { result ->
                 LessonCompleteDialog(
                     isFirstLesson = result.newChapterOrder == 1 && result.newLessonOrder == 1,
                     username = user?.name,
                     lessonDetails = result.shortDescription,
-                    onContinue = { pendingCompletion = null }
+                    onContinue = { activeCompletion = null }
                 )
             }
         }
