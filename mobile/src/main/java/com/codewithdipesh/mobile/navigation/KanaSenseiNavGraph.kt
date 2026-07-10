@@ -463,6 +463,15 @@ fun NavGraphBuilder.homeGraph(
                         is LearningEvent.SyncCompleted -> {
                            //show nothing
                         }
+
+                        is LearningEvent.Message -> {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = event.message,
+                                    withDismissAction = true
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -516,6 +525,15 @@ fun NavGraphBuilder.homeGraph(
                     }
 
                 },
+                showGrievienceForm = uiState.showGrievienceForm,
+                grievienceState = uiState.grievienceState,
+                onGrievienceClick = { viewModel.showGrievienceForm(true) },
+                onGrievienceTitleChange = viewModel::updateGrievienceTitle,
+                onGrievienceDescriptionChange = viewModel::updateGrievienceDescription,
+                onGrievienceMediaSelected = viewModel::addGrievienceMedia,
+                onGrievienceMediaRemove = viewModel::removeGrievienceMedia,
+                onGrievienceConfirm = viewModel::submitGrievience,
+                onGrievienceDismiss = { viewModel.showGrievienceForm(false) },
                 pendingCompletion = activeCompletion,
                 snackBarHost = {
                     SnackbarHost(snackbarHostState) { data ->

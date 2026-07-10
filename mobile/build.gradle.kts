@@ -30,9 +30,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Read WEB_CLIENT_ID from local.properties (not exposed in version control)
+        // Read keys from local.properties (not exposed in version control)
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
+        val telegramToken = localProperties.getProperty("TELEGRAM_TOKEN") ?: ""
+        val chatId = localProperties.getProperty("CHAT_ID") ?: ""
+        
         buildConfigField("String", "WEB_CLIENT_ID", "\"$webClientId\"")
+        buildConfigField("String", "TELEGRAM_TOKEN", "\"$telegramToken\"")
+        buildConfigField("String", "CHAT_ID", "\"$chatId\"")
     }
 
     // Include compose resources from sharedcore:ui module

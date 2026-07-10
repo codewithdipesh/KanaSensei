@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.codewithdipesh.kanasensei.core.AppConfig
 import com.codewithdipesh.kanasensei.core.di.sharedCoreModule
 import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
@@ -26,6 +27,11 @@ class KanaSenseiApplication : Application() {
         super.onCreate()
 
         FirebaseApp.initializeApp(this)
+
+        AppConfig.initialize(
+            telegramBotToken = BuildConfig.TELEGRAM_TOKEN,
+            chatId = BuildConfig.CHAT_ID
+        )
 
         startKoin {
             androidContext(this@KanaSenseiApplication)

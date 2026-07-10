@@ -42,4 +42,11 @@ interface ProgressRepository {
     suspend fun initializeProgress(userId: String)
 
     suspend fun clearLocalData(userId: String)
+
+    suspend fun postGrievience(
+        title: String,
+        description: String,
+        name : String,
+        attachedMedia: List<ByteArray>
+    )
 }

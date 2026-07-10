@@ -1,5 +1,6 @@
 package com.codewithdipesh.sharedfeature.learning.home
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
@@ -9,9 +10,11 @@ import com.codewithdipesh.kanasensei.core.model.user.User
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
 import com.codewithdipesh.kanasensei.core.repository.ProgressRepository
 import com.codewithdipesh.kanasensei.core.sync.ContentSyncManager
+import com.codewithdipesh.sharedfeature.learning.home.uistates.GrievienceState
 import com.codewithdipesh.sharedfeature.learning.home.uistates.LearningEvent
 import com.codewithdipesh.sharedfeature.learning.home.uistates.LearningUiState
 import com.codewithdipesh.sharedfeature.learning.home.uistates.SyncStatus
+import com.codewithdipesh.sharedfeature.learning.home.util.toByteArray
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -166,4 +169,61 @@ class LearningViewModel(
         _uiState.update { it.copy(error = null) }
     }
 
+    fun showGrievienceForm(show: Boolean) {
+        _uiState.update { it.copy(showGrievienceForm = show) }
+        if (!show) {
+            _uiState.update { it.copy(grievienceState = GrievienceState()) }
+        }
+    }
+
+    fun updateGrievienceTitle(title: String) {
+        _uiState.update { it.copy(grievienceState = it.grievienceState.copy(title = title)) }
+    }
+
+    fun updateGrievienceDescription(description: String) {
+        _uiState.update { it.copy(grievienceState = it.grievienceState.copy(description = description)) }
+    }
+
+    fun addGrievienceMedia(media: ImageBitmap) {
+        _uiState.update {
+            it.copy(grievienceState = it.grievienceState.copy(
+                attachedMedia = it.grievienceState.attachedMedia + media
+            ))
+        }
+    }
+
+    fun removeGrievienceMedia(index: Int) {
+        _uiState.update {
+            val newList = it.grievienceState.attachedMedia.toMutableList()
+            if (index in newList.indices) {
+                newList.removeAt(index)
+            }
+            it.copy(grievienceState = it.grievienceState.copy(attachedMedia = newList))
+        }
+    }
+
+    fun submitGrievience() {
+        viewModelScope.launch {
+            val state = _uiState.value.grievienceState
+            val mediaBytes = state.attachedMedia.map { it.toByteArray() }
+            
+            _uiState.update { it.copy(isLoading = true) }
+            
+            try {
+                progressRepository.postGrievience(
+                    title = state.title,
+                    description = state.description,
+                    name = _user.value?.name ?: "",
+                    attachedMedia = mediaBytes
+                )
+                _events.emit(LearningEvent.Message("Thanks a lot ${_user.value?.name} for your help . Lots of love ^^"))
+                showGrievienceForm(false)
+            } catch (e: Exception) {
+                Napier.e("Failed to submit grievance", e, TAG)
+                _events.emit(LearningEvent.Message("Failed to submit grievance. Please try again later."))
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
 }

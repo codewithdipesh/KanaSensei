@@ -14,6 +14,7 @@ import com.codewithdipesh.kanasensei.core.repository.TranslateRepository
 import com.codewithdipesh.kanasensei.core.sync.ContentSyncManager
 import com.codewithdipesh.kanasensei.core.sync.ContentSyncManagerImpl
 import com.codewithdipesh.kanasensei.core.testToSpeech.JapaneseTtsManager
+import com.codewithdipesh.kanasensei.core.network.TelegramBotService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.ktor.client.HttpClient
@@ -46,6 +47,8 @@ val sharedCoreModule = module {
     single<FirebaseFirestore> {
         FirebaseFirestore.getInstance()
     }
+
+    single { TelegramBotService(get()) }
 
     single { TranslateRepository() }
 
@@ -81,7 +84,8 @@ val sharedCoreModule = module {
         ProgressRepositoryImpl(
             progressDao = get(),
             firestore = get(),
-            connectivityObserver = get()
+            connectivityObserver = get(),
+            telegramBotService = get()
         )
     }
 

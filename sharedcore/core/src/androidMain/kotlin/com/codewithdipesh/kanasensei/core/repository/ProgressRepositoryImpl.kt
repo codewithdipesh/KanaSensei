@@ -1,5 +1,6 @@
 package com.codewithdipesh.kanasensei.core.repository
 
+import com.codewithdipesh.kanasensei.core.AppConfig
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
 import com.codewithdipesh.kanasensei.core.firestore.FirestorePaths
 import com.codewithdipesh.kanasensei.core.local.dao.ProgressDao
@@ -17,6 +18,7 @@ import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
 import com.codewithdipesh.kanasensei.core.model.progress.SyncResult
 import com.codewithdipesh.kanasensei.core.model.user.UserProgress
+import com.codewithdipesh.kanasensei.core.network.TelegramBotService
 import com.google.firebase.firestore.FirebaseFirestore
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +34,8 @@ import com.codewithdipesh.kanasensei.core.util.nowIso
 class ProgressRepositoryImpl(
     private val progressDao: ProgressDao,
     private val firestore: FirebaseFirestore,
-    private val connectivityObserver: ConnectivityObserver
+    private val connectivityObserver: ConnectivityObserver,
+    private val telegramBotService: TelegramBotService
 ) : ProgressRepository {
 
     private val TAG = "ProgressRepository"
@@ -543,6 +546,36 @@ class ProgressRepositoryImpl(
 
     override suspend fun clearLocalData(userId: String) {
         progressDao.clearAllUserData(userId)
+    }
+
+    override suspend fun postGrievience(
+        title: String,
+        description: String,
+        name: String,
+        attachedMedia: List<ByteArray>
+    ) {
+        val reportMessage = """
+            *New Grievance Report*
+            
+            *Name:* $name
+            *Title:* $title
+            *Description:* $description
+            
+            *Device Details:* 
+            Name : ${AppConfig.devicename}
+            Version : ${AppConfig.version}
+            Timestamp: ${AppConfig.timestamp}
+        """.trimIndent()
+
+        val success = telegramBotService.sendMessage(reportMessage)
+        if (success) {
+            attachedMedia.forEachIndexed { index, bytes ->
+                telegramBotService.sendPhoto(
+                    photoBytes = bytes,
+                    caption = if (index == 0) "Attached Media for: $title by $name" else null
+                )
+            }
+        }
     }
 
     private fun isOnline(): Boolean {
