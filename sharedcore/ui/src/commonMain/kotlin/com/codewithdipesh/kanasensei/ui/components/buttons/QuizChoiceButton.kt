@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.ui.components.haptic.rememberHapticManager
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioManager
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -133,7 +133,7 @@ fun QuizChoiceButton(
         ) {
             Text(
                 text = label,
-                style = KanaSenseiTypography.bodyMedium.copy(
+                style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Medium,
                     fontSize = labelSize.sp,
                     color = textColor

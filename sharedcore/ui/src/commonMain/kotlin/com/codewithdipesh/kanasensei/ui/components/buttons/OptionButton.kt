@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
@@ -26,6 +26,9 @@ fun OptionButton(
     onClick: () -> Unit,
     textAlignment: Alignment = Alignment.CenterStart,
     backgroundColor : Color = KanaColors.primary,
+    unselectedTextColor : Color = KanaColors.onBackground,
+    selectedTextColor : Color = KanaColors.onPrimary,
+    borderColor : Color = KanaColors.entranceSurface,
     isRoundedCorner : Boolean = true,
 ){
 
@@ -35,8 +38,8 @@ fun OptionButton(
     }
 
     val textColor: Color = when {
-        isSelected -> KanaColors.onPrimary
-        else -> KanaColors.onBackground
+        isSelected -> selectedTextColor
+        else -> unselectedTextColor
     }
 
     val cornerRadius = if (isRoundedCorner) 13.dp else 0.dp
@@ -46,7 +49,7 @@ fun OptionButton(
             .clip(RoundedCornerShape(cornerRadius))
             .border(
                 width = 1.5.dp,
-                color = if(isSelected) backgroundColor else KanaColors.secondary,
+                color = if(isSelected) backgroundColor else borderColor,
                 shape = RoundedCornerShape(cornerRadius)
             )
             .background(backgroundColor)
@@ -57,9 +60,7 @@ fun OptionButton(
     ){
         Text(
             text = label,
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
+            style = MaterialTheme.typography.titleLarge.copy(
                 color = textColor
             ),
             modifier = Modifier.padding(20.dp)

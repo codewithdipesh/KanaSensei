@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources. a_japanese
 import com.codewithdipesh.kanasensei.ui.resources.candle_icon
@@ -38,7 +38,7 @@ fun WelcomeScreen(
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(KanaColors.learningBackground)
+            .background(KanaColors.entranceBackground)
     ){
         Box(
             modifier = Modifier.fillMaxSize()
@@ -65,7 +65,7 @@ fun WelcomeScreen(
             Icon(
                 painter = painterResource(Res.drawable.a_japanese),
                 contentDescription = "japanese_letter",
-                tint = KanaColors.onBackground,
+                tint = KanaColors.onEntranceBackground,
                 modifier = Modifier
                     .width(200.dp)
                     .align(Alignment.Center)
@@ -96,19 +96,15 @@ fun WelcomeScreen(
             ) {
                 Text(
                     text = "Learn kana the correct way",
-                    style = KanaSenseiTypography.bodyLarge.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 30.sp,
-                        color = KanaColors.onBackground,
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        color = KanaColors.onEntranceBackground,
                         textAlign = TextAlign.Start
                     )
                 )
                 Text(
                     text = "Bite-sized lessons, practice sessions, and stroke-tracking.",
-                    style = KanaSenseiTypography.bodyLarge.copy(
-                        fontWeight = FontWeight.Normal,
-                        color = KanaColors.onBackground,
-                        fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = KanaColors.onEntranceBackground,
                     )
                 )
             }
@@ -124,15 +120,15 @@ fun WelcomeScreen(
                     label = "Get Started",
                     onClick = { onOnboard() },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = KanaColors.onBackground,
-                    labelColor = KanaColors.onSecondary
+                    backgroundColor = KanaColors.onEntranceBackground,
+                    labelColor = KanaColors.entranceBackground
                 )
                 AppButton(
                     label = "Already a User?",
                     onClick = { onLogin() },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = KanaColors.tertiary,
-                    labelColor = KanaColors.onBackground
+                    backgroundColor = KanaColors.entranceSurface.copy(alpha = 0.2f),
+                    labelColor = KanaColors.onEntranceBackground
                 )
             }
         }

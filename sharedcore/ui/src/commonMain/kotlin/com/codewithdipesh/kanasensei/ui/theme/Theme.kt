@@ -42,7 +42,7 @@ fun KanaSenseiTheme(
 ) {
     MaterialTheme(
         colorScheme = LightColorScheme,
-        typography = KanaSenseiTypography,
+        typography = kanaSenseiTypography(),
         content = content
     )
 }

@@ -38,7 +38,7 @@ import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton3D
 import com.codewithdipesh.kanasensei.ui.components.buttons.customClickable
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioManager
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import com.codewithdipesh.kanasensei.ui.theme.poppinsFontFamily
 
 @Composable
 fun SelectedLessonPanel(
@@ -66,6 +66,7 @@ fun SelectedLessonPanel(
             Text(
                 text = lesson.lesson.expandedTitle,
                 style = TextStyle(
+                    fontFamily = poppinsFontFamily(),
                     color = KanaColors.onOverlayedContainer,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -74,6 +75,7 @@ fun SelectedLessonPanel(
             Text(
                 text = lesson.lesson.detailedDescription,
                 style = TextStyle(
+                    fontFamily = poppinsFontFamily(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = KanaColors.onSecondaryButton

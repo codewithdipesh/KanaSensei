@@ -52,9 +52,9 @@ import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.content.Lesson
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
+import androidx.compose.material3.MaterialTheme
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.tick_icon
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import org.jetbrains.compose.resources.painterResource
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
@@ -140,7 +140,7 @@ fun LessonItem(
                     ) {
                         Text(
                             text = lesson.teaserText,
-                            style = KanaSenseiTypography.headlineLarge,
+                            style = MaterialTheme.typography.headlineLarge,
                             color = KanaColors.onBackground,
                             maxLines = 1
                         )
@@ -175,19 +175,14 @@ fun LessonItem(
             ){
                 Text(
                     text = lesson.title,
-                    style = KanaSenseiTypography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    ),
+                    style = MaterialTheme.typography.headlineMedium,
                     color = KanaColors.onBackground,
                     maxLines = 1
                 )
                 Text(
                     text = lesson.shortDescription,
-                    style = KanaSenseiTypography.bodyMedium.copy(
-                        color = KanaColors.onBackground.copy(0.5f),
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = KanaColors.onBackground.copy(0.5f)
                     ),
                     color = KanaColors.onBackground,
                     maxLines = 1
@@ -262,19 +257,13 @@ private fun LessonCard(
     ) {
         Text(
             text = lesson.expandedTitle ?: "",
-            style = KanaSenseiTypography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            ),
+            style = MaterialTheme.typography.headlineSmall,
             color = KanaColors.onBackground
         )
 
         Text(
             text = lesson.detailedDescription,
-            style = KanaSenseiTypography.bodyMedium.copy(
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp
-            ),
+            style = MaterialTheme.typography.labelLarge,
             color = KanaColors.onBackground.copy(0.7f),
             maxLines = 2
         )

@@ -23,6 +23,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -117,10 +118,8 @@ fun LessonComponent(
                     ) {
                         Text(
                             text = title,
-                            style = TextStyle(
-                                color = KanaColors.onLearningBackground,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
+                            style = MaterialTheme.typography.displaySmall.copy(
+                                color = KanaColors.onLearningBackground
                             ),
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
@@ -181,10 +180,8 @@ fun LessonComponent(
                                 )
                                 Text(
                                     text = "Nice Work!",
-                                    style = TextStyle(
-                                        color = KanaColors.background,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold
+                                    style = MaterialTheme.typography.displaySmall.copy(
+                                        color = KanaColors.background
                                     )
                                 )
                             }
@@ -260,10 +257,8 @@ fun LessonComponent(
                                 )
                                 Text(
                                     text = "Nice Work!",
-                                    style = TextStyle(
-                                        color = KanaColors.background,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold
+                                    style = MaterialTheme.typography.displaySmall.copy(
+                                        color = KanaColors.background
                                     )
                                 )
                             }
@@ -435,10 +430,8 @@ fun TopElement(
         if(showRomaji){
             Text(
                 text = kana,
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.displayLarge.copy(
+                    color = Color.Black
                 ),
                 modifier = Modifier.align(Alignment.Center)
             )
@@ -519,47 +512,41 @@ fun CancelAlertDialog(
         title = {
             Text(
                 text = "Cancel current learning?",
-                style = TextStyle(
-                    color = KanaColors.onLearningBackground,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    color = KanaColors.onLearningBackground
                 )
             )
         },
         text = {
             Text(
                 text = "You will lose your current progress in this lesson.",
-                style = TextStyle(
-                    color = KanaColors.onLearningBackground,
-                    fontSize = 16.sp
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = KanaColors.onLearningBackground
                 )
             )
         },
         confirmButton = {
             Text(
-                text = "Cancel lesson",
-                style = TextStyle(
+                text = "Keep learning",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
                     color = KanaColors.onLearningBackground,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
                 ),
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .customClickable(onClick = onConfirm)
+                    .customClickable(onClick = onDismiss)
                     .padding(horizontal = 12.dp, vertical = 8.dp)
             )
         },
         dismissButton = {
             Text(
-                text = "Keep learning",
-                style = TextStyle(
+                text = "Cancel lesson",
+                style = MaterialTheme.typography.titleLarge.copy(
                     color = KanaColors.onLearningBackground.copy(0.7f),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
                 ),
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .customClickable(onClick = onDismiss)
+                    .customClickable(onClick = onConfirm)
                     .padding(horizontal = 12.dp, vertical = 8.dp)
             )
         }

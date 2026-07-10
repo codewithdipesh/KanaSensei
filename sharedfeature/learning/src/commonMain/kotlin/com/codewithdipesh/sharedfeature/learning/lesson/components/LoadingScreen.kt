@@ -47,7 +47,7 @@ import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.lesson_loading
 import com.codewithdipesh.kanasensei.ui.resources.ramenbowl_shadow
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import androidx.compose.material3.MaterialTheme
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
@@ -165,9 +165,7 @@ fun LoadingScreen(
             Spacer( Modifier.height(30.dp))
             Text(
                 text = funFact,
-                style = KanaSenseiTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp,
+                style = MaterialTheme.typography.bodyLarge.copy(
                     color = Color.White.copy(0.6f),
                     textAlign = TextAlign.Center
                 )

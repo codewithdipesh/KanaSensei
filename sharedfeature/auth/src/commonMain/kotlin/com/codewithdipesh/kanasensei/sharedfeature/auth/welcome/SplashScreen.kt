@@ -32,7 +32,7 @@ fun SplashScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(KanaColors.learningBackground),
+            .background(KanaColors.entranceBackground),
         contentAlignment = Alignment.Center
     ) {
         Image(

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.ui.components.soundPlayer.rememberAudioManager
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -106,9 +106,7 @@ fun AppButton3D(
         ) {
             Text(
                 text = label,
-                style = KanaSenseiTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = labelSize.sp,
+                style = MaterialTheme.typography.titleLarge.copy(
                     color = contentColor
                 ),
                 modifier = Modifier.padding(labelPadding.dp)

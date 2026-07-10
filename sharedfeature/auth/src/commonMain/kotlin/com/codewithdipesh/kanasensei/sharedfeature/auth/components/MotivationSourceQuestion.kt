@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.user.MotivationSource
 import com.codewithdipesh.kanasensei.ui.components.buttons.OptionButton
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import androidx.compose.material3.MaterialTheme
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 @Composable
 fun MotivationSourceQuestion(
@@ -27,10 +27,8 @@ fun MotivationSourceQuestion(
     ){
         Text(
             text = "What motivates u most to learn Japanese?",
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
-                color = KanaColors.onBackground,
+            style = MaterialTheme.typography.displaySmall.copy(
+                color = KanaColors.onEntranceBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -41,7 +39,10 @@ fun MotivationSourceQuestion(
                 modifier = Modifier.fillMaxWidth(),
                 label = it.displayName(),
                 onClick = { onOptionClicked(it) },
-                isSelected = selectedOption == it
+                isSelected = selectedOption == it,
+                unselectedTextColor = KanaColors.onEntranceBackground,
+                selectedTextColor = KanaColors.entranceBackground,
+                backgroundColor = KanaColors.onEntranceBackground
             )
             Spacer(Modifier.height(10.dp))
         }

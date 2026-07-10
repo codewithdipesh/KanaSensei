@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
@@ -67,9 +67,7 @@ fun AppButton(
             }
             Text(
                 text = label,
-                style = KanaSenseiTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = labelSize.sp,
+                style = MaterialTheme.typography.titleLarge.copy(
                     color = labelColor
                 ),
                 modifier = Modifier.padding(labelPadding.dp)

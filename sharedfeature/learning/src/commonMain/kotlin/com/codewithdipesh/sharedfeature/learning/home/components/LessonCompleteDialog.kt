@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +37,6 @@ import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.completion_design
 import com.codewithdipesh.kanasensei.ui.resources.tick_icon
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import org.jetbrains.compose.resources.painterResource
 
 
@@ -90,37 +90,31 @@ fun LessonCompleteDialog(
                 lessonDetails?.let {
                     Text(
                         text = it,
-                        style = TextStyle(
-                            color = KanaColors.onLearningBackground.copy(0.4f),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Light
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = KanaColors.onLearningBackground.copy(0.4f)
                         ),
                         textAlign = TextAlign.Center
                     )
                 }
                 Text(
                     text = "Congratulation ${username?: ""} ",
-                    style = TextStyle(
+                    style = MaterialTheme.typography.bodyLarge.copy(
                         color = KanaColors.onLearningBackground,
-                        fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
                     ),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = if(isFirstLesson) "First Lesson Complete!" else "Lesson Complete!",
-                    style = TextStyle(
+                    style = MaterialTheme.typography.displaySmall.copy(
                         color = KanaColors.onLearningBackground,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
                     ),
                     textAlign = TextAlign.Center
                 )
 
                 Text(
                     text = "You nailed it , Keep going you're on a roll",
-                    style = KanaSenseiTypography.bodyMedium.copy(
-                        fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium.copy(
                         color = KanaColors.onLearningBackground.copy(alpha = 0.76f)
                     ),
                     textAlign = TextAlign.Center
@@ -137,4 +131,3 @@ fun LessonCompleteDialog(
         }
     }
 }
-

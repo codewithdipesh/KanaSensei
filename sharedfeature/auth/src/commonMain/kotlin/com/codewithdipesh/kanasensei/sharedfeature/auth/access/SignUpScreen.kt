@@ -1,5 +1,6 @@
 package com.codewithdipesh.kanasensei.sharedfeature.auth.access
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +28,7 @@ import com.codewithdipesh.kanasensei.ui.components.progressbar.AppLoadingIndicat
 import com.codewithdipesh.kanasensei.ui.components.textfield.KanaBoxTextField
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.google_icon
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import androidx.compose.material3.MaterialTheme
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,8 +45,9 @@ fun SignUpScreen(
     onLoginClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
+            .background(KanaColors.entranceBackground)
             .padding(horizontal = 24.dp)
             .padding(top = 16.dp),
         horizontalAlignment = Alignment.Start,
@@ -53,19 +55,17 @@ fun SignUpScreen(
     ) {
         Text(
             text = "Don't worry kōhai , U r One step away to start",
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = KanaColors.onBackground,
+            style = MaterialTheme.typography.displaySmall.copy(
+                color = KanaColors.onEntranceBackground,
                 textAlign = TextAlign.Start
             )
         )
         Spacer(Modifier.height(80.dp))
         Text(
             text = "Sign Up",
-            style = KanaSenseiTypography.bodyLarge.copy(
+            style = MaterialTheme.typography.headlineLarge.copy(
                 fontWeight = FontWeight.Medium,
-                fontSize = 20.sp,
+                color = KanaColors.onEntranceBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -73,10 +73,8 @@ fun SignUpScreen(
         //email
         Text(
             text = "Email",
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                color = KanaColors.onBackground,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = KanaColors.onEntranceBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -93,10 +91,8 @@ fun SignUpScreen(
         //password
         Text(
             text = "Password",
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                color = KanaColors.onBackground,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = KanaColors.onEntranceBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -117,8 +113,8 @@ fun SignUpScreen(
             label = "Sign Up",
             onClick = onSignUpClick,
             clickable = authStatus != AuthResult.Loading,
-            backgroundColor = KanaColors.onBackground,
-            labelColor = KanaColors.tertiary,
+            backgroundColor = KanaColors.onEntranceBackground,
+            labelColor = KanaColors.entranceBackground,
         )
         Spacer(Modifier.height(10.dp))
         //divider
@@ -129,19 +125,17 @@ fun SignUpScreen(
         ) {
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = KanaColors.onBackground.copy(0.3f)
+                color = KanaColors.onEntranceBackground.copy(0.3f)
             )
             Text(
                 text = " Or ",
-                style = KanaSenseiTypography.bodyLarge.copy(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
-                    color = KanaColors.onBackground.copy(0.3f)
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = KanaColors.onEntranceBackground.copy(0.3f)
                 )
             )
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = KanaColors.onBackground.copy(0.3f)
+                color = KanaColors.onEntranceBackground.copy(0.3f)
             )
         }
         Spacer(Modifier.height(10.dp))
@@ -150,8 +144,8 @@ fun SignUpScreen(
             label = "Sign in with Google",
             onClick = onGoogleSignIn,
             clickable = authStatus != AuthResult.Loading,
-            backgroundColor = KanaColors.tertiary,
-            labelColor = KanaColors.onBackground,
+            backgroundColor = KanaColors.entranceSurface.copy(alpha = 0.2f),
+            labelColor = KanaColors.onEntranceBackground,
             iconRes = Res.drawable.google_icon
         )
         Spacer(Modifier.height(80.dp))
@@ -163,18 +157,15 @@ fun SignUpScreen(
         ){
             Text(
                 text = "Already a User? ",
-                style = KanaSenseiTypography.bodyLarge.copy(
-                    fontWeight = FontWeight.Normal,
-                    color = KanaColors.onBackground.copy(0.5f),
-                    fontSize = 15.sp,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = KanaColors.onEntranceBackground.copy(0.5f),
                 )
             )
             Text(
                 text = "Log In",
-                style = KanaSenseiTypography.bodyLarge.copy(
+                style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Medium,
-                    color = KanaColors.onBackground,
-                    fontSize = 15.sp,
+                    color = KanaColors.onEntranceBackground,
                 ),
                 modifier = Modifier.clickable{
                     onLoginClick()
@@ -187,9 +178,11 @@ fun SignUpScreen(
     if (authStatus == AuthResult.Loading) {
         Box(modifier = Modifier.fillMaxSize()) {
             AppLoadingIndicator(
+                color = KanaColors.onBackground,
+                trackColor = KanaColors.background,
                 modifier = Modifier
                     .size(40.dp)
-                    .align(Alignment.Center)
+                    .align(Alignment.Center),
             )
         }
     }

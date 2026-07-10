@@ -56,6 +56,13 @@ object KanaColors {
     val shadowSecondary = Color(0xFF8A5631)
     val secondaryBackground = Color(0xFF2B2826)
 
+    // Entrance Theme (Splash, Welcome, Onboarding, Login, Signup)
+    val entranceBackground = Color(0XFFFAEEC3)
+    val onEntranceBackground = Color(0XFF6F3318)
+    val entrancePrimary = LightBrown
+    val entranceSecondary = Color(0xFF789D87)
+    val entranceSurface = Color(0xFFB4906D)
+
     val learningSecondary = Color(0xFF789D87)
     val learningBackground = Color(0XFFFAEEC3)
     val onLearningBackground = Color(0XFF6F3318)

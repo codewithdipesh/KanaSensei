@@ -15,6 +15,7 @@ import com.codewithdipesh.sharedfeature.learning.lesson.model.LessonUiState
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class LessonViewModel(
     private val repo : LearningRepository,
@@ -44,6 +46,9 @@ class LessonViewModel(
     private val _error = MutableSharedFlow<String>()
     val error = _error.asSharedFlow()
 
+    private var isProcessingNext = false
+    private var isCompleting = false
+
     val networkStatus = connectivityObserver.observe()
         .stateIn(
             scope = viewModelScope,
@@ -59,6 +64,8 @@ class LessonViewModel(
 
     fun load(lessonId : String){
         viewModelScope.launch {
+            isProcessingNext = false
+            isCompleting = false
             _state.update { it.copy(isLoading = true, error = null) }
             try {
                 //pages and lesson detail
@@ -146,20 +153,34 @@ class LessonViewModel(
 
     /** Advances to the next lesson page. Returns false (and stays put) if already on the last page. */
     fun next(): Boolean {
+        if (isProcessingNext) return true
+        
         val current = _state.value
         val index = current.pages.indexOf(current.selectedPage)
         if (index < 0 || index >= current.pages.lastIndex) return false
+        
+        isProcessingNext = true
         val nextPage = current.pages[index + 1]
         _state.update { it.copy(selectedPage = nextPage, currPage = index + 2) }
+        
+        // Debounce next call to prevent fast-click page skipping
+        viewModelScope.launch {
+            delay(400.milliseconds)
+            isProcessingNext = false
+        }
+        
         return true
     }
 
     fun completeCurrentLesson(lessonId: String, chapterId: String) {
+        if (isCompleting) return
+        
         val uid = _user.value?.uid
         if(uid == null){
             viewModelScope.launch { _error.emit("Not signed in") }
             return
         }
+        isCompleting = true
         viewModelScope.launch {
             if(!_state.value.isCompleted ){
                 when (val result = progressRepository.completeLesson(_user.value!!.uid, lessonId, chapterId)) {
@@ -176,10 +197,13 @@ class LessonViewModel(
                         )
                     }
                     else -> {
+                        isCompleting = false
                         _error.emit("Failed to complete lesson")
                     }
 
                 }
+            } else {
+                isCompleting = false
             }
         }
 

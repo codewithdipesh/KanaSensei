@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterVisibility
 import com.codewithdipesh.kanasensei.core.model.progress.ChapterWithProgress
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import androidx.compose.material3.MaterialTheme
 import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
@@ -32,10 +32,7 @@ fun ChapterHeader(
     ) {
         Text(
             text = chapter.name,
-            style = KanaSenseiTypography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            ),
+            style = MaterialTheme.typography.headlineLarge,
             color = if (isSemiVisible)
                 KanaColors.onBackground.copy(0.5f)
             else
@@ -45,10 +42,7 @@ fun ChapterHeader(
         if (!isSemiVisible) {
             Text(
                 text = "${chapterWithProgress.completedLessonsCount}/${chapterWithProgress.totalLessonsCount} lessons completed",
-                style = KanaSenseiTypography.titleMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp
-                ),
+                style = MaterialTheme.typography.titleLarge,
                 color = KanaColors.onBackground.copy(0.8f)
             )
             Spacer(Modifier.height(16.dp))

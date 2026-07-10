@@ -8,6 +8,6 @@ import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 @Composable
 expect fun AppLoadingIndicator(
     modifier: Modifier = Modifier,
-    color: Color = KanaColors.primary,
-    trackColor: Color = KanaColors.secondary
+    color: Color = KanaColors.background,
+    trackColor: Color = KanaColors.onBackground
 )
