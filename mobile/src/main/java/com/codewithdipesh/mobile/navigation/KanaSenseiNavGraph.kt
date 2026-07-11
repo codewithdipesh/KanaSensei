@@ -539,8 +539,8 @@ fun NavGraphBuilder.homeGraph(
                     SnackbarHost(snackbarHostState) { data ->
                         Snackbar(
                             snackbarData = data,
-                            containerColor = KanaColors.errorContainer,
-                            contentColor = KanaColors.onErrorContainer,
+                            containerColor = KanaColors.onPrimary,
+                            contentColor = KanaColors.background,
                             actionColor = KanaColors.error
                         )
                     }

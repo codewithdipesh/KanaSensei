@@ -216,7 +216,7 @@ class LearningViewModel(
                     name = _user.value?.name ?: "",
                     attachedMedia = mediaBytes
                 )
-                _events.emit(LearningEvent.Message("Thanks a lot ${_user.value?.name} for your help . Lots of love ^^"))
+                _events.emit(LearningEvent.Message("Thanks a lot ${_user.value?.name?.takeWhile { it != ' ' }} for your help . Lots of love ^^"))
                 showGrievienceForm(false)
             } catch (e: Exception) {
                 Napier.e("Failed to submit grievance", e, TAG)

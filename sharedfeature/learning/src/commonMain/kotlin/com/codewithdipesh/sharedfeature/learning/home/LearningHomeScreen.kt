@@ -126,18 +126,9 @@ fun LearningHomeScreen(
         snackbarHost = snackBarHost,
         modifier = Modifier.fillMaxSize()
     ) { padding ->
-        if (isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                contentAlignment = Alignment.Center
-            ) {
-                AppLoadingIndicator()
-            }
-        }
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(if(isLoading) 5.dp else 0.dp)
                 .padding(padding)
                 .pointerInput(Unit) {
                     if(isLoading){
@@ -344,6 +335,15 @@ fun LearningHomeScreen(
                     onConfirm = onGrievienceConfirm,
                     onDismiss = onGrievienceDismiss
                 )
+            }
+        }
+        //loader
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                AppLoadingIndicator()
             }
         }
     }
