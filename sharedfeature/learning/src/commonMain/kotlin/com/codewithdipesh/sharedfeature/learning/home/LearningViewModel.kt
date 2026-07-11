@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
+import com.codewithdipesh.kanasensei.core.analytics.AnalyticsTracker
 import com.codewithdipesh.kanasensei.core.model.progress.LessonWithProgress
 import com.codewithdipesh.kanasensei.core.model.progress.SyncResult
 import com.codewithdipesh.kanasensei.core.model.user.User
@@ -30,7 +31,8 @@ class LearningViewModel(
     private val progressRepository: ProgressRepository,
     private val contentSyncManager: ContentSyncManager,
     private val connectivityObserver: ConnectivityObserver,
-    private val firebaseAuthRepository: FirebaseAuthRepository
+    private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     private val TAG = "LearningViewModel"
@@ -129,6 +131,9 @@ class LearningViewModel(
 
     fun selectLesson(lesson: LessonWithProgress?) {
         _uiState.update { it.copy(selectedLesson = lesson) }
+        lesson?.let {
+            analyticsTracker.logEvent("lesson_select", mapOf("lesson_id" to it.lesson.id))
+        }
     }
 
 
@@ -216,6 +221,7 @@ class LearningViewModel(
                     name = _user.value?.name ?: "",
                     attachedMedia = mediaBytes
                 )
+                analyticsTracker.logEvent("grievance_submit", mapOf("title" to state.title))
                 _events.emit(LearningEvent.Message("Thanks a lot ${_user.value?.name?.takeWhile { it != ' ' }} for your help . Lots of love ^^"))
                 showGrievienceForm(false)
             } catch (e: Exception) {

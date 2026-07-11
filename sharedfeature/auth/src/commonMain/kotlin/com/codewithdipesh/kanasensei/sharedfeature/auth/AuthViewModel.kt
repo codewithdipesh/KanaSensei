@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.codewithdipesh.kanasensei.core.auth.GoogleAuthHelper
 import com.codewithdipesh.kanasensei.core.auth.GoogleAuthResult
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
+import com.codewithdipesh.kanasensei.core.analytics.AnalyticsTracker
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.core.model.user.MotivationSource
 import com.codewithdipesh.kanasensei.core.model.user.User
@@ -30,7 +31,8 @@ class AuthViewModel(
     private val translateRepository: TranslateRepository,
     private val connectivityObserver: ConnectivityObserver,
     private val ttsManager: JapaneseTtsManager,
-    private val googleAuthHelper: GoogleAuthHelper
+    private val googleAuthHelper: GoogleAuthHelper,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     private val _user = MutableStateFlow<User?>(null)
@@ -60,7 +62,12 @@ class AuthViewModel(
 
     init {
         viewModelScope.launch {
-            _user.value = firebaseAuthRepository.currentUser()
+            val user = firebaseAuthRepository.currentUser()
+            _user.value = user
+            analyticsTracker.setUserId(user?.uid)
+            user?.let {
+                analyticsTracker.setUserProperty("motivation_source", it.motivationSource)
+            }
             Napier.w(_user.value.toString(), tag = "User")
             _isAuthChecked.value = true
         }
@@ -167,6 +174,11 @@ class AuthViewModel(
             )
             _authState.update { it.copy(status = result)}
 
+            if (result is AuthResult.Success) {
+                analyticsTracker.setUserId(result.user.uid)
+                analyticsTracker.logEvent("login", mapOf("method" to "email"))
+            }
+
             if (result is AuthResult.Error) {
                 errorListener.emit(result.message)
             }
@@ -198,6 +210,12 @@ class AuthViewModel(
             )
             _authState.update { it.copy(status = result)}
 
+            if (result is AuthResult.Success) {
+                analyticsTracker.setUserId(result.user.uid)
+                analyticsTracker.logEvent("sign_up", mapOf("method" to "email"))
+                analyticsTracker.setUserProperty("motivation_source", _onBoardingState.value.motivationSource?.displayName() ?: "Unknown")
+            }
+
             if (result is AuthResult.Error) {
                 errorListener.emit(result.message)
             }
@@ -225,6 +243,12 @@ class AuthViewModel(
                     )
 
                     _authState.update { it.copy(status = authResult) }
+
+                    if (authResult is AuthResult.Success) {
+                        analyticsTracker.setUserId(authResult.user.uid)
+                        analyticsTracker.logEvent("login", mapOf("method" to "google"))
+                        analyticsTracker.setUserProperty("motivation_source", motivationSource)
+                    }
 
                     if (authResult is AuthResult.Error) {
                         errorListener.emit(authResult.message)

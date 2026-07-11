@@ -18,6 +18,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,6 +43,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
+import com.codewithdipesh.kanasensei.core.analytics.AnalyticsTracker
 import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.navigation.Screen.HomeGraph.Lesson.ARG_LESSON_ID
 import com.codewithdipesh.kanasensei.sharedfeature.auth.AuthViewModel
@@ -72,13 +74,26 @@ const val LESSON_COMPLETION_RESULT = "lessonCompletion"
 fun NavApp(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    connectivityObserver: ConnectivityObserver = koinInject()
+    connectivityObserver: ConnectivityObserver = koinInject(),
+    analyticsTracker: AnalyticsTracker = koinInject()
 ) {
     val networkStatus by connectivityObserver.observe()
         .collectAsStateWithLifecycle(initialValue = ConnectivityObserver.Status.Available)
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    DisposableEffect(navController) {
+        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+            destination.route?.let { route ->
+                analyticsTracker.trackScreen(route)
+            }
+        }
+        navController.addOnDestinationChangedListener(listener)
+        onDispose {
+            navController.removeOnDestinationChangedListener(listener)
+        }
+    }
 
     LaunchedEffect(networkStatus) {
         when(networkStatus) {
@@ -125,8 +140,8 @@ fun NavApp(
         ) { data ->
             Snackbar(
                 snackbarData = data,
-                containerColor = KanaColors.errorContainer,
-                contentColor = KanaColors.onErrorContainer,
+                containerColor = KanaColors.onPrimary,
+                contentColor = KanaColors.background,
                 actionColor = KanaColors.error
             )
         }
@@ -296,8 +311,8 @@ fun NavGraphBuilder.authGraph(
                    SnackbarHost(snackbarHostState) { data ->
                        Snackbar(
                            snackbarData = data,
-                           containerColor = KanaColors.errorContainer,
-                           contentColor = KanaColors.onErrorContainer
+                           containerColor = KanaColors.onPrimary,
+                           contentColor = KanaColors.background
                        )
                    }
                }
@@ -366,8 +381,8 @@ fun NavGraphBuilder.authGraph(
                    SnackbarHost(snackbarHostState) { data ->
                        Snackbar(
                            snackbarData = data,
-                           containerColor = KanaColors.errorContainer,
-                           contentColor = KanaColors.onErrorContainer
+                           containerColor = KanaColors.onPrimary,
+                           contentColor = KanaColors.background
                        )
                    }
                }
@@ -649,8 +664,8 @@ fun NavGraphBuilder.homeGraph(
                     SnackbarHost(snackbarHostState) { data ->
                         Snackbar(
                             snackbarData = data,
-                            containerColor = KanaColors.errorContainer,
-                            contentColor = KanaColors.onErrorContainer,
+                            containerColor = KanaColors.onPrimary,
+                            contentColor = KanaColors.background,
                             actionColor = KanaColors.error
                         )
                     }

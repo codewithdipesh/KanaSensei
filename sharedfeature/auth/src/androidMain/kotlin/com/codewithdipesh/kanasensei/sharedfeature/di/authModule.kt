@@ -12,7 +12,8 @@ val authModule = module {
             translateRepository = get(),
             connectivityObserver = get(),
             ttsManager = get(),
-            googleAuthHelper = get()
+            googleAuthHelper = get(),
+            analyticsTracker = get()
         )
     }
 }
