@@ -42,7 +42,9 @@ class KanaSenseiApplication : Application() {
                 learningModule
             )
         }
-        Napier.base(DebugAntilog())
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
+        }
     }
 }
 

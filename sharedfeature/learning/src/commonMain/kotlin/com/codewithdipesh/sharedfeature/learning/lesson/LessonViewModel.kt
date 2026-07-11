@@ -2,6 +2,7 @@ package com.codewithdipesh.sharedfeature.learning.lesson
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codewithdipesh.kanasensei.core.analytics.AnalyticsTracker
 import com.codewithdipesh.kanasensei.core.connectivity.ConnectivityObserver
 import com.codewithdipesh.kanasensei.core.model.content.KanaStrokes
 import com.codewithdipesh.kanasensei.core.model.progress.ProgressUpdateResult
@@ -30,7 +31,8 @@ class LessonViewModel(
     private val repo : LearningRepository,
     private val progressRepository : ProgressRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val connectivityObserver: ConnectivityObserver
+    private val connectivityObserver: ConnectivityObserver,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LessonUiState())
@@ -63,6 +65,8 @@ class LessonViewModel(
     }
 
     fun load(lessonId : String){
+        analyticsTracker.logEvent("lesson_start", mapOf("lesson_id" to lessonId))
+        analyticsTracker.setCustomKey("current_lesson_id", lessonId)
         viewModelScope.launch {
             isProcessingNext = false
             isCompleting = false
@@ -185,6 +189,10 @@ class LessonViewModel(
             if(!_state.value.isCompleted ){
                 when (val result = progressRepository.completeLesson(_user.value!!.uid, lessonId, chapterId)) {
                     is ProgressUpdateResult.Success -> {
+                        analyticsTracker.logEvent("lesson_complete", mapOf(
+                            "lesson_id" to lessonId,
+                            "chapter_id" to chapterId
+                        ))
                         _completionEvent.emit(
                             LessonCompletionResult(
                                 lessonId = lessonId,

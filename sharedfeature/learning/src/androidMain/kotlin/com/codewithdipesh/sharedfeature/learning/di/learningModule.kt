@@ -11,7 +11,8 @@ val learningModule = module {
             progressRepository = get(),
             contentSyncManager = get(),
             connectivityObserver = get(),
-            firebaseAuthRepository = get()
+            firebaseAuthRepository = get(),
+            analyticsTracker = get()
         )
     }
 
@@ -20,7 +21,8 @@ val learningModule = module {
             repo = get(),
             progressRepository = get(),
             firebaseAuthRepository = get(),
-            connectivityObserver = get()
+            connectivityObserver = get(),
+            analyticsTracker = get()
         )
     }
 }

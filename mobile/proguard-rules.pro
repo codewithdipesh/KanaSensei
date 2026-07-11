@@ -5,17 +5,29 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Preserve line numbers for Crashlytics
+-keepattributes SourceFile,LineNumberTable
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Strip println and print calls
+-assumenosideeffects class kotlin.io.ConsoleKt {
+    public static void print(...);
+    public static void println(...);
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Strip Napier logging calls in release
+# We keep 'e' (error) just in case, but since no Antilog is installed in release,
+# it won't print anyway. Stripping v, d, i, w for better performance.
+-assumenosideeffects class io.github.aakira.napier.Napier {
+    public static void v(...);
+    public static void d(...);
+    public static void i(...);
+    public static void w(...);
+}
+
+# Keep Compose related classes to avoid issues with minification
+-keep class androidx.compose.runtime.Recomposer { *; }
+-keep class androidx.compose.ui.platform.** { *; }
+
+# Firebase / Google Identity
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
