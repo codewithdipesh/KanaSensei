@@ -1,6 +1,5 @@
 package com.codewithdipesh.kanasensei.core.model.content
 
-import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,6 +12,6 @@ data class Character(
     val audioUrl: String = "",
     val example_word: String = "",
     val notes: String = "",
-    val createdAt: Long? = Clock.System.now().toEpochMilliseconds(),  //todo fix it with db
-    val updatedAt: Long? = Clock.System.now().toEpochMilliseconds()
+    val createdAt : String = "",
+    val updatedAt : String = ""
 )

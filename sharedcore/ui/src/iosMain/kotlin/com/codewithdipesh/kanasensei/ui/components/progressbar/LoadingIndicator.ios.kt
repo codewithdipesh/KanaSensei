@@ -1,0 +1,15 @@
+package com.codewithdipesh.kanasensei.ui.components.progressbar
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+
+@Composable
+actual fun AppLoadingIndicator(
+    modifier: Modifier,
+    color: Color,
+    trackColor : Color
+) {
+}
+

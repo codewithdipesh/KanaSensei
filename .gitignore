@@ -25,5 +25,3 @@ mobile/src/oauth-client-config.json
 /sharedcore/core/build
 /sharedcore/ui/build
 /.kotlin
-mobile/google-services.json
-mobile/google-services.json

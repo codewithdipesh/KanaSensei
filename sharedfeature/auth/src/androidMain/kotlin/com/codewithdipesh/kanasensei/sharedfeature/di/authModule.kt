@@ -8,6 +8,7 @@ val authModule = module {
     viewModel<AuthViewModel> {
         AuthViewModel(
             firebaseAuthRepository = get(),
+            progressRepository = get(),
             translateRepository = get(),
             connectivityObserver = get(),
             ttsManager = get(),

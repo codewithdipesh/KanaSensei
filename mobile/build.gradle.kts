@@ -30,9 +30,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Read WEB_CLIENT_ID from local.properties (not exposed in version control)
+        // Read keys from local.properties (not exposed in version control)
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
+        val telegramToken = localProperties.getProperty("TELEGRAM_TOKEN") ?: ""
+        val chatId = localProperties.getProperty("CHAT_ID") ?: ""
+        
         buildConfigField("String", "WEB_CLIENT_ID", "\"$webClientId\"")
+        buildConfigField("String", "TELEGRAM_TOKEN", "\"$telegramToken\"")
+        buildConfigField("String", "CHAT_ID", "\"$chatId\"")
     }
 
     // Include compose resources from sharedcore:ui module
@@ -54,6 +59,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -97,6 +103,7 @@ dependencies {
     api(project(":sharedcore:core"))
     api(project(":sharedcore:ui"))
     api(project(":sharedfeature:auth"))
+    api(project(":sharedfeature:learning"))
 
     implementation(libs.bundles.koin)
 
@@ -109,5 +116,11 @@ dependencies {
 
     implementation(libs.androidx.credential.credentials)
     implementation(libs.google.identity)
+
+    implementation(libs.napier)
+
+    implementation(libs.serialization.json)
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
 }

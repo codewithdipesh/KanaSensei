@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,10 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codewithdipesh.kanasensei.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.kanasensei.ui.components.textfield.KanaTextField
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import androidx.compose.material3.MaterialTheme
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.icon_sound_on
 import kotlinx.coroutines.delay
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun NameAndTranslation(
@@ -47,9 +47,8 @@ fun NameAndTranslation(
     ){
         Text(
             text = "What should we call You?",
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
+            style = MaterialTheme.typography.displaySmall.copy(
+                color = KanaColors.onEntranceBackground,
                 textAlign = TextAlign.Start
             )
         )
@@ -59,7 +58,9 @@ fun NameAndTranslation(
                 .fillMaxWidth(),
             value = value,
             readOnly = showTranslation,
-            onValueChange = onValueChange
+            onValueChange = onValueChange,
+            textColor = KanaColors.onEntranceBackground,
+            dividerColor = KanaColors.onEntranceBackground.copy(alpha = 0.2f)
         )
         Spacer(Modifier.height(50.dp))
         //translated word and sound button
@@ -83,16 +84,14 @@ fun NameAndTranslation(
             ){
                 Text(
                     text = translatedValue.take(visibleChars),
-                    style = TextStyle(
-                        fontSize = 34.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        color = KanaColors.onEntranceBackground,
                     )
                 )
                 AnimatedVisibility(visible = isTranslating) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
-                        color = MaterialTheme.colorScheme.primary,
+                        color = KanaColors.onEntranceBackground,
                         strokeWidth = 1.5.dp
                     )
                 }
@@ -100,8 +99,8 @@ fun NameAndTranslation(
                     KanaIconButton(
                         iconRes = Res.drawable.icon_sound_on,
                         size = 36.dp,
-                        iconColor = MaterialTheme.colorScheme.onPrimary,
-                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        iconColor = KanaColors.entranceBackground,
+                        backgroundColor = KanaColors.onEntranceBackground,
                         onClick = {
                             onPlayJapaneseName(translatedValue)
                         }

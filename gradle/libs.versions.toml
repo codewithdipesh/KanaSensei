@@ -14,6 +14,7 @@ material = "1.13.0"
 koin = "3.5.6"
 ktor = "3.0.0"
 room = "2.6.1"
+haze = "1.7.2"
 firebaseBom = "33.6.0"
 firebaseAuth = "24.0.0"
 coroutines = "1.8.1"
@@ -22,7 +23,7 @@ coil = "2.6.0"
 accompanist = "0.36.0"
 navigation = "2.9.6"
 compose = "1.8.2"
-material3 = "1.4.0"
+material3 = "1.5.0-alpha13"
 googleServices = "4.4.2"
 googleCredential = "1.6.0-beta03"
 googleIdentity = "1.1.1"
@@ -33,9 +34,14 @@ kotlinTest = "2.1.10"
 runner = "1.5.2"
 core = "1.5.0"
 moko = "0.23.0"  # For expect/actual patterns
-datetime = "0.6.0"  # For cross-platform date/time
 napier = "2.7.1"  # For KMP logging
 androidx-viewmodel = "2.10.0"
+ksp = "2.1.10-1.0.29"
+composePreview = "1.10.0"
+runtime = "1.10.5"
+compottie = "2.0.0"
+desugarJdkLibs = "2.1.5"
+kotlinxDatetime = "0.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,7 +65,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-viewmodel" }
 
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
@@ -72,6 +78,9 @@ ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios", version.ref = "
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+haze = { group = "dev.chrisbanes.haze", name = "haze", version.ref = "haze" }
+haze-materials = { group = "dev.chrisbanes.haze", name = "haze-materials", version.ref = "haze" }
 
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 
@@ -89,6 +98,7 @@ coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -113,6 +123,11 @@ jetbrains-compose-foundation = { group = "org.jetbrains.compose.foundation", nam
 jetbrains-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "compose" }
 jetbrains-compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "compose" }
 jetbrains-compose-components = {group="org.jetbrains.compose.components",name="components-resources",version.ref = "compose"}
+jetbrains-compose-preview = { group = "org.jetbrains.compose.ui",name ="ui-tooling-preview", version.ref = "composePreview" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+
+compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
+compottie-resources = { group = "io.github.alexzhirkevich", name = "compottie-resources", version.ref = "compottie" }
 
 
 [bundles]
@@ -139,7 +154,6 @@ kmp-common = [
     "ktor-client-content-negotiation",
     "ktor-serialization-kotlinx-json",
     "koin-core",
-    "kotlinx-datetime",
     "napier"
 ]
 ktor = [
@@ -155,7 +169,7 @@ kmp-ktor = [
     "ktor-serialization-kotlinx-json",
     "ktor-client-logging"
 ]
-room = ["room-runtime", "room-ktx","room-compiler"]
+room = ["room-runtime", "room-ktx"]
 koin = ["koin-core", "koin-android", "koin-compose"]
 firebase = ["firebase-firestore", "firebase-auth"]
 
@@ -172,4 +186,5 @@ android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

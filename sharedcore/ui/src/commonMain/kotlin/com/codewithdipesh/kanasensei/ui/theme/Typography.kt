@@ -7,180 +7,56 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import com.codewithdipesh.kanasensei.ui.resources.Res
-import com.codewithdipesh.kanasensei.ui.resources.sf_pro_display_bold
-import com.codewithdipesh.kanasensei.ui.resources.sf_pro_display_medium
-import com.codewithdipesh.kanasensei.ui.resources.sf_pro_display_regular
+import com.codewithdipesh.kanasensei.ui.resources.poppins_bold
+import com.codewithdipesh.kanasensei.ui.resources.poppins_medium
+import com.codewithdipesh.kanasensei.ui.resources.poppins_regular
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun SFProDisplayFontFamily() = FontFamily(
-    Font(Res.font.sf_pro_display_regular, FontWeight.Normal),
-    Font(Res.font.sf_pro_display_medium, FontWeight.Medium),
-    Font(Res.font.sf_pro_display_bold, FontWeight.Bold)
+fun poppinsFontFamily() = FontFamily(
+    Font(Res.font.poppins_regular, FontWeight.Normal),
+    Font(Res.font.poppins_medium, FontWeight.Medium),
+    Font(Res.font.poppins_bold, FontWeight.Bold)
 )
 
-// Fallback for non-composable contexts
-val SFProDisplay = FontFamily.Default
+// Factory functions that take the fontFamily as a parameter to avoid composable overhead
+private fun h1(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Bold, fontSize = 32.sp, lineHeight = 40.sp)
+private fun h2(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 32.sp)
+private fun h3(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 28.sp)
+private fun h4(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Bold, fontSize = 20.sp, lineHeight = 24.sp)
+private fun h5(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 20.sp)
+private fun h6(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Bold, fontSize = 14.sp, lineHeight = 20.sp)
 
+private fun t1(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 20.sp)
+private fun t2(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 18.sp)
+private fun t3(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Medium, fontSize = 12.sp, lineHeight = 16.sp)
 
+private fun b1(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Normal, fontSize = 20.sp, lineHeight = 24.sp)
+private fun b2(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 24.sp)
+private fun b3(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 22.sp)
+private fun b4(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 20.sp)
+private fun b5(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Normal, fontSize = 10.sp, lineHeight = 16.sp)
 
-fun h6Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Bold,
-    fontSize = 14.sp,
-    lineHeight = 20.sp
-)
+private fun caption(font: FontFamily) = TextStyle(fontFamily = font, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 18.sp)
 
-fun h5Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Bold,
-    fontSize = 16.sp,
-    lineHeight = 20.sp
-)
-
-fun h4Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Bold,
-    fontSize = 20.sp,
-    lineHeight = 24.sp
-)
-
-fun h3Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Bold,
-    fontSize = 24.sp,
-    lineHeight = 28.sp
-)
-
-fun h2Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Bold,
-    fontSize = 28.sp,
-    lineHeight = 32.sp
-)
-
-fun h1Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Bold,
-    fontSize = 32.sp,
-    lineHeight = 40.sp
-)
-
-fun t1Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Medium,
-    fontSize = 16.sp,
-    lineHeight = 20.sp
-)
-
-fun t2Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Medium,
-    fontSize = 14.sp,
-    lineHeight = 18.sp
-)
-
-
-fun t3Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Medium,
-    fontSize = 12.sp,
-    lineHeight = 16.sp
-)
-
-
-fun t4Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Medium,
-    fontSize = 10.sp,
-    lineHeight = 12.sp
-)
-
-
-fun b1Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 20.sp,
-    lineHeight = 24.sp
-)
-
-
-fun b2Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 16.sp,
-    lineHeight = 24.sp
-)
-
-
-fun b3Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 14.sp,
-    lineHeight = 22.sp
-)
-
-
-fun b4Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 12.sp,
-    lineHeight = 20.sp
-)
-
-
-fun b5Fun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 10.sp,
-    lineHeight = 16.sp
-)
-
-fun bRegularFun() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 14.sp,
-    lineHeight = 20.sp
-)
-
-fun captionResolver() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 12.sp,
-    lineHeight = 18.sp
-)
-
-
-fun labelResolver() = TextStyle(
-    fontFamily = SFProDisplay,
-    fontWeight = FontWeight.Normal,
-    fontSize = 14.sp,
-    lineHeight = 14.sp
-)
-
-val KanaSenseiTypography = Typography(
-
-    // Headlines
-    displayLarge = h1Fun(),
-    displayMedium = h2Fun(),
-    displaySmall = h3Fun(),
-
-    headlineLarge = h4Fun(),
-    headlineMedium = h5Fun(),
-    headlineSmall = h6Fun(),
-
-    // Titles
-    titleLarge = t1Fun(),
-    titleMedium = t2Fun(),
-    titleSmall = t3Fun(),
-
-    // Body
-    bodyLarge = b1Fun(),
-    bodyMedium = b2Fun(),
-    bodySmall = b3Fun(),
-
-    // Labels
-    labelLarge = b4Fun(),
-    labelMedium = b5Fun(),
-    labelSmall = captionResolver(),
-)
+@Composable
+fun kanaSenseiTypography(): Typography {
+    val font = poppinsFontFamily()
+    return Typography(
+        displayLarge = h1(font),
+        displayMedium = h2(font),
+        displaySmall = h3(font),
+        headlineLarge = h4(font),
+        headlineMedium = h5(font),
+        headlineSmall = h6(font),
+        titleLarge = t1(font),
+        titleMedium = t2(font),
+        titleSmall = t3(font),
+        bodyLarge = b1(font),
+        bodyMedium = b2(font),
+        bodySmall = b3(font),
+        labelLarge = b4(font),
+        labelMedium = b5(font),
+        labelSmall = caption(font)
+    )
+}

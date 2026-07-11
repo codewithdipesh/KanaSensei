@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "949675511183",
+    "project_id": "chatroom-a4aa5",
+    "storage_bucket": "chatroom-a4aa5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949675511183:android:c5cb39e848217bd78dcffa",
+        "android_client_info": {
+          "package_name": "com.codewithdipesh.kanasensei"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949675511183-170i1vu0i6i2su9djujhojo575dgglsl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codewithdipesh.kanasensei",
+            "certificate_hash": "050e7b1f31b50fb05f60fc2167edc68d9938948f"
+          }
+        },
+        {
+          "client_id": "949675511183-8jns1lad56em4q2djuu5517ctmrl14qe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4n1XwBohp4hUjYVcZjKRvGxd-95wFR9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "949675511183-8jns1lad56em4q2djuu5517ctmrl14qe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

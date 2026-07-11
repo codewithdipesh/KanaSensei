@@ -3,9 +3,14 @@ package com.codewithdipesh.kanasensei.sharedfeature.auth.onboarding
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,42 +20,43 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.codewithdipesh.kanasensei.sharedfeature.auth.components.MotivationSourceQuestion
-import com.codewithdipesh.kanasensei.sharedfeature.auth.components.NameAndTranslation
 import com.codewithdipesh.kanasensei.core.model.user.MotivationSource
 import com.codewithdipesh.kanasensei.ui.components.buttons.AppButton
 import com.codewithdipesh.kanasensei.ui.components.buttons.KanaIconButton
 import com.codewithdipesh.kanasensei.ui.components.progressbar.HorizontalProgressBar
 import com.codewithdipesh.kanasensei.ui.resources.Res
 import com.codewithdipesh.kanasensei.ui.resources.navigate_back_icon
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
+import com.codewithdipesh.kanasensei.sharedfeature.auth.components.MotivationSourceQuestion
+import com.codewithdipesh.kanasensei.sharedfeature.auth.components.NameAndTranslation
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingScreen(
-    modifier: Modifier = Modifier,
-    onNavigateBack : () -> Unit,
-    onNavigateNext : () -> Unit,
-    onTranslate : () -> Unit,
+    currentPage : Int,
+    totalPage : Int,
+    name : String,
+    translatedName : String?,
     isTranslating : Boolean,
     selectedMotivatedSource : MotivationSource?,
-    onChangeMotivatedSource : (MotivationSource) -> Unit,
-    name: String,
     onChangeName : (String) -> Unit,
-    onPlayJapaneseName : (String) -> Unit,
-    translatedName : String?,
-    currentPage : Int,
+    onTranslate : () -> Unit,
+    onChangeMotivatedSource : (MotivationSource) -> Unit,
     onChangePage : (Int) -> Unit,
-    totalPage : Int,
+    onNavigateNext : () -> Unit,
+    onNavigateBack : () -> Unit,
+    onPlayJapaneseName : (String) -> Unit
 ) {
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(KanaColors.entranceBackground)
+            .systemBarsPadding()
     ){
         Column(
             modifier = Modifier
@@ -60,7 +66,9 @@ fun OnboardingScreen(
         ){
             HorizontalProgressBar(
                 size = totalPage,
-                currentPosition = currentPage
+                currentPosition = currentPage,
+                selectedColor = KanaColors.onEntranceBackground,
+                unSelectedColor = KanaColors.onEntranceBackground.copy(alpha = 0.2f)
             )
             Spacer(Modifier.height(60.dp))
 
@@ -71,7 +79,7 @@ fun OnboardingScreen(
                         // Forward → slide left
                         slideInHorizontally(
                             initialOffsetX = { it },
-                            animationSpec = tween(300)
+                            animationSpec = tween(300) 
                         ) togetherWith slideOutHorizontally(
                             targetOffsetX = { -it },
                             animationSpec = tween(300)
@@ -124,8 +132,8 @@ fun OnboardingScreen(
                 //back button
                 KanaIconButton(
                     iconRes = Res.drawable.navigate_back_icon,
-                    backgroundColor = MaterialTheme.colorScheme.tertiary,
-                    iconColor = MaterialTheme.colorScheme.onBackground,
+                    backgroundColor = KanaColors.entranceSurface.copy(alpha = 0.2f),
+                    iconColor = KanaColors.onEntranceBackground,
                     onClick = {
                         if(currentPage == 1){
                             onNavigateBack()
@@ -147,6 +155,8 @@ fun OnboardingScreen(
                             onChangePage(currentPage + 1)
                         }
                     },
+                    backgroundColor = KanaColors.onEntranceBackground,
+                    labelColor = KanaColors.entranceBackground,
                     clickable = when(currentPage){
                         1 -> selectedMotivatedSource != null
                         2 -> name.isNotEmpty()
@@ -160,6 +170,3 @@ fun OnboardingScreen(
         }
     }
 }
-
-
-

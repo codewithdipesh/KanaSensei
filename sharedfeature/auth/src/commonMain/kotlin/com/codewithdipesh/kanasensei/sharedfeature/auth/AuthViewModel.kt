@@ -10,6 +10,7 @@ import com.codewithdipesh.kanasensei.core.model.auth.AuthResult
 import com.codewithdipesh.kanasensei.core.model.user.MotivationSource
 import com.codewithdipesh.kanasensei.core.model.user.User
 import com.codewithdipesh.kanasensei.core.repository.FirebaseAuthRepository
+import com.codewithdipesh.kanasensei.core.repository.ProgressRepository
 import com.codewithdipesh.kanasensei.core.repository.TranslateRepository
 import com.codewithdipesh.kanasensei.core.testToSpeech.JapaneseTtsManager
 import com.codewithdipesh.kanasensei.sharedfeature.auth.model.AuthUI
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val progressRepository: ProgressRepository,
     private val translateRepository: TranslateRepository,
     private val connectivityObserver: ConnectivityObserver,
     private val ttsManager: JapaneseTtsManager,
@@ -45,6 +47,9 @@ class AuthViewModel(
 
     val errorListener = MutableSharedFlow<String?>()
 
+    // Emitted once sign-out has fully completed so the UI can navigate back to auth.
+    val signedOut = MutableSharedFlow<Unit>()
+
     val networkStatus = connectivityObserver.observe()
         .stateIn(
             scope = viewModelScope,
@@ -58,6 +63,31 @@ class AuthViewModel(
             _user.value = firebaseAuthRepository.currentUser()
             Napier.w(_user.value.toString(), tag = "User")
             _isAuthChecked.value = true
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            val uid = _user.value?.uid
+            if (uid != null) {
+                //push any unsynced local progress to the cloud
+                try {
+                    progressRepository.syncToCloud(uid)
+                } catch (e: Exception) {
+                    Napier.e("Sign-out flush failed, continuing", e, tag = "AuthViewModel")
+                }
+
+                //Wipe this account's local rows so a different account can't inherit them.
+                progressRepository.clearLocalData(uid)
+            }
+
+            //Sign out of Firebase auth.
+            firebaseAuthRepository.logout()
+
+            _user.value = null
+            _authState.value = AuthUI()
+            _onBoardingState.value = OnboardingUI()
+            signedOut.emit(Unit)
         }
     }
 

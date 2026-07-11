@@ -40,6 +40,15 @@ afterEvaluate {
     }
 }
 
+// Force Material3 to 1.5.0-alpha13 so LoadingIndicator (Expressive API) is available.
+// JetBrains Compose 1.8.2 bundles Material3 1.3.2 which doesn't have it.
+configurations.configureEach {
+    resolutionStrategy {
+        force("androidx.compose.material3:material3:${libs.versions.material3.get()}")
+        force("androidx.compose.material3:material3-android:${libs.versions.material3.get()}")
+    }
+}
+
 kotlin {
 
     androidLibrary {
@@ -105,6 +114,11 @@ kotlin {
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.appcompat)
                 implementation(libs.material)
+                implementation(libs.androidx.material3)
+                implementation(libs.androidx.compose.runtime)
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.androidx.compose.ui)
+                implementation(libs.androidx.compose.ui.graphics)
             }
         }
 

@@ -4,7 +4,21 @@
       "Bash(xargs:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(cd:*)",
+      "Bash(./gradlew assembleDebug:*)",
+      "Bash(./gradlew:*)",
+      "WebSearch",
+      "WebFetch(domain:central.sonatype.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh api *)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git --no-pager diff HEAD -- sharedfeature/learning/src/commonMain/kotlin/com/codewithdipesh/sharedfeature/learning/lesson/)",
+      "mcp__ide__getDiagnostics",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\DIPESH PAL\\\\AndroidStudioProjects\\\\KanaSensei\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Read(//tmp/**)",
+      "Bash(sed -n '1,120p' ./commonMain/androidx/navigationevent/compose/NavigationEventHandler.kt)"
     ]
   }
 }

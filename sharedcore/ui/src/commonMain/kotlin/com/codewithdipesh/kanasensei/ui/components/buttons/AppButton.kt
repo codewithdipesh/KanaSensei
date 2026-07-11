@@ -23,20 +23,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun AppButton(
     modifier: Modifier = Modifier,
     label: String,
+    labelSize : Int = 18,
+    labelPadding : Int = 16,
     clickable: Boolean = true,
     onClick: () -> Unit,
     iconRes: DrawableResource? = null,
     iconSize: Dp = 26.dp,
-    backgroundColor : Color = MaterialTheme.colorScheme.onBackground,
-    labelColor: Color = MaterialTheme.colorScheme.onSecondary,
+    backgroundColor : Color = KanaColors.onBackground,
+    labelColor: Color = KanaColors.onSecondary,
     isRoundedCorner : Boolean = true,
 ){
     Box(
@@ -65,12 +67,10 @@ fun AppButton(
             }
             Text(
                 text = label,
-                style = KanaSenseiTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 18.sp,
+                style = MaterialTheme.typography.titleLarge.copy(
                     color = labelColor
                 ),
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(labelPadding.dp)
             )
         }
     }

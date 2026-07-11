@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -54,7 +55,6 @@ kotlin {
                 // Coroutines & Serialization for data models & business logic
                 implementation(libs.coroutines.core)
                 implementation(libs.serialization.json)
-                implementation(libs.kotlinx.datetime)
 
                 // Ktor for API calls
                 implementation(libs.bundles.kmp.ktor)
@@ -126,4 +126,13 @@ kotlin {
         }
     }
 
+}
+
+dependencies {
+    add("kspAndroid", libs.room.compiler)
+}
+
+ksp {
+    arg("room.schemaLocation", "${projectDir}/schemas")
+    arg("room.generateKotlin", "true")
 }

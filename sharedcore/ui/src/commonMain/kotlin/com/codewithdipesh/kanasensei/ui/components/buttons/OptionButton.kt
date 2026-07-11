@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codewithdipesh.kanasensei.ui.theme.KanaSenseiTypography
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun OptionButton(
@@ -25,7 +25,10 @@ fun OptionButton(
     isSelected : Boolean,
     onClick: () -> Unit,
     textAlignment: Alignment = Alignment.CenterStart,
-    backgroundColor : Color = MaterialTheme.colorScheme.primary,
+    backgroundColor : Color = KanaColors.primary,
+    unselectedTextColor : Color = KanaColors.onBackground,
+    selectedTextColor : Color = KanaColors.onPrimary,
+    borderColor : Color = KanaColors.entranceSurface,
     isRoundedCorner : Boolean = true,
 ){
 
@@ -35,8 +38,8 @@ fun OptionButton(
     }
 
     val textColor: Color = when {
-        isSelected -> MaterialTheme.colorScheme.onPrimary
-        else -> MaterialTheme.colorScheme.onBackground
+        isSelected -> selectedTextColor
+        else -> unselectedTextColor
     }
 
     val cornerRadius = if (isRoundedCorner) 13.dp else 0.dp
@@ -46,7 +49,7 @@ fun OptionButton(
             .clip(RoundedCornerShape(cornerRadius))
             .border(
                 width = 1.5.dp,
-                color = if(isSelected) backgroundColor else MaterialTheme.colorScheme.secondary,
+                color = if(isSelected) backgroundColor else borderColor,
                 shape = RoundedCornerShape(cornerRadius)
             )
             .background(backgroundColor)
@@ -57,9 +60,7 @@ fun OptionButton(
     ){
         Text(
             text = label,
-            style = KanaSenseiTypography.bodyLarge.copy(
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
+            style = MaterialTheme.typography.titleLarge.copy(
                 color = textColor
             ),
             modifier = Modifier.padding(20.dp)

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,14 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.codewithdipesh.kanasensei.ui.theme.KanaColors
 
 @Composable
 fun HorizontalProgressBar(
     modifier: Modifier = Modifier,
     size : Int,
     currentPosition : Int,
-    selectedColor : Color = MaterialTheme.colorScheme.onBackground,
-    unSelectedColor : Color = MaterialTheme.colorScheme.secondary,
+    selectedColor : Color = KanaColors.onBackground,
+    unSelectedColor : Color = KanaColors.secondary,
 ) {
     var previousPosition by remember { mutableStateOf(currentPosition) }
 

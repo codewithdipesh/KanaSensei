@@ -1,6 +1,7 @@
 package com.codewithdipesh.kanasensei.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import com.codewithdipesh.kanasensei.ui.theme.DeepBrown
 
 
 // Light Colors
@@ -25,7 +26,48 @@ val DarkGreen = Color(0xFF60BA53)
 val DarkYellow = Color(0xFFF0B153)
 val DarkBrown = Color(0xFFC08D6B)
 val DarkCard = Color(0xFF4B4745)
+val DeepBrown = Color(0xFF36241C)
+val WhiteBrown = Color(0xFFECC8B6)
 
 val Primary = LightBrown
 val Secondary = DarkGray1
 val ErrorColor = LightRed
+
+object KanaColors {
+    val primary = DarkBrown
+    val secondary = DarkGray2
+    val tertiary = DarkGray2
+    val background = Color(0xFF13542C)
+    val surface = DarkCard
+    val error = DarkRed
+    val success = DarkGreen
+    val onPrimary = White
+    val onSecondary = DarkGray3
+    val onBackground = White
+    val onSurface = DarkGray1
+    val onError = White
+    val errorContainer = DarkRed
+    val onErrorContainer = White
+    val onOverlayedContainer = Color(0xFFFFBB00)
+    val overlayedContainer = Color(0xFF196737)
+    val secondaryButton = Color(0xFF563003)
+    val onSecondaryButton = Color(0xFFF7E197)
+    val shadowPrimary = Color(0xFF8A5631)
+    val shadowSecondary = Color(0xFF8A5631)
+    val secondaryBackground = Color(0xFF2B2826)
+
+    // Entrance Theme (Splash, Welcome, Onboarding, Login, Signup)
+    val entranceBackground = Color(0XFFFAEEC3)
+    val onEntranceBackground = Color(0XFF6F3318)
+    val entrancePrimary = LightBrown
+    val entranceSecondary = Color(0xFF789D87)
+    val entranceSurface = Color(0xFFB4906D)
+
+    val learningSecondary = Color(0xFF789D87)
+    val learningBackground = Color(0XFFFAEEC3)
+    val onLearningBackground = Color(0XFF6F3318)
+    val onLearningPrimary = Color(0xFFE2CFA7)
+    val onLearningShadowPrimary = Color(0xFFC0A17D)
+    val learningSurface = Color(0xFFB4906D)
+    val learningDrawing = Color(0xFF062813)
+}
