@@ -136,3 +136,8 @@ ksp {
     arg("room.schemaLocation", "${projectDir}/schemas")
     arg("room.generateKotlin", "true")
 }
+
+// Fix for KSP and Android Baseline Profile task dependency issue
+tasks.matching { it.name == "prepareAndroidMainArtProfile" }.configureEach {
+    mustRunAfter(tasks.matching { it.name == "kspAndroidMain" })
+}
