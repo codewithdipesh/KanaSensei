@@ -81,12 +81,15 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation(project.dependencies.platform(libs.androidx.compose.bom))
                 implementation(libs.androidx.lifecycle.runtime.ktx)
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.coroutines.android)
                 implementation(libs.koin.android)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.jetbrains.compose.preview)
+                implementation(libs.androidx.compose.material.icons.core)
+                implementation(libs.androidx.compose.material.icons.extended)
             }
         }
 
